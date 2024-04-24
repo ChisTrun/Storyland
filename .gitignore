@@ -1,0 +1,5 @@
+# Backend
+backend/.vs
+
+# Frontend
+frontend/node_modules
