@@ -1,5 +1,8 @@
 # Backend
 backend/.vs
+backend/backend/bin/
+backend/backend/obj/
+backend/backend/obj/**
 
 # Frontend
 frontend/node_modules
