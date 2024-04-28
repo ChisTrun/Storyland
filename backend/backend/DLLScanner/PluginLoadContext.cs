@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.Loader;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace backend.StorySourcesScanner
+namespace backend.DLLScanner
 {
-     class PluginLoadContext : AssemblyLoadContext
+    class PluginLoadContext : AssemblyLoadContext
     {
         private AssemblyDependencyResolver _resolver;
 
@@ -28,7 +23,7 @@ namespace backend.StorySourcesScanner
             return null;
         }
 
-        protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+        protected override nint LoadUnmanagedDll(string unmanagedDllName)
         {
             string libraryPath = _resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
             if (libraryPath != null)
@@ -36,7 +31,7 @@ namespace backend.StorySourcesScanner
                 return LoadUnmanagedDllFromPath(libraryPath);
             }
 
-            return IntPtr.Zero;
+            return nint.Zero;
         }
     }
 }

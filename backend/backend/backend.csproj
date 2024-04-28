@@ -23,4 +23,8 @@
     <ProjectReference Include="..\PluginBase\PluginBase.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

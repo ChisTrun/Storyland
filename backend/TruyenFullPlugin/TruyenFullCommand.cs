@@ -4,7 +4,7 @@ using HtmlAgilityPack;
 
 namespace TruyenFullPlugin;
 
-public class TruyenFullCommand : Icommand
+public class TruyenFullCommand : IStorySourcePlugin
 {
     public string Name =>  "truyenfull.com";
 

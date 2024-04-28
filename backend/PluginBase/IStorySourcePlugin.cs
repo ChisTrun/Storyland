@@ -2,7 +2,7 @@
 
 namespace PluginBase;
 
-public interface Icommand
+public interface IStorySourcePlugin
 {
     public string Name { get; }
     public string Description { get; }

@@ -15,7 +15,7 @@ while (true)
         pluginPaths = scanAgain.ToArray();
     }
     
-    IEnumerable<Icommand> commands = (IEnumerable<Icommand>)newPlugins.SelectMany(pluginPath =>
+    IEnumerable<IStorySourcePlugin> commands = (IEnumerable<IStorySourcePlugin>)newPlugins.SelectMany(pluginPath =>
     {
         string pluginPathString = pluginPath.FullName;
         Assembly pluginAssembly = LoadPlugin(pluginPathString);
@@ -51,7 +51,7 @@ while (true)
         return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
     }
 
-    static IEnumerable<Icommand> CreateCommands(Assembly assembly)
+    static IEnumerable<IStorySourcePlugin> CreateCommands(Assembly assembly)
     {
         int count = 0;
 
@@ -62,15 +62,15 @@ while (true)
                 var s = new string[]
                 {
                         type.FullName,
-                        typeof(Icommand).FullName,
+                        typeof(IStorySourcePlugin).FullName,
                         type.Namespace,
                         type.Name
 
                 };
             }
-            if (typeof(Icommand).IsAssignableFrom(type))
+            if (typeof(IStorySourcePlugin).IsAssignableFrom(type))
             {
-                Icommand result = Activator.CreateInstance(type) as Icommand;
+                IStorySourcePlugin result = Activator.CreateInstance(type) as IStorySourcePlugin;
                 if (result != null)
                 {
                     count++;
