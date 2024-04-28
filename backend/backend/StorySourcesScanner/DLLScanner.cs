@@ -63,12 +63,14 @@ namespace backend.StorySourcesScanner
         static Assembly LoadPlugin(string relativePath)
         {
             // Navigate up to the solution root
+#pragma warning disable CS8604 // Possible null reference argument.
             string root = Path.GetFullPath(Path.Combine(
                 Path.GetDirectoryName(
                     Path.GetDirectoryName(
                         Path.GetDirectoryName(
                             Path.GetDirectoryName(
                                 Path.GetDirectoryName(typeof(Program).Assembly.Location)))))));
+#pragma warning restore CS8604 // Possible null reference argument.
 
             string pluginLocation = Path.GetFullPath(Path.Combine(root, relativePath.Replace('\\', Path.DirectorySeparatorChar)));
             PluginLoadContext loadContext = new PluginLoadContext(pluginLocation);
