@@ -1,33 +1,33 @@
 ﻿using PluginBase;
 using System.Reflection;
 
-namespace backend.StorySourcesScanner
+namespace backend.DLLScanner
 {
-    public class DLLScanner
+    public class StorySourceScanner
     {
         string exePath;
         string folder;
         FileInfo[] pluginPaths;
 
         private object commandsLock = new object();
-        public List<Icommand> commands { get; private set; }
+        public List<IStorySourcePlugin> commands { get; private set; }
 
-        private static readonly Lazy<DLLScanner> lazy =
-        new Lazy<DLLScanner>(() => new DLLScanner());
+        private static readonly Lazy<StorySourceScanner> lazy =
+        new Lazy<StorySourceScanner>(() => new StorySourceScanner());
 
-        public static DLLScanner Instance { get { return lazy.Value; } }
+        public static StorySourceScanner Instance { get { return lazy.Value; } }
 
-        private DLLScanner()
+        private StorySourceScanner()
         {
-            commands = new List<Icommand>();
+            commands = new List<IStorySourcePlugin>();
             exePath = Assembly.GetExecutingAssembly().Location;
             folder = Path.GetDirectoryName(exePath);
             pluginPaths = new FileInfo[0];
         }
 
-        public void startScanThread()
+        public void StartScanThread()
         {
-            Thread ScanDLL = new Thread(new ThreadStart(DLLScanner.Instance.ScanDLLFiles));
+            Thread ScanDLL = new Thread(new ThreadStart(Instance.ScanDLLFiles));
             ScanDLL.Start();
         }
 
@@ -52,7 +52,7 @@ namespace backend.StorySourcesScanner
 
                     lock (commandsLock)
                     {
-                        ((List<Icommand>)commands).AddRange(newCommands);
+                        commands.AddRange(newCommands);
                     }
                 }
 
@@ -77,11 +77,11 @@ namespace backend.StorySourcesScanner
             return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
         }
 
-        static IEnumerable<Icommand> CreateCommands(Assembly assembly)
+        static IEnumerable<IStorySourcePlugin> CreateCommands(Assembly assembly)
         {
             int count = 0;
 
-            var t1 = typeof(Icommand).FullName;
+            var t1 = typeof(IStorySourcePlugin).FullName;
 
             foreach (Type type in assembly.GetTypes())
             {
@@ -90,15 +90,15 @@ namespace backend.StorySourcesScanner
                     var s = new string[]
                     {
                         type.FullName,
-                        typeof(Icommand).FullName,
+                        typeof(IStorySourcePlugin).FullName,
                         type.Namespace,
                         type.Name
 
                     };
                 }
-                if (typeof(Icommand).IsAssignableFrom(type))
+                if (typeof(IStorySourcePlugin).IsAssignableFrom(type))
                 {
-                    Icommand result = Activator.CreateInstance(type) as Icommand;
+                    IStorySourcePlugin result = Activator.CreateInstance(type) as IStorySourcePlugin;
                     if (result != null)
                     {
                         count++;
