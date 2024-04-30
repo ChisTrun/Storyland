@@ -18,5 +18,5 @@ public interface IStorySourcePlugin
     /// </summary>
     /// <param name="url">nhan vao link cua the loai hoac danh sach</param>
     /// <returns>danh sach cac truyen thuoc the loai do</returns>
-    public IEnumerable<StoryInfo> GetStoryInfos(string sourceURL);
+    public IEnumerable<StoryInfo> GetStoryInfoOfCategory(string sourceURL);
 }
