@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TruyenFullPlugin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4507616a58b808706e65c9bebd03fa890d13c19")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93ca37c7c2260b98a1f19facdda735a2e5853f2d")]
 [assembly: System.Reflection.AssemblyProductAttribute("TruyenFullPlugin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TruyenFullPlugin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,3 +1,4 @@
+using backend.DLLScanner;
 
 namespace backend
 {
@@ -5,12 +6,15 @@ namespace backend
     {
         public static void Main(string[] args)
         {
+            StorySourceScanner.Instance.StartScanThread();
+            
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -26,7 +30,6 @@ namespace backend
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

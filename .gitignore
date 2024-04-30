@@ -2,6 +2,9 @@
 backend/.vs
 **/bin/
 **/obj/
+<<<<<<< HEAD
 
+=======
+>>>>>>> px_api
 # Frontend
 frontend/node_modules
