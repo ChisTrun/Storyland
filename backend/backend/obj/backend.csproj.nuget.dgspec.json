@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "F:\\Tai_lieu_dh\\ThietKePhanMem\\Project\\Storyland\\backend\\backend\\backend.csproj": {}
   },
   "projects": {
@@ -12,6 +13,19 @@
         "projectPath": "F:\\Tai_lieu_dh\\ThietKePhanMem\\Project\\Storyland\\backend\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
         "outputPath": "F:\\Tai_lieu_dh\\ThietKePhanMem\\Project\\Storyland\\backend\\backend\\obj\\",
+=======
+    "D:\\programin\\Git\\Storyland\\backend\\backend\\backend.csproj": {}
+  },
+  "projects": {
+    "D:\\programin\\Git\\Storyland\\backend\\backend\\backend.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\programin\\Git\\Storyland\\backend\\backend\\backend.csproj",
+        "projectName": "backend",
+        "projectPath": "D:\\programin\\Git\\Storyland\\backend\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\programin\\Git\\Storyland\\backend\\backend\\obj\\",
+>>>>>>> be450244071b9196b397f0ffd3efadd497995c19
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -22,7 +36,12 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "https://api.nuget.org/v3/index.json": {}
+=======
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.devexpress.com/xe8r2Wu4yoDi8sVTgJ56Oc4lsRpV3gELgS5XaIGBfpwvpWjyup/api": {}
+>>>>>>> be450244071b9196b397f0ffd3efadd497995c19
         },
         "frameworks": {
           "net7.0": {
@@ -91,7 +110,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200\\RuntimeIdentifierGraph.json"
+>>>>>>> be450244071b9196b397f0ffd3efadd497995c19
         }
       }
     }
