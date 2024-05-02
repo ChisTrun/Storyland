@@ -40,6 +40,11 @@ namespace backend.DLLScanner
         {
             while (true)
             {
+                string pluginsFolder = "./plugins";
+                if (!Directory.Exists(pluginsFolder))
+                {
+                    Directory.CreateDirectory(pluginsFolder);
+                }
 
                 FileInfo[] scanAgain = new DirectoryInfo(folder).GetFiles("./plugins/*.dll");
                 FileInfo[] newPlugins = scanAgain.Where(x => !pluginPaths.Any(p => p.FullName == x.FullName)).ToArray();
@@ -52,7 +57,9 @@ namespace backend.DLLScanner
                         {
                             string pluginPathString = pluginPath.FullName;
                             Assembly pluginAssembly = LoadPlugin(pluginPathString);
+
                             return CreateCommands(pluginAssembly);
+      
                         }).ToList();
 
                     lock (commandsLock)
@@ -65,21 +72,24 @@ namespace backend.DLLScanner
             }
         }
 
-        static Assembly LoadPlugin(string relativePath)
+        static Assembly LoadPlugin(string absolutePath)
         {
-            // Navigate up to the solution root
-#pragma warning disable CS8604 // Possible null reference argument.
-            string root = Path.GetFullPath(Path.Combine(
-                Path.GetDirectoryName(
-                    Path.GetDirectoryName(
-                        Path.GetDirectoryName(
-                            Path.GetDirectoryName(
-                                Path.GetDirectoryName(typeof(Program).Assembly.Location)))))));
-#pragma warning restore CS8604 // Possible null reference argument.
+            //            // Navigate up to the solution root
+            //#pragma warning disable CS8604 // Possible null reference argument.
+            //            string root = Path.GetFullPath(Path.Combine(
+            //                Path.GetDirectoryName(
+            //                    Path.GetDirectoryName(
+            //                        Path.GetDirectoryName(
+            //                            Path.GetDirectoryName(
+            //                                Path.GetDirectoryName(typeof(Program).Assembly.Location)))))));
+            //#pragma warning restore CS8604 // Possible null reference argument.
 
-            string pluginLocation = Path.GetFullPath(Path.Combine(root, relativePath.Replace('\\', Path.DirectorySeparatorChar)));
-            PluginLoadContext loadContext = new PluginLoadContext(pluginLocation);
-            return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
+            //            string pluginLocation = Path.GetFullPath(Path.Combine(root, absolutePath.Replace('\\', Path.DirectorySeparatorChar)));
+            //            PluginLoadContext loadContext = new PluginLoadContext(pluginLocation);
+            //            return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
+
+            PluginLoadContext loadContext = new PluginLoadContext(absolutePath);
+            return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(absolutePath)));
         }
 
         static IEnumerable<IStorySourcePlugin> CreateCommands(Assembly assembly)

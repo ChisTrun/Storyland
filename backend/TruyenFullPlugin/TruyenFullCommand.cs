@@ -44,9 +44,9 @@ public class TruyenFullCommand : IStorySourcePlugin
         return listOfCategories;
     }
 
-    public IEnumerable<StoryInfo> GetStoryInfoOfCategory(string sourceURL)
+    public IEnumerable<StoryInfo> GetStoryInfoOfCategory(string categoryName)
     {
-        return GetAllStoriesWithPagination(sourceURL);
+        return GetAllStoriesWithPagination($"{_domain}categoryName");
     }
 
     private  List<StoryInfo> GetListOfStoriesFromHTMLNode(HtmlDocument document)
@@ -141,15 +141,16 @@ public class TruyenFullCommand : IStorySourcePlugin
         return listOfStories;
     }
 
-    public  List<ChapterInfo> GetChaptersOfStory(string sourceURL)
+    public  List<ChapterInfo> GetChaptersOfStory(string path)
     {
+        path = $"{_domain}{path}";
         var pageDiscoverd = new List<string>
         {
-            sourceURL // first page to scrape
+           path // first page to scrape
             };
 
         var pageToScrape = new Queue<string>();
-        pageToScrape.Enqueue(sourceURL);
+        pageToScrape.Enqueue(path);
 
         List<ChapterInfo> listOfChapter = new List<ChapterInfo>();
 
@@ -193,9 +194,10 @@ public class TruyenFullCommand : IStorySourcePlugin
 
         return listOfChapter;
     }
-    public  ChapterContent GetChapterContent(string sourceURL)
+    public  ChapterContent GetChapterContent(string path)
     {
-        var document = GetWebPageDocument(sourceURL);
+        path = $"{_domain}{path}";
+        var document = GetWebPageDocument(path);
 
         HtmlNode mainContent = document.DocumentNode.QuerySelector(".chapter-c");
         mainContent.SelectNodes("//div[contains(@class, 'ads')]")?.ToList().ForEach(n => n.Remove());
