@@ -17,6 +17,7 @@ namespace backend.Controllers
         [Route("chapter/{chapterURL}")]
         public IActionResult GetAllChapterContent(string chapterURL)
         {
+            return Ok(chapterURL);
             return Ok(StorySourceScanner.Instance.commands[0].GetChapterContent(chapterURL));
         }
     }

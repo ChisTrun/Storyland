@@ -25,37 +25,37 @@ public class TruyenFullCommand : IStorySourcePlugin
         return document;
     }
 
-    public IEnumerable<Categories> GetCategories()
+    public IEnumerable<Category> GetCategories()
     {
         var document = GetWebPageDocument(_domain);
 
         var liTags = document.DocumentNode.QuerySelectorAll("ul.control.navbar-nav > li")[1];
         var lists = liTags.QuerySelectorAll("a");
 
-        List<Categories> listOfCategories = new List<Categories>();
+        List<Category> listOfCategories = new List<Category>();
 
         foreach (var list in lists)
         {
             var url = list.Attributes["href"].Value;
             var name = list.InnerText;
-            listOfCategories.Add(new Categories(name, url));
+            listOfCategories.Add(new Category(name, url));
         }
 
         return listOfCategories;
     }
 
-    public IEnumerable<StoryInfo> GetStoryInfoOfCategory(string sourceURL)
+    public IEnumerable<Story> GetStoriesOfCategory(string categoryName)
     {
-        return GetAllStoriesWithPagination(sourceURL);
+        return GetAllStoriesWithPagination($"{_domain}categoryName");
     }
 
-    private  List<StoryInfo> GetListOfStoriesFromHTMLNode(HtmlDocument document)
+    private  List<Story> GetListOfStoriesFromHTMLNode(HtmlDocument document)
     {
         var main = document.DocumentNode.QuerySelectorAll(".container .col-truyen-main .list.list-truyen");
 
         var rows = main.QuerySelectorAll(".row");
 
-        List<StoryInfo> listOfStories = new List<StoryInfo>();
+        List<Story> listOfStories = new List<Story>();
 
         foreach (var row in rows)
         {
@@ -64,14 +64,14 @@ public class TruyenFullCommand : IStorySourcePlugin
 
             var img = row.SelectSingleNode(".//div[@data-desk-image]")?.Attributes["data-desk-image"]?.Value;
 
-            listOfStories.Add(new StoryInfo(name, url, img));
+            listOfStories.Add(new Story(name, url, img));
         }
 
         return listOfStories;
     }
 
     //Scrawling stories
-    private  List<StoryInfo> GetAllStoriesWithPagination(string sourceURL)
+    private  List<Story> GetAllStoriesWithPagination(string sourceURL)
     {
         var pageDiscoverd = new List<string>
             {
@@ -81,7 +81,7 @@ public class TruyenFullCommand : IStorySourcePlugin
         var pageToScrape = new Queue<string>();
         pageToScrape.Enqueue(sourceURL);
 
-        List<StoryInfo> listOfStories = new List<StoryInfo>();
+        List<Story> listOfStories = new List<Story>();
 
         while (pageToScrape.Count > 0)
         {
@@ -113,16 +113,16 @@ public class TruyenFullCommand : IStorySourcePlugin
         return listOfStories;
     }
 
-    public IEnumerable<StoryInfo> GetStoriesFromSearchingName(string searchWord)
+    public IEnumerable<Story> GetStoriesBySearchName(string searchWord)
     {
         return GetAllStoriesWithPagination($"{_searchStoryURL}{searchWord}");
     }
 
-    public IEnumerable<StoryInfo> GetStoriesFromSearchingExactAuthor(string searchWord)
+    public IEnumerable<Story> GetStoriesOfAuthor(string searchWord)
     {
         searchWord = searchWord.Replace(' ', '-');
         searchWord = StringProblem.ConvertVietnameseToNormalizationForm(searchWord);
-        List <StoryInfo> listOfStories = new List<StoryInfo>();
+        List <Story> listOfStories = new List<Story>();
         try
         {
    
@@ -141,17 +141,18 @@ public class TruyenFullCommand : IStorySourcePlugin
         return listOfStories;
     }
 
-    public  List<ChapterInfo> GetChaptersOfStory(string sourceURL)
+    public  List<Chapter> GetChaptersOfStory(string path)
     {
+        path = $"{_domain}{path}";
         var pageDiscoverd = new List<string>
         {
-            sourceURL // first page to scrape
+           path // first page to scrape
             };
 
         var pageToScrape = new Queue<string>();
-        pageToScrape.Enqueue(sourceURL);
+        pageToScrape.Enqueue(path);
 
-        List<ChapterInfo> listOfChapter = new List<ChapterInfo>();
+        List<Chapter> listOfChapter = new List<Chapter>();
 
         while (pageToScrape.Count > 0)
         {
@@ -182,7 +183,7 @@ public class TruyenFullCommand : IStorySourcePlugin
                         var href = aTag.Attributes["href"].Value;
                         var title = (aTag.Attributes["title"].Value);
                         var name = title.Substring(title.IndexOf('-') + 2);
-                        listOfChapter.Add(new ChapterInfo(name, href));
+                        listOfChapter.Add(new Chapter(name, href));
                     }
                 }
             }
@@ -193,9 +194,10 @@ public class TruyenFullCommand : IStorySourcePlugin
 
         return listOfChapter;
     }
-    public  ChapterContent GetChapterContent(string sourceURL)
+    public  ChapterContent GetChapterContent(string path)
     {
-        var document = GetWebPageDocument(sourceURL);
+        path = $"{_domain}{path}";
+        var document = GetWebPageDocument(path);
 
         HtmlNode mainContent = document.DocumentNode.QuerySelector(".chapter-c");
         mainContent.SelectNodes("//div[contains(@class, 'ads')]")?.ToList().ForEach(n => n.Remove());

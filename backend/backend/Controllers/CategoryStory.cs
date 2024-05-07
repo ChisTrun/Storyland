@@ -16,7 +16,7 @@ namespace backend.Controllers
         [Route("{categoryURL}")]
         public IActionResult GetAllStoriesOfCategory(string categoryURL)
         {
-            return Ok(StorySourceScanner.Instance.commands[0].GetStoryInfoOfCategory(categoryURL));
+            return Ok(StorySourceScanner.Instance.commands[0].GetStoriesOfCategory(categoryURL));
         }
     }
 }

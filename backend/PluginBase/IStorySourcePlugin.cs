@@ -12,40 +12,40 @@ public interface IStorySourcePlugin
     /// Lay tat ca the loai truyen cua trang
     /// </summary>
     /// <returns>Mot danh sach cac the loai</returns>
-    public IEnumerable<Categories> GetCategories();
+    public IEnumerable<Category> GetCategories();
 
     /// <summary>
-    /// Lay thong tin cac truyen thuoc mot the loai hoac mot danh sach nao do
+    /// Lay tat ca truyen thuoc mot the loai hoac mot danh sach nao do
     /// </summary>
-    /// <param name="url">Url cua mot the loai</param>
+    /// <param name="categoryName">Ten the loai</param>
     /// <returns>Danh sach cac truyen thuoc the loai do</returns>
-    public IEnumerable<StoryInfo> GetStoryInfoOfCategory(string sourceURL);
+    public IEnumerable<Story> GetStoriesOfCategory(string categoryName);
 
     /// <summary>
-    ///Tim kiem thong tin cac truyen dua tren tu khoa
+    /// Tim kiem truyen theo ten
     /// </summary>
-    /// <param name="searchWord">Tu khoa tim kiem</param>
+    /// <param name="storyName">Ten truyen</param>
     /// <returns>Danh sach cac truyen la ket qua tim kiem</returns>
-    public IEnumerable<StoryInfo> GetStoriesFromSearchingName(string searchWord);
+    public IEnumerable<Story> GetStoriesBySearchName(string storyName);
 
     /// <summary>
     /// Tim thong tin truyen dua tren 'Chinh Xac' ten tac gia
     /// </summary>
-    /// <param name="searchWord">Ten tac gia</param>
+    /// <param name="authorName">Ten tac gia</param>
     /// <returns>Danh sach cac truyen la ket qua tim kiem</returns>
-    public IEnumerable<StoryInfo> GetStoriesFromSearchingExactAuthor(string searchWord);
+    public IEnumerable<Story> GetStoriesOfAuthor(string authorName);
 
     /// <summary>
     /// Lay thong tin cac chuong cua mot truyen
     /// </summary>
-    /// <param name="Url">Link toi cac chuong cua mot truyen</param>
+    /// <param name="storyURL">Link toi cac chuong cua mot truyen</param>
     /// <returns>Danh sach cac chuong cua truyen do</returns>
-    public List<ChapterInfo> GetChaptersOfStory(string sourceURL);
+    public List<Chapter> GetChaptersOfStory(string storyURL);
 
     /// <summary>
     /// Lay noi dung cua mot chuong cua mot truyen
     /// </summary>
-    /// <param name="sourceURL">Link toi trang noi dung cua chuong</param>
+    /// <param name="chapterURL">Link toi trang noi dung cua chuong</param>
     /// <returns>Noi dung cua trang truyen</returns>
-    public ChapterContent GetChapterContent(string sourceURL);
+    public ChapterContent GetChapterContent(string chapterURL);
 }
