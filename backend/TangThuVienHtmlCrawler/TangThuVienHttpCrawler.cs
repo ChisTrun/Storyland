@@ -2,12 +2,9 @@
 using HtmlAgilityPack.CssSelectors.NetCore;
 using PluginBase.Contract;
 using PluginBase.Models;
-using System.Collections.Generic;
 using System.Net;
-using System.Reflection.Metadata;
-using System.Xml.Linq;
 
-namespace TangThuVienPlugin;
+namespace TangThuVienHttp;
 
 public class TangThuVienHttpCrawler : HtmlCrawlerBase
 {
