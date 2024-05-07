@@ -29,6 +29,7 @@ namespace TangThuVienPlugin
 
         public string Description => throw new NotImplementedException();
 
+        // No need Headless
         public IEnumerable<Category> GetCategories()
         {
             var categories = new List<Category>();
@@ -55,6 +56,9 @@ namespace TangThuVienPlugin
             return categories;
         }
 
+        // No need Headless
+        // https://truyen.tangthuvien.vn/tong-hop?ctg=1
+        // https://truyen.tangthuvien.vn/tong-hop?ctg=1&limit=1000
         public IEnumerable<Story> GetStoriesOfCategory(string categoryUrl)
         {
             var storyInfos = new List<Story>();
@@ -86,6 +90,8 @@ namespace TangThuVienPlugin
             return storyInfos;
         }
 
+        // No need Headless
+        // https://truyen.tangthuvien.vn/ket-qua-tim-kiem?term=dinh&page=2
         public IEnumerable<Story> GetStoriesBySearchName(string searchWord)
         {
             var storyInfos = new List<Story>();
@@ -123,6 +129,7 @@ namespace TangThuVienPlugin
             return storyInfos;
         }
 
+        // No need Headless
         public IEnumerable<Story> GetStoriesOfAuthor(string authorName)
         {
             var storyInfos = new List<Story>();
@@ -147,6 +154,8 @@ namespace TangThuVienPlugin
             return storyInfos;
         }
 
+        // No need headless
+        // https://truyen.tangthuvien.vn/doc-truyen/page/38020?page=0&limit=100000&web=1
         public List<Chapter> GetChaptersOfStory(string storyURL)
         {
             var chapterInfos = new List<Chapter>();
@@ -191,6 +200,8 @@ namespace TangThuVienPlugin
             return chapterInfos;
         }
 
+        // No need headless
+        // https://truyen.tangthuvien.vn/doc-truyen/page/38020?page=1&limit=1&web=1
         public ChapterContent GetChapterContent(string chapterURL)
         {
             ChapterContent? chapterContent = null;
@@ -225,6 +236,9 @@ namespace TangThuVienPlugin
         }
 
         // Hàm thêm vào
+        // Hàm thêm vào
+        // Hàm thêm vào
+
         private Author? GetAuthorInfoFromExactName(string name)
         {
             var authors = GetAuthorsBySearchName(name);
@@ -237,6 +251,7 @@ namespace TangThuVienPlugin
             }
             return null;
         }
+
         private Story? GetStoryFromExactName(string name)
         {
             var authors = GetStoriesBySearchName(name);

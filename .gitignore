@@ -2,6 +2,8 @@
 backend/.vs
 **/bin/
 **/obj/
+backend/backend/ConsoleDraft/
+backend/backend/ConsoleTest/
 
 # Created by http://www.gitignore.io
 
