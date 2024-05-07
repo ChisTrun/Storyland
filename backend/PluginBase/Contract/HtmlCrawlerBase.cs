@@ -16,8 +16,8 @@ namespace PluginBase.Contract
             return document;
         }
 
-        public string Name => "";
-        public string Description => "";
+        public virtual string Name => "";
+        public virtual string Description => "";
 
         public abstract IEnumerable<Category> GetCategories();
         public abstract ChapterContent GetChapterContent(string sourceURL);

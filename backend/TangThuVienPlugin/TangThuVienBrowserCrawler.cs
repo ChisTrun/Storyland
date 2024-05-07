@@ -2,17 +2,14 @@
 using PluginBase.Contract;
 using PluginBase.Models;
 using System.Net;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
-using System.Xml.Schema;
-using System;
 using PuppeteerSharp;
-using System.Security.AccessControl;
 
+// https://stackoverflow.com/questions/24288726/scraping-webpage-generated-by-javascript-with-c-sharp
 
 namespace TangThuVienPlugin
 {
-    public class TangThuVienCrawler : ICrawler
+    public class TangThuVienBrowserCrawler : ICrawler
     {
         // authorUrl: https://truyen.tangthuvien.vn/tac-gia?author=65
         // storyUrl: https://truyen.tangthuvien.vn/doc-truyen/gia-toc-tu-tien-tong-thi-truong-thanh
