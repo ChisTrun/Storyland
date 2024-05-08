@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PluginBase.Models
+﻿namespace PluginBase.Models
 {
-    public class Chapter
+    public class Chapter : Representative
     {
-        public string Name { get; set; }
-        public string Url { get; set; }
-
-        public Chapter(string name, string url)
+        public Chapter(string name, string url, int index = -1) : base(name, url)
         {
-            Name = name;
-            Url = url;
+            Index = index;
         }
+
+        public int Index { get; }
     }
 }

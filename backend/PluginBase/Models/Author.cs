@@ -1,14 +1,9 @@
 ﻿namespace PluginBase.Models
 {
-    public class Author
+    public class Author : Representative
     {
-        public string Name { get; set; }
-        public string Url { get; set; }
-
-        public Author(string name, string url)
+        public Author(string name, string url) : base(name, url)
         {
-            this.Name = name;
-            this.Url = url;
         }
     }
 }

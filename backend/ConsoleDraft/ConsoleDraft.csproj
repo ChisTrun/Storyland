@@ -12,9 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HeadlessBrowser\HeadlessBrowser.csproj" />
     <ProjectReference Include="..\TangThuVienHtmlCrawler\TangThuVienHtmlCrawler.csproj" />
-    <ProjectReference Include="..\TangThuVienPlugin\TangThuVienPlugin.csproj" />
   </ItemGroup>
 
 </Project>

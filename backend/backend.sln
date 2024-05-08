@@ -9,13 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginBase", "PluginBase\Pl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TruyenFullPlugin", "TruyenFullPlugin\TruyenFullPlugin.csproj", "{43DE4F1B-609E-419C-9A27-95BB691F7A2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TangThuVienPlugin", "TangThuVienPlugin\TangThuVienPlugin.csproj", "{A314C393-B999-4D96-A53C-44638AB88965}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleDraft", "ConsoleDraft\ConsoleDraft.csproj", "{1DBBF0E1-DA9B-49FA-8841-C01B662EB34A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadlessBrowser", "HeadlessBrowser\HeadlessBrowser.csproj", "{DC20DEC9-ADD9-424E-8719-C2BE40520BD3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TangThuVienHtmlCrawler", "TangThuVienHtmlCrawler\TangThuVienHtmlCrawler.csproj", "{987892E9-5908-4B28-80D3-911DD589DFFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TangThuVienHtmlCrawler", "TangThuVienHtmlCrawler\TangThuVienHtmlCrawler.csproj", "{987892E9-5908-4B28-80D3-911DD589DFFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,18 +31,10 @@ Global
 		{43DE4F1B-609E-419C-9A27-95BB691F7A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43DE4F1B-609E-419C-9A27-95BB691F7A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43DE4F1B-609E-419C-9A27-95BB691F7A2B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A314C393-B999-4D96-A53C-44638AB88965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A314C393-B999-4D96-A53C-44638AB88965}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A314C393-B999-4D96-A53C-44638AB88965}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A314C393-B999-4D96-A53C-44638AB88965}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1DBBF0E1-DA9B-49FA-8841-C01B662EB34A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1DBBF0E1-DA9B-49FA-8841-C01B662EB34A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DBBF0E1-DA9B-49FA-8841-C01B662EB34A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DBBF0E1-DA9B-49FA-8841-C01B662EB34A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC20DEC9-ADD9-424E-8719-C2BE40520BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC20DEC9-ADD9-424E-8719-C2BE40520BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC20DEC9-ADD9-424E-8719-C2BE40520BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC20DEC9-ADD9-424E-8719-C2BE40520BD3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{987892E9-5908-4B28-80D3-911DD589DFFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{987892E9-5908-4B28-80D3-911DD589DFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{987892E9-5908-4B28-80D3-911DD589DFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU

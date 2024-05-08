@@ -17,49 +17,81 @@ class Program
     {
         Console.OutputEncoding = Encoding.Unicode;
 
-        var t = new TangThuVienHttpCrawler();
-        Test(t);
+        var ttv = new TangThuVienHttpCrawler();
+        TestSet1(ttv);
     }
 
-    static void Test(ICrawler crawler)
+    static void TestSet1(TangThuVienHttpCrawler crawler)
     {
         Console.OutputEncoding = Encoding.Unicode;
+        var GetCategoriesPass = true;
+        var GetStoriesOfCategoryPass = true;
+        var GetStoriesBySearchNamePass = true;
+        var GetStoriesOfAuthorPass = true;
+        var GetChaptersOfStoryPass = true;
+        var GetChapterContentPass = true;
 
-        var categories = crawler.GetCategories();
-        foreach (var category in categories)
+        if (GetCategoriesPass == false)
         {
-            Console.WriteLine(category.Url);
-            Console.WriteLine(category.Name);
+            var categories = crawler.GetCategories();
+            foreach (var category in categories)
+            {
+                Console.WriteLine(category.Url);
+                Console.WriteLine(category.Name);
+            }
         }
 
-        var storiesCategory = crawler.GetStoriesOfCategory("Tiên Hiệp");
-        foreach (var story in storiesCategory)
+        if (GetStoriesOfCategoryPass == false)
         {
-            Console.WriteLine(story.Name);
-            Console.WriteLine(story.Url);
+            var storiesCategory = crawler.GetStoriesOfCategory("Tiên Hiệp");
+            foreach (var story in storiesCategory)
+            {
+                Console.WriteLine(story.Name);
+                Console.WriteLine(story.Url);
+            }
         }
 
-        IEnumerable<Story> stories = crawler.GetStoriesBySearchName("Đỉnh");
-        foreach (var story in stories)
+        if (GetStoriesBySearchNamePass == false)
         {
-            Console.WriteLine(story.Name);
-            Console.WriteLine(story.Url);
+            IEnumerable<Story> stories = crawler.GetStoriesBySearchName("Đỉnh");
+            foreach (var story in stories)
+            {
+                Console.WriteLine(story.Name);
+                Console.WriteLine(story.Url);
+            }
         }
 
-        return;
-
-        var content1 = crawler.GetChapterContent("https://truyen.tangthuvien.vn/doc-truyen/ta-von-khong-y-thanh-tien/chuong-1");
-        var content2 = crawler.GetChapterContent("https://truyen.tangthuvien.vn/doc-truyen/ta-von-khong-y-thanh-tien/chuong-0");
-        Console.WriteLine(content1.PreChapUrl);
-        Console.WriteLine(content1.NextChapUrl);
-        Console.WriteLine(content2.PreChapUrl);
-        Console.WriteLine(content2.NextChapUrl);
-
-        var chapterInfos = crawler.GetChaptersOfStory("https://truyen.tangthuvien.vn/doc-truyen/gia-toc-tu-tien-tong-thi-truong-thanh");
-        foreach (var chapterInfo in chapterInfos)
+        if (GetStoriesOfAuthorPass == false)
         {
-            Console.WriteLine(chapterInfo.Name);
-            Console.WriteLine(chapterInfo.Url);
+            var stories_Author = crawler.GetStoriesOfAuthor("Tối Bạch Đích Ô Nha");
+            foreach (var story in stories_Author)
+            {
+                Console.WriteLine(story.Name);
+                Console.WriteLine(story.Url);
+            }
+        }
+
+        if (GetChaptersOfStoryPass == false)
+        {
+            var chapters = crawler.GetChaptersOfStory("Thì Ra, Họ Mới Là Nhân Vật Chính (Nguyên Lai Tha Môn Tài Thị Chủ Giác?)");
+            foreach (var chapter in chapters)
+            {
+                Console.WriteLine(chapter.Name);
+                Console.WriteLine(chapter.Url);
+            }
+        }
+
+        if (GetChapterContentPass == false)
+        {
+            //Console.WriteLine("Chương 1 : Vai Phụ Đúng Là Bản Thân Tôi" == "Chương 1 : Vai Phụ Đúng Là Bản Thân Tôi");
+            var content1 = crawler.GetChapterContent("Thì Ra, Họ Mới Là Nhân Vật Chính (Nguyên Lai Tha Môn Tài Thị Chủ Giác?)", 0);
+            var content2 = crawler.GetChapterContent("Thì Ra, Họ Mới Là Nhân Vật Chính (Nguyên Lai Tha Môn Tài Thị Chủ Giác?)", 1);
+            Console.WriteLine(content1.Content);
+            Console.WriteLine(content1.PreChapUrl);
+            Console.WriteLine(content1.NextChapUrl);
+            Console.WriteLine(content2.Content);
+            Console.WriteLine(content2.PreChapUrl);
+            Console.WriteLine(content2.NextChapUrl);
         }
 
         //IEnumerable<Author> authorInfos = t.GetAuthorsBySearchName("Đỉnh");
@@ -68,13 +100,6 @@ class Program
         //    Console.WriteLine(authorInfo.Name);
         //    Console.WriteLine(authorInfo.Url);
         //}
-
-        var storyInfos_Author = crawler.GetStoriesOfAuthor("https://truyen.tangthuvien.vn/tac-gia?author=65");
-        foreach (var storyInfo in storyInfos_Author)
-        {
-            Console.WriteLine(storyInfo.Name);
-            Console.WriteLine(storyInfo.Url);
-        }
 
         //var storyCategoriesPage = t.GetStoryInfoOfCategoryByPage("https://truyen.tangthuvien.vn/tong-hop?ctg=1", 1699, 2);
         //foreach (var story in storyCategoriesPage)

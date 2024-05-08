@@ -1,12 +1,14 @@
-﻿using PluginBase;
-using PluginBase.Models;
+﻿using PluginBase.Models;
 using HtmlAgilityPack;
+using HtmlAgilityPack.CssSelectors;
 using PluginBase.Utils;
 using System.Web;
+using PluginBase.Contract;
+using HtmlAgilityPack.CssSelectors.NetCore;
 
 namespace TruyenFullPlugin;
 
-public class TruyenFullCommand : IStorySourcePlugin
+public class TruyenFullCommand : ICrawler
 {
     public string Name =>  "truyenfull.com";
     public string Description => "Plugin de lay data tu trang web truyenfull.com";
@@ -64,7 +66,7 @@ public class TruyenFullCommand : IStorySourcePlugin
 
             var img = row.SelectSingleNode(".//div[@data-desk-image]")?.Attributes["data-desk-image"]?.Value;
 
-            listOfStories.Add(new Story(name, url, img));
+            listOfStories.Add(new Story(name, url));
         }
 
         return listOfStories;
@@ -194,7 +196,7 @@ public class TruyenFullCommand : IStorySourcePlugin
 
         return listOfChapter;
     }
-    public  ChapterContent GetChapterContent(string path)
+    public  ChapterContent GetChapterContent(string path, int chapterIndex)
     {
         path = $"{_domain}{path}";
         var document = GetWebPageDocument(path);

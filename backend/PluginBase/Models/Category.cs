@@ -1,20 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PluginBase.Models
+﻿namespace PluginBase.Models
 {
-    public class Category
+    public class Category : Representative
     {
-        public string Name { get; set; }
-        public string  Url { get; set; }
-
-        public Category(string name, string url)
+        public Category(string name, string url) : base(name, url)
         {
-            this.Name = name;
-            this.Url = url;
         }
     }
 }

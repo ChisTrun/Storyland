@@ -13,10 +13,10 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        [Route("{categoryURL}")]
-        public IActionResult GetAllStoriesOfCategory(string categoryURL)
+        [Route("{categoryName}")]
+        public IActionResult GetAllStoriesOfCategory(string categoryName)
         {
-            return Ok(StorySourceScanner.Instance.commands[0].GetStoriesOfCategory(categoryURL));
+            return Ok(StorySourceScanner.Instance.commands[0].GetStoriesOfCategory(categoryName));
         }
     }
 }

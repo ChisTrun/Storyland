@@ -7,18 +7,18 @@ namespace backend.Controllers
     public class Story : Controller
     {
         [HttpGet]
-        [Route("{storyURL}")]
-        public IActionResult GetAllChaptersOfStory(string storyURL)
+        [Route("{storyName}")]
+        public IActionResult GetAllChaptersOfStory(string storyName)
         {
-            return Ok(StorySourceScanner.Instance.commands[0].GetChaptersOfStory(storyURL));
+            var crawler = StorySourceScanner.Instance.commands[0];
+            return Ok(crawler.GetChaptersOfStory(storyName));
         }
 
         [HttpGet]
-        [Route("chapter/{chapterURL}")]
-        public IActionResult GetAllChapterContent(string chapterURL)
+        [Route("chapter/{storyName}")]
+        public IActionResult GetAllChapterContent(string storyName, [FromQuery(Name = "index")] int chapterIndex)
         {
-            return Ok(chapterURL);
-            return Ok(StorySourceScanner.Instance.commands[0].GetChapterContent(chapterURL));
+            return Ok(StorySourceScanner.Instance.commands[0].GetChapterContent(storyName, chapterIndex));
         }
     }
 }

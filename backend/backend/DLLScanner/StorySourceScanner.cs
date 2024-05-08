@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
-using PluginBase;
+using PluginBase.Contract;
 using System.Reflection;
 
 namespace backend.DLLScanner
@@ -11,7 +11,7 @@ namespace backend.DLLScanner
         FileInfo[] pluginPaths;
 
         private object commandsLock = new object();
-        public List<IStorySourcePlugin> commands { get; private set; }
+        public List<ICrawler> commands { get; private set; }
 
         private static readonly Lazy<StorySourceScanner> lazy =
         new Lazy<StorySourceScanner>(() => new StorySourceScanner());
@@ -22,7 +22,7 @@ namespace backend.DLLScanner
 
         private StorySourceScanner()
         {
-            commands = new List<IStorySourcePlugin>();
+            commands = new List<ICrawler>();
             exePath = Assembly.GetExecutingAssembly().Location;
             folder = Path.GetDirectoryName(exePath);
             pluginPaths = Array.Empty<FileInfo>();
@@ -92,17 +92,17 @@ namespace backend.DLLScanner
             return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(absolutePath)));
         }
 
-        static IEnumerable<IStorySourcePlugin> CreateCommands(Assembly assembly)
+        static IEnumerable<ICrawler> CreateCommands(Assembly assembly)
         {
             int count = 0;
 
-            var t1 = typeof(IStorySourcePlugin).FullName;
+            var t1 = typeof(ICrawler).FullName;
 
             foreach (Type type in assembly.GetTypes())
             {
-                if (typeof(IStorySourcePlugin).IsAssignableFrom(type))
+                if (typeof(ICrawler).IsAssignableFrom(type))
                 {
-                    IStorySourcePlugin result = Activator.CreateInstance(type) as IStorySourcePlugin;
+                    ICrawler result = Activator.CreateInstance(type) as ICrawler;
                     if (result != null)
                     {
                         count++;
