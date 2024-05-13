@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+}
+
+.header-nav {
+    background-color: #4b6b64;
+}
+
+body {
+    background: #000000;
+    font-family: "Roboto", sans-serif;
+    color: white;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 3.5rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.logo div .first-word {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 2.2rem;
+    cursor: pointer;
+}
+
+.logo div .last-word {
+    font-size: 1.1rem;
+    font-weight: 100;
+    color: #eeeeee;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.header-link a {
+    font-size: 1.5rem;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+}
+
+.header-link a:hover {
+    color: #000;
+    transition: 0.5s;
+    font-size: 1.7rem;
+}
+
+.header-link a:not(:hover) {
+    transition: 0.5s;
+}
+
+.second-header-link a {
+    padding: 0.5rem 1.2rem 0.5rem 1.2rem;
+    font-size: 1.15rem;
+}
+
+.second-header-link a:hover {
+    background-color: #fff;
+    color: #4b6b64;
+    font-weight: 500;
+}
+
+.home-page {
+    background-image: url("../bg2.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    opacity: 100%;
+}
+
+.home-search-bar {
+    height: 5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    background-color: #4b6b64;
+}
+
+.footer-content {
+    padding: 30px 40px 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-main {
+    margin: 10px 20px;
+}
+
+.footer-main h2 {
+    color: #ffffff;
+    font-size: 1.6rem;
+}
+
+.footer-main p {
+    color: #ffffff;
+    font-size: 0.8rem;
+    line-height: 1.3rem;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    margin: 40px 20px;
+}
+
+.links p {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.links a {
+    font-size: 0.8rem;
+    text-decoration: none;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #dbd8e3;
+    transition: 0.5s all;
+}
+
+.links a:hover {
+    color: #303035;
+}
