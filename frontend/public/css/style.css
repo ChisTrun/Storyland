@@ -199,6 +199,7 @@ footer {
     border: 1px solid #fff;
     min-height: 10vh;
 }
+
 .chapters-list li {
     color: #fefefefe;
     padding-top: 0.3rem;
@@ -245,4 +246,18 @@ footer {
     border: 1px solid #666666;
     background: #202020;
     color: white;
+}
+
+.blue-font {
+    color: #56ccf2;
+}
+
+.search-thumb {
+    height: 285px;
+    width: 100%;
+    border: 1px solid #fff;
+}
+
+.w-auto {
+    width: auto;
 }

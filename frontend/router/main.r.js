@@ -7,9 +7,11 @@ const router = express.Router();
 
 const { router: homeRouter } = require('./home.r');
 const { router: storyRouter } = require('./story.r');
+const { router: searchRouter } = require('./search.r');
 
 router.use('/home', homeRouter);
 router.use('/story', storyRouter);
+router.use('/search', searchRouter);
 
 // >>>> =============================================
 // Error
