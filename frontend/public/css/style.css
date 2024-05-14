@@ -143,9 +143,18 @@ footer {
     color: #303035;
 }
 
+.grey-theme-card {
+    background-color: #202020;
+    border-radius: 0.4rem;
+}
+
+.white-border {
+    border: 1px solid #9b9b9b;
+}
+
 .story-card {
     background-color: #202020;
-    border-radius: 0.5%;
+    border-radius: 0.4rem;
     min-height: 100vh;
 }
 
@@ -194,4 +203,46 @@ footer {
     color: #fefefefe;
     padding-top: 0.3rem;
     padding-bottom: 0.3rem;
+}
+
+.chapter-title-style {
+    color: #669900;
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+
+.text-white-80 {
+    color: #fefefe;
+}
+
+.default-content-style {
+    padding: 2.5rem 4.2rem;
+    font-size: 26px;
+
+}
+
+.chapter-button {
+    background:none;
+    padding: 0.3rem 0.8rem;
+    color: #A9CF54;
+    font-size: 1.3rem;
+    border-radius: 0.4rem;
+    border: 2px solid #A9CF54;
+    width: 13rem;
+}
+
+.chapter-button:hover, .chapter-button:active {
+    background-color: #A9CF54;
+    color: #fff;
+    border-color: #A9CF54;
+}
+
+.setting-option-card {
+    margin: 0px;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    border: 1px solid #666666;
+    background: #202020;
+    color: white;
 }
