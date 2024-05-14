@@ -1,4 +1,4 @@
-const { BE_HOST } = require('./global/env');
+const { BE_HOST } = require('../global/env');
 
 module.exports = class Category {
     constructor({ name, url }) {
@@ -7,7 +7,7 @@ module.exports = class Category {
     }
 
     static async getAll() {
-        const response = await fetch(`${BE_HOST}api/category`);
+        const response = await fetch(`${BE_HOST}/api/category`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }

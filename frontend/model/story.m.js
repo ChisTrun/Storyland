@@ -1,4 +1,4 @@
-const { BE_HOST } = require('./global/env');
+const { BE_HOST } = require('../global/env');
 
 module.exports = class Story {
     constructor({ name, url }) {
@@ -7,7 +7,7 @@ module.exports = class Story {
     }
     
     static async getStoriesOfCategory(categoryName) {
-        const response = await fetch(`${BE_HOST}api/category/${categoryName}`);
+        const response = await fetch(`${BE_HOST}/api/category/${categoryName}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -18,7 +18,7 @@ module.exports = class Story {
     }
 
     static async getStoryByName(storyName) {
-        const response = await fetch(`${BE_HOST}api/search/truyen/${storyName}`);
+        const response = await fetch(`${BE_HOST}/api/search/truyen/${storyName}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }

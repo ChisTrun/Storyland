@@ -1,0 +1,122 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10 my-4 text-white story-card">
+            <div class="container-fluid">
+                <div class="row mt-4 fw-bold">
+                    <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item text-white-50"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
+                            <li class="text-white-50 mx-2">/</li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">Name</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="row px-4 mt-2">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-3 d-flex flex-column justify-content-center">
+                                <img class="story-thumb" src="{{getUrlFromPath 'logo.png'}}" alt="Thumb" />
+                                <div class="d-flex align-items-center justify-content-center mt-3 ebook-button">
+                                    <button type="button" class="btn btn-outline-light fs-5 border-2 rounded">
+                                        XUẤT EBOOK
+                                    </button>
+                                </div>
+                            </div>
+                            <div
+                                class="col-md-9 mt-0 d-flex flex-column justify-content-start align-items-start px-0 story-info">
+                                <div class="fw-bold fs-3 pb-2">Story Name</div>
+                                <div class="container-fluid px-0 py-2">
+                                    <div class="row">
+                                        <div class="col-md-3 fw-bold">
+                                            <i class="fa-solid fa-user"></i>
+                                            Tác giả
+                                        </div>
+                                        <div class="col-md-9">
+                                            Lương Trí Vinh
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-fluid px-0 py-2">
+                                    <div class="row">
+                                        <div class="col-md-3 fw-bold">
+                                            <i class="fa-solid fa-tags"></i>
+                                            Thể loại
+                                        </div>
+                                        <div class="col-md-9">
+                                            ...
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-fluid px-0 py-2">
+                                    <div class="row">
+                                        <div class="col-md-3 fw-bold">
+                                            <i class="fa-solid fa-circle-info"></i>
+                                            Giới thiệu
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-fluid px-0 pt-0 pb-2">
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            Lăng Hàn - Một Đan Đế đại danh đỉnh định mang trong thân mình tuyệt thế công
+                                            pháp vì truy cầu bước cuối, xé bỏ tấm màn thành thần nhưng thất bại đã phải
+                                            bỏ mình. Thế nhưng ông trời dường như không muốn tuyệt dường người, Lăng Hàn
+                                            đã được trọng sinh vào một thiếu niên cùng tên và điều may mắn nhất là "Bất
+                                            Diệt Thiên Kinh" ấn ký vẫn còn nằm nguyên trong tâm thức hắn.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-fluid px-0 py-2 d-flex justify-content-start align-items-start">
+                                    <button type="button" class="rounded me-3 read-start-btn">
+                                        <i class="fa-solid fa-book-open"></i>
+                                        Đọc từ đầu
+                                    </button>
+                                    <button type="button" class="rounded mx-3 read-latest-btn">
+                                        <i class="fa-solid fa-book-open"></i>
+                                        Đọc mới nhất
+                                    </button>
+                                    <button type="button" class="rounded mx-3 read-continue-btn">
+                                        <i class="fa-solid fa-location-arrow"></i>
+                                        Đọc tiếp
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="fw-bold">
+                        <i class="fa-solid fa-database pe-1"></i>
+                        Danh sách chương
+                        <span class="fst-italic text-white-50 col-md-9 ps-2">
+                            [502 chương]
+                        </span>
+                    </div>
+                </div>
+                <div class="row chapters-list rounded mx-1 my-2 d-flex d-column">
+                    <table class="mt-3">
+                        <tbody>
+                            <tr>
+                                <td class="ps-5">
+                                    <ul class="column-1">
+                                        <li>Chương 1</li>
+                                        <li>Chương 2</li>
+                                        <li>Chương 3</li>
+                                    </ul>
+                                </td>
+                                <td class="ps-5">
+                                    <ul class="column-2">
+                                        <li>Chương 4</li>
+                                        <li>Chương 5</li>
+                                        <li>Chương 6</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

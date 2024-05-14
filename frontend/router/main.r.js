@@ -6,8 +6,10 @@ const router = express.Router();
 // <<<< =============================================
 
 const { router: homeRouter } = require('./home.r');
+const { router: storyRouter } = require('./story.r');
 
 router.use('/home', homeRouter);
+router.use('/story', storyRouter);
 
 // >>>> =============================================
 // Error

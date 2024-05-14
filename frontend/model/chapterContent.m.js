@@ -1,4 +1,4 @@
-const { BE_HOST } = require('./global/env');
+const { BE_HOST } = require('../global/env');
 
 module.exports = class ChapterContent {
     constructor({ content, nextChapUrl, preChapUrl }) {
@@ -8,7 +8,7 @@ module.exports = class ChapterContent {
     }
 
     static async getContent(storyName, index) {
-        const response = await fetch(`${BE_HOST}api/story/chapter/${storyName}?index=${index}`);
+        const response = await fetch(`${BE_HOST}/api/story/chapter/${storyName}?index=${index}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }

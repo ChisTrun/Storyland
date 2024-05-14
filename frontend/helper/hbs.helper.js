@@ -1,4 +1,12 @@
+const { HOST, PORT } = require('../global/env');
+
 module.exports = {
+    getUrlFromPath: function (path) {
+        return `https://${HOST}:${PORT}/${path}`;
+    },
+    length: function (list) {
+        return list.lenngth;
+    },
     include: function (elem, list) {
         if (list.indexOf(elem) > -1) {
             return true;
