@@ -1,122 +1,139 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10 my-4 text-white story-card">
-            <div class="container-fluid">
-                <div class="row mt-4 fw-bold">
-                    <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item text-white-50"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
-                            <li class="text-white-50 mx-2">/</li>
-                            <li class="breadcrumb-item active text-white" aria-current="page">Name</li>
-                        </ol>
-                    </nav>
+<div class="container border-rounded bg-color-202020 h-100vh my-4 p-4">
+    <div class="row fw-bold">
+        <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
+            <ol class="breadcrumb text-color-cccccc">
+                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
+                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                <li class="breadcrumb-item" aria-current="page">Name</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row mt-2">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xxl-3 col-xl-4 col-md-12 col-sm-12 col-12">
+                    <div class="text-center">
+                        <img class="border-white" id="story-image" src="{{getUrlFromPath 'assets/logo.png'}}"
+                            alt="Story Name Thumb" />
+                    </div>
+                    <div class="mt-3 text-center">
+                        <button type="button" class="btn btn-outline-light w-16dot875 fs-5 border-rectangle">
+                            XUẤT EBOOK
+                        </button>
+                    </div>
                 </div>
-                <div class="row px-3 mt-2">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-3 d-flex flex-column justify-content-center">
-                                <img class="story-thumb" src="{{getUrlFromPath 'logo.png'}}" alt="Thumb" />
-                                <div class="d-flex align-items-center justify-content-center mt-3 ebook-button">
-                                    <button type="button" class="btn btn-outline-light fs-5 border-2 rounded">
-                                        XUẤT EBOOK
-                                    </button>
-                                </div>
+                <div class="col-xxl-9 col-xl-8 col-md-12 col-sm-12 col-12 mt-0 px-0" id="story-info">
+                    <div class="fw-bold fs-3 pb-2">Story Name</div>
+                    <div class="container-fluid px-0">
+                        <div class="row py-2">
+                            <div class="col-md-3 fw-bold">
+                                <i class="fa-solid fa-user"></i>
+                                Tác giả
                             </div>
-                            <div
-                                class="col-md-9 mt-0 d-flex flex-column justify-content-start align-items-start px-0 story-info">
-                                <div class="fw-bold fs-3 pb-2">Story Name</div>
-                                <div class="container-fluid px-0 py-2">
-                                    <div class="row">
-                                        <div class="col-md-3 fw-bold">
-                                            <i class="fa-solid fa-user"></i>
-                                            Tác giả
-                                        </div>
-                                        <div class="col-md-9">
-                                            Lương Trí Vinh
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="container-fluid px-0 py-2">
-                                    <div class="row">
-                                        <div class="col-md-3 fw-bold">
-                                            <i class="fa-solid fa-tags"></i>
-                                            Thể loại
-                                        </div>
-                                        <div class="col-md-9">
-                                            ...
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="container-fluid px-0 py-2">
-                                    <div class="row">
-                                        <div class="col-md-3 fw-bold">
-                                            <i class="fa-solid fa-circle-info"></i>
-                                            Giới thiệu
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="container-fluid px-0 pt-0 pb-2">
-                                    <div class="row">
-                                        <div class="col-md-11">
-                                            Lăng Hàn - Một Đan Đế đại danh đỉnh định mang trong thân mình tuyệt thế công
-                                            pháp vì truy cầu bước cuối, xé bỏ tấm màn thành thần nhưng thất bại đã phải
-                                            bỏ mình. Thế nhưng ông trời dường như không muốn tuyệt dường người, Lăng Hàn
-                                            đã được trọng sinh vào một thiếu niên cùng tên và điều may mắn nhất là "Bất
-                                            Diệt Thiên Kinh" ấn ký vẫn còn nằm nguyên trong tâm thức hắn.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="container-fluid px-0 py-2 d-flex justify-content-start align-items-start">
-                                    <button type="button" class="rounded me-3 read-start-btn">
-                                        <i class="fa-solid fa-book-open"></i>
-                                        Đọc từ đầu
-                                    </button>
-                                    <button type="button" class="rounded mx-3 read-latest-btn">
-                                        <i class="fa-solid fa-book-open"></i>
-                                        Đọc mới nhất
-                                    </button>
-                                    <button type="button" class="rounded mx-3 read-continue-btn">
-                                        <i class="fa-solid fa-location-arrow"></i>
-                                        Đọc tiếp
-                                    </button>
-                                </div>
+                            <div class="col-md-9">
+                                n/a
+                            </div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-md-3 fw-bold">
+                                <i class="fa-solid fa-tower-broadcast"></i>
+                                Trạng thái
+                            </div>
+                            <div class="col-md-9">
+                                n/a
+                            </div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-md-3 fw-bold">
+                                <i class="fa-solid fa-tags"></i>
+                                Thể loại
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <button type="button" class="category-tag border-rounded py-1 px-2 me-2">
+                                    Tiên Hiệp
+                                </button>
+                                <button type="button" class="category-tag border-rounded py-1 px-2 me-2">
+                                    Ngược
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-md-12 fw-bold">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Giới thiệu
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row mt-5">
-                    <div class="fw-bold">
-                        <i class="fa-solid fa-database pe-1"></i>
-                        Danh sách chương
-                        <span class="fst-italic text-white-50 col-md-9 ps-2">
-                            [502 chương]
-                        </span>
+                    <div class="container-fluid px-0 pb-2">
+                        <div class="row">
+                            <div class="col-md-11">
+                                Lăng Hàn - Một Đan Đế đại danh đỉnh định mang trong thân mình tuyệt thế công
+                                pháp vì truy cầu bước cuối, xé bỏ tấm màn thành thần nhưng thất bại đã phải
+                                bỏ mình. Thế nhưng ông trời dường như không muốn tuyệt dường người, Lăng Hàn
+                                đã được trọng sinh vào một thiếu niên cùng tên và điều may mắn nhất là "Bất
+                                Diệt Thiên Kinh" ấn ký vẫn còn nằm nguyên trong tâm thức hắn.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid px-0 py-2">
+                        <button type="button" class="rounded me-2 p-2 bg-color-a9cf54">
+                            <i class="fa-solid fa-book-open"></i>
+                            Đọc từ đầu
+                        </button>
+                        <button type="button" class="rounded mx-2 p-2 bg-color-8c3c4f">
+                            <i class="fa-solid fa-book-open"></i>
+                            Đọc mới nhất
+                        </button>
+                        <button type="button" class="rounded mx-2 p-2 bg-color-2090ce">
+                            <i class="fa-solid fa-location-arrow"></i>
+                            Đọc tiếp
+                        </button>
                     </div>
                 </div>
-                <div class="row chapters-list rounded mx-1 mt-2 my-4 d-flex d-column">
-                    <table class="mt-3">
-                        <tbody>
-                            <tr>
-                                <td class="ps-5">
-                                    <ul class="column-1">
-                                        <li>Chương 1</li>
-                                        <li>Chương 2</li>
-                                        <li>Chương 3</li>
-                                    </ul>
-                                </td>
-                                <td class="ps-5">
-                                    <ul class="column-2">
-                                        <li>Chương 4</li>
-                                        <li>Chương 5</li>
-                                        <li>Chương 6</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="fw-bold">
+            <i class="fa-solid fa-database pe-1"></i>
+            Danh sách chương
+            <span class="fst-italic text-white-50 col-md-9 ps-2">
+                [502 chương]
+            </span>
+        </div>
+    </div>
+    <div class="row border-white rounded mx-0 mt-2 my-4 py-3 ps-5">
+        <div id="flex-chapters-container">
+            <div class="cursor-pointer d-flex" onclick="location.href='#'">Chương 01 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 02 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 03 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 04 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 05 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 06 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 07 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 08 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 09 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 10 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 11 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 12 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 13 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 14 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 15 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 16 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 17 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 18 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 19 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 20 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 21 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 22 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 23 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 24 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 25 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 26 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 27 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 28 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 29 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
+            <div class="cursor-pointer d-flex">Chương 30 <span class="ps-2 chapter-name-info">Chapter Name</span></div>
         </div>
     </div>
 </div>

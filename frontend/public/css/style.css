@@ -39,6 +39,10 @@ a {
     background-color: #8c3c4f;
 }
 
+.bg-color-2090ce {
+    background-color: #2090ce;
+}
+
 .border-9b9b9b {
     border: 1px solid #9b9b9b;
 }
@@ -51,12 +55,20 @@ a {
     border-radius: 0.4rem;
 }
 
+.border-rectangle {
+    border-radius: 0rem;
+}
+
 .border-circle {
     border-radius: 50%;
 }
 
 .w-auto {
     width: auto;
+}
+
+.w-16dot875 {
+    width: 16.875rem;
 }
 
 .w-16dot25 {
@@ -105,6 +117,10 @@ a {
 
 .text-color-eeeeee {
     color: #eeeeee;
+}
+
+.text-color-cccccc {
+    color: #cccccc;
 }
 
 .cursor-pointer {
@@ -173,6 +189,29 @@ a {
     color: #303035;
 }
 
+.category-tag {
+    background-color: inherit;
+    border: 1px solid #8c3c4f!important;
+}
+
+.chapter-name-info {
+    opacity: 80%;
+}
+
+#flex-chapters-container { 
+    display: flex; 
+    height: 60.5rem; 
+    flex-flow: column wrap; 
+    background-color: inherit; 
+} 
+  
+#flex-chapters-container > div { 
+    width: auto; 
+    margin: 0.2rem 2rem; 
+    line-height: 2rem; 
+    font-size: 1rem; 
+} 
+
 #home-bg {
     background-image: url("../assets/background.png");
     background-size: cover;
@@ -186,8 +225,30 @@ a {
     min-width: 31rem;
 }
 
-#home-search-bar input, #home-search-bar i {
+#home-search-bar input, 
+#home-search-bar i {
     font-size: 2rem;
+}
+
+#story-image {
+    width: 16.875rem;
+    height: 25rem;
+}
+
+#story-info i {
+    padding-right: 0.3rem;
+}
+
+#story-info button {
+    color: white;
+    border: 0px;
+    padding: 0.4rem 0.6rem;
+}
+
+#story-info button:hover, 
+#story-info button:active {
+    opacity: 70%;
+    border: 0px;
 }
 
 @media only screen and (max-width: 768px) {
@@ -198,6 +259,12 @@ a {
     #header-search {
         margin: 1.3rem 0 0 0;
         padding: 0;
+    }
+}   
+
+@media only screen and (max-width: 992px) {
+    .chapter-name-info {
+        display: none;
     }
 }   
 
@@ -230,53 +297,6 @@ a {
     border: 1px solid #9b9b9b;
 }
 
-.story-card {
-    background-color: #202020;
-    border-radius: 0.4rem;
-    min-height: 100vh;
-}
-
-.story-thumb {
-    width: 260px;
-    height: 400px;
-    border: 1px solid #fff;
-}
-
-.ebook-button {
-    width: 260px;
-}
-
-.story-info i {
-    padding-right: 0.3rem;
-}
-
-.story-info button {
-    color: #fff;
-    border: 0px;
-    padding: 0.4rem 0.6rem;
-}
-
-.story-info button:hover, .story-info button:active {
-    opacity: 80%;
-    border: 0px;
-}
-
-.read-start-btn {
-    background-color: #A9CF54;
-}
-
-.read-latest-btn {
-    background-color: #8C3C4F;
-}
-
-.read-continue-btn {
-    background-color: #2090CE;
-}
-
-.chapters-list {
-    border: 1px solid #fff;
-    min-height: 10vh;
-}
 
 .chapters-list li {
     color: #fefefe;
