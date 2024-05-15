@@ -79,6 +79,14 @@ a {
     height: 8rem;
 }
 
+.h-17dot5 {
+    height: 17.5rem;
+}
+
+.h-100vh {
+    min-height: 100vh;
+}
+
 .text-color-56ccf2 {
     color: #56ccf2;
 }
@@ -316,13 +324,5 @@ a {
     color: white;
 }
 
-.blue-font {
-    color: #56ccf2;
-}
 
-.search-thumb {
-    height: 285px;
-    width: 100%;
-    border: 1px solid #fff;
-}
 
