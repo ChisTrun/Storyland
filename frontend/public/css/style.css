@@ -127,6 +127,72 @@ a {
     cursor: pointer;
 }
 
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    width: 12.5rem;
+}
+
+.footer-links p {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    color: white;
+}
+
+.footer-links a {
+    font-size: 0.8rem;
+    text-decoration: none;
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+    color: #cecece;
+    transition: 0.5s all;
+}
+
+.footer-links a:hover {
+    color: #303035;
+}
+
+.category-tag {
+    background-color: inherit;
+    border: 1px solid #8c3c4f !important;
+}
+
+.chapter-name-info {
+    opacity: 80%;
+}
+
+.next-pre-button {
+    background: inherit;
+    font-size: 1.3rem;
+    border-radius: 0.4rem;
+    color: #a9cf54;
+    border: 2px solid #a9cf54;
+    width: 13rem;
+    padding: 0.3rem;
+    margin: 0 1rem;
+}
+
+.next-pre-button:hover,
+.next-pre-button:active {
+    background: #a9cf54;
+    color: white;
+}
+
+.option-button {
+    margin: 0;
+    width: 3.5rem;
+    height: 3.5rem;
+    text-align: center;
+    border: 1px solid #666666;
+    background: #202020;
+    color: white;
+}
+
+.read-font {
+    font-family: 'Times New Roman', Times, serif;
+}
+
 #web-first-word {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 2.2rem;
@@ -163,54 +229,19 @@ a {
     font-weight: 500;
 }
 
-.footer-links {
+#flex-chapters-container {
     display: flex;
-    flex-direction: column;
-    width: 12.5rem;
-}
-
-.footer-links p {
-    font-size: 1.3rem;
-    margin-bottom: 0.8rem;
-    font-weight: 600;
-    color: white;
-}
-
-.footer-links a {
-    font-size: 0.8rem;
-    text-decoration: none;
-    margin-bottom: 0.7rem;
-    font-weight: 600;
-    color: #cecece;
-    transition: 0.5s all;
-}
-
-.footer-links a:hover {
-    color: #303035;
-}
-
-.category-tag {
+    height: 60.5rem;
+    flex-flow: column wrap;
     background-color: inherit;
-    border: 1px solid #8c3c4f!important;
 }
 
-.chapter-name-info {
-    opacity: 80%;
+#flex-chapters-container>div {
+    width: auto;
+    margin: 0.2rem 2rem;
+    line-height: 2rem;
+    font-size: 1rem;
 }
-
-#flex-chapters-container { 
-    display: flex; 
-    height: 60.5rem; 
-    flex-flow: column wrap; 
-    background-color: inherit; 
-} 
-  
-#flex-chapters-container > div { 
-    width: auto; 
-    margin: 0.2rem 2rem; 
-    line-height: 2rem; 
-    font-size: 1rem; 
-} 
 
 #home-bg {
     background-image: url("../assets/background.png");
@@ -225,7 +256,7 @@ a {
     min-width: 31rem;
 }
 
-#home-search-bar input, 
+#home-search-bar input,
 #home-search-bar i {
     font-size: 2rem;
 }
@@ -245,104 +276,40 @@ a {
     padding: 0.4rem 0.6rem;
 }
 
-#story-info button:hover, 
+#story-info button:hover,
 #story-info button:active {
     opacity: 70%;
     border: 0px;
+}
+
+#source-menu {
+    font-style: italic;
+    color: #fefefe;
+    background-color: black;
+    border: 1px solid white;
+    padding: 0.6rem 0.8rem;
+    min-width: 18rem;
 }
 
 @media only screen and (max-width: 768px) {
     #header-link {
         display: none;
     }
-    
+
     #header-search {
         margin: 1.3rem 0 0 0;
         padding: 0;
     }
-}   
+}
 
 @media only screen and (max-width: 992px) {
     .chapter-name-info {
         display: none;
     }
-}   
+}
 
 @media only screen and (max-width: 1200px) {
     #header-link a {
         display: none;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.grey-theme-card {
-    background-color: #202020;
-    border-radius: 0.4rem;
-}
-
-.white-border {
-    border: 1px solid #9b9b9b;
-}
-
-
-.chapters-list li {
-    color: #fefefe;
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-}
-
-.chapter-title-style {
-    color: #669900;
-    font-weight: bold;
-    font-size: 1.6rem;
-}
-
-
-
-.default-content-style {
-    padding: 2.5rem 4.2rem;
-    font-size: 26px;
-
-}
-
-.chapter-button {
-    background:none;
-    padding: 0.3rem 0.8rem;
-    color: #A9CF54;
-    font-size: 1.3rem;
-    border-radius: 0.4rem;
-    border: 2px solid #A9CF54;
-    width: 13rem;
-}
-
-.chapter-button:hover, .chapter-button:active {
-    background-color: #A9CF54;
-    color: #fff;
-    border-color: #A9CF54;
-}
-
-.setting-option-card {
-    margin: 0px;
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    border: 1px solid #666666;
-    background: #202020;
-    color: white;
-}
-
-
-

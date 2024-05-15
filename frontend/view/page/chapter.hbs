@@ -1,113 +1,100 @@
-<div class="container-fluid">
-    <div class="row mt-4">
-        <div class="col-md-1"></div>
-        <div class="col-md-10 text-white grey-theme-card">
-            <div class="container-fluid">
-                <div class="row mt-4 fw-bold">
-                    <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item text-white-50"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
-                            <li class="text-white-50 mx-2">/</li>
-                            <li class="breadcrumb-item text-white-50"><a href="#">Name</a></li>
-                            <li class="text-white-50 mx-2">/</li>
-                            <li class="breadcrumb-item active text-white" aria-current="page">Chapter</li>
-                        </ol>
-                    </nav>
-                </div>
-                <div class="row">
-                    <div class="d-flex align-items-center justify-content-center">
-                        <a href="#" class="chapter-title-style">THẦN ĐẠO ĐAN TÔN</a>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mt-1">
-                        <div class="text-white-80">Chương 2: Cường Thế</div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mt-1">
-                        Nguồn truyện
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center my-3">
-                        <button type="button" class="chapter-button mx-3">
-                            <i class="fa-solid fa-less-than"></i>
-                            Chương trước
-                        </button>
-                        <button type="button" class="chapter-button mx-3">
-                            Chương tiếp
-                            <i class="fa-solid fa-greater-than"></i>
-                        </button>
-                    </div>
-                </div>
+<div class="container border-rounded bg-color-202020 my-4 p-4">
+    <div class="row fw-bold">
+        <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
+            <ol class="breadcrumb text-color-cccccc">
+                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
+                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Name</a></li>
+                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                <li class="breadcrumb-item" aria-current="page">Chapter</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row">
+        <div class="text-center">
+            <a href="#" class="text-color-669900 fw-bold fs-3">THẦN ĐẠO ĐAN TÔN</a>
+        </div>
+        <div class="text-center mt-1">
+            <div class="text-color-cccccc">Chương 2: Cường Thế</div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center mt-3">
+            <select class="form-select w-16dot875" id="source-menu" aria-label="Default select example">
+                <option value="0" selected>Nguồn: truyen.tangthuvien.vn</option>
+                <option value="1">Nguồn: truyenfull.vn</option>
+                <option value="2">Nguồn: lightnovel.vn</option>
+            </select>
+        </div>
+        <div class="d-flex align-items-center justify-content-center mt-4">
+            <button type="button" class="next-pre-button">
+                <i class="fa-solid fa-less-than"></i>
+                Chương trước
+            </button>
+            <button type="button" class="next-pre-button">
+                Chương tiếp
+                <i class="fa-solid fa-greater-than"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
+<div class="container mt-3">
+    <div class="row text-white">
+        <div class="col-md-1">
+            <button class="option-button">
+                <i class="fa-solid fa-list fs-5"></i>
+            </button>
+            <button class="option-button">
+                <i class="fa-solid fa-font fs-5"></i>
+            </button>
+        </div>
+        <div class="col-md-10 bg-color-202020 rounded">
+            <div class="fs-3 px-5 py-5 read-font">
+                &emsp;&emsp;&emsp;Thường nhân muốn đi vào luyện khí kỳ, phải nếu có thể cú đi đầu cảm giác
+                được thiên địa trong lúc đó đích linh khí, sau đó Dẫn Khí Nhập Thể, hơn nữa có thể thành
+                công đích hành công nhất Chu Thiên, đem na một tia dẫn vào đích linh khí trữ nhập đan điền,
+                mới toán là thật đích bước vào luyện khí cảnh giới. Bất quá, có thể làm được một bước này,
+                cũng không tính là tiến nhập luyện khí tầng thứ nhất.
+                <br /><br />
+                &emsp;&emsp;&emsp;Lần đầu tiên hành công thì hoàn chỉnh đích hành công nhất Chu Thiên, cho
+                dù là tái thiên tư lớn lao đích thiên tài, cũng không thể nào làm được. Thông thường một
+                bước này, coi như là linh căn mãn giá trị, ngộ tính tuyệt hảo, từ bắt đầu tu hành đến hoàn
+                thành, cũng chí ít cần thời gian mấy tháng. Trong lúc mấy người then chốt đích khiếu huyệt,
+                càng là cần khổ cực đích linh lực tích lũy và kiên trì bền bỉ đích trùng kích mới có thể
+                vượt qua. Tu hành chi đạo, cũng không phải thuận buồm xuôi gió đích, từ bắt đầu tu hành đến
+                bước vào luyện khí một tầng, thập không tồn nhất. Như Dương Thần như vậy có vạn năm tu hành
+                kinh nghiệm đích, tuyệt vô cận hữu.
             </div>
+        </div>
+        <div class="col-md-1 d-flex justify-content-end">
+            <button class="option-button">
+                <i class="fa-solid fa-file-arrow-down fs-4"></i>
+            </button>
         </div>
     </div>
 </div>
-<div class="row mt-3">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
-        <div class="container-fluid text-white">
-            <div class="row mt-2">
-                <div class="col-md-1">
-                    <button class="setting-option-card">
-                        <i class="fa-solid fa-list"></i>
-                    </button>
-                    <button class="setting-option-card">
-                        <i class="fa-solid fa-font"></i>
-                    </button>
-                </div>
-                <div class="col-md-10 grey-theme-card">
-                    <div class="default-content-style">
-                        &emsp;&emsp;&emsp;Thường nhân muốn đi vào luyện khí kỳ, phải nếu có thể cú đi đầu cảm giác
-                        được thiên địa trong lúc đó đích linh khí, sau đó Dẫn Khí Nhập Thể, hơn nữa có thể thành
-                        công đích hành công nhất Chu Thiên, đem na một tia dẫn vào đích linh khí trữ nhập đan điền,
-                        mới toán là thật đích bước vào luyện khí cảnh giới. Bất quá, có thể làm được một bước này,
-                        cũng không tính là tiến nhập luyện khí tầng thứ nhất.
-                        <br /><br />
-                        &emsp;&emsp;&emsp;Lần đầu tiên hành công thì hoàn chỉnh đích hành công nhất Chu Thiên, cho
-                        dù là tái thiên tư lớn lao đích thiên tài, cũng không thể nào làm được. Thông thường một
-                        bước này, coi như là linh căn mãn giá trị, ngộ tính tuyệt hảo, từ bắt đầu tu hành đến hoàn
-                        thành, cũng chí ít cần thời gian mấy tháng. Trong lúc mấy người then chốt đích khiếu huyệt,
-                        càng là cần khổ cực đích linh lực tích lũy và kiên trì bền bỉ đích trùng kích mới có thể
-                        vượt qua. Tu hành chi đạo, cũng không phải thuận buồm xuôi gió đích, từ bắt đầu tu hành đến
-                        bước vào luyện khí một tầng, thập không tồn nhất. Như Dương Thần như vậy có vạn năm tu hành
-                        kinh nghiệm đích, tuyệt vô cận hữu.
-                    </div>
-                </div>
-                <div class="col-md-1 d-flex justify-content-end">
-                    <button class="setting-option-card">
-                        <i class="fa-solid fa-file-arrow-down"></i>
-                    </button>
-                </div>
-            </div>
+
+<div class="container border-rounded bg-color-202020 my-4 px-4">
+    <div class="row">
+        <div class="d-flex align-items-center justify-content-center my-4">
+            <button type="button" class="next-pre-button">
+                <i class="fa-solid fa-less-than"></i>
+                Chương trước
+            </button>
+            <button type="button" class="next-pre-button">
+                Chương tiếp
+                <i class="fa-solid fa-greater-than"></i>
+            </button>
         </div>
     </div>
-</div>
-<div class="row my-4">
-    <div class="col-md-1"></div>
-    <div class="col-md-10 text-white grey-theme-card">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="d-flex align-items-center justify-content-center my-3">
-                    <button type="button" class="chapter-button mx-3">
-                        <i class="fa-solid fa-less-than"></i>
-                        Chương trước
-                    </button>
-                    <button type="button" class="chapter-button mx-3">
-                        Chương tiếp
-                        <i class="fa-solid fa-greater-than"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="row mb-2 fw-bold">
-                <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item text-white-50"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
-                        <li class="text-white-50 mx-2">/</li>
-                        <li class="breadcrumb-item text-white-50"><a href="#">Name</a></li>
-                        <li class="text-white-50 mx-2">/</li>
-                        <li class="breadcrumb-item active text-white" aria-current="page">Chapter</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
+    <div class="row fw-bold mb-2">
+        <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
+            <ol class="breadcrumb text-color-cccccc">
+                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
+                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Name</a></li>
+                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                <li class="breadcrumb-item" aria-current="page">Chapter</li>
+            </ol>
+        </nav>
     </div>
-</div>
 </div>
