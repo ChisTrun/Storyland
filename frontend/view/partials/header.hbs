@@ -1,49 +1,53 @@
 <header>
-    <div class="container-fluid py-4 header-nav">
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class="logo">
-                    <img src="{{getUrlFromPath 'logo.png'}}" alt="Logo" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        <pan class="first-word">Story</pan><pan class="last-word">VERSE</pan>
+    <div class="py-4 bg-color-4b6b64">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="d-flex align-item-center">
+                        <img class="w-3dot5 h-3dot5 border-circle cursor-pointer me-2" alt="The logo of website"
+                            src="{{getUrlFromPath 'assets/logo.png'}}"
+                            onclick="location.href='{{getUrlFromPath 'home'}}'" />
+                        <div onclick="location.href='{{getUrlFromPath 'home'}}'">
+                            <pan class="cursor-pointer" id="web-first-word">Story</pan><!-- 
+                            --><pan class="cursor-pointer text-color-eeeeee" id="web-last-word">VERSE</pan>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-1 col-1 d-flex align-items-center" id="header-link">
+                    <a href="#">About</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="col-md-3 col-sm-5 col-5 d-flex align-items-center flex-row-reverse">
+                    <button class="btn btn-outline-light fs-5 border-3 rounded-pill" type="button">
+                        Nguồn ưu tiên
+                    </button>
+                </div>
+                <div class="col-md-4 col-sm-12 col-12 d-flex align-items-center flex-row-reverse" id="header-search">
+                    <div class="container position-relative">
+                        <form>
+                            <input class="form-control pe-5" placeholder="Nhập từ khóa để tìm kiếm"
+                                aria-label="Search" />
+                            <button type="submit"
+                                class="btn btn-link text-dark fs-5 position-absolute top-50 end-0 translate-middle-y me-2">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 d-flex align-items-center header-link">
-                <a href="#">About</a>
-                <a href="#">Contact</a>
-            </div>
-            <div class="col-md-2 d-flex align-items-center flex-row-reverse">
-                <button type="button" class="btn btn-outline-light fs-5 border-3 rounded-pill">
-                    Nguồn ưu tiên
-                </button>
-            </div>
-            <div class="col-md-3 d-flex align-items-center flex-row-reverse">
-                <div class="container-fluid">
-                    <form class="d-flex position-relative">
-                        <input class="form-control me-2 pe-5" placeholder="Nhập từ khóa để tìm kiếm"
-                            aria-label="Search">
-                        <button type="submit"
-                            class="btn btn-link text-dark position-absolute top-50 end-0 translate-middle p-1">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
+        </div>
+    </div>
+
+    <div class="mt-3 bg-color-4b6b64">
+        <div class="container">
+            <div class="row">
+                <div class="d-flex align-items-center" id="nav-link">
+                    <a href="#">Trang chủ</a>
+                    <a href="#">Thể loại</a>
+                    <a href="#">Tìm nhanh</a>
+                    <a href="#">Lịch sử</a>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="container-fluid mt-3 header-nav">
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10 d-flex align-items-center second-header-link">
-                <a href="#">Trang chủ</a>
-                <a href="#">Thể loại</a>
-                <a href="#">Tìm nhanh</a>
-                <a href="#">Truyện full</a>
-                <a href="#">Lịch sử</a>
-            </div>
-        </div>
-    </div>
+    </div>  
 </header>
