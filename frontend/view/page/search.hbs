@@ -27,7 +27,9 @@
     <div class="row mt-3 mb-4">
         <ul class="pagination d-flex align-items-center justify-content-center">
             <li></li>
-            {{#ifEqual curPage 1}}
+            {{#ifEqual 1 curPage}}
+            {{else}}
+            {{#ifEqual 0 curPage}}
             {{else}}
             <li class="page-item mx-2"><a class="page-link"
                     href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page=1"><i
@@ -36,6 +38,7 @@
                     href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page={{plus curPage -1}}"><i
                         class="fa-solid fa-chevron-left"></i></a></li>
             {{/ifEqual}}
+            {{/ifEqual}}
 
             {{#generatePagination curPage totalPages}}
             <li class="page-item mx-2">
@@ -43,6 +46,7 @@
                     href="{{getUrlFromPath 'search?keyword='}}{{../keyword}}&page={{this}}">{{this}}</a>
             </li>
             {{/generatePagination}}
+
             {{#ifEqual curPage totalPages}}
             {{else}}
             <li class="page-item mx-2"><a class="page-link"

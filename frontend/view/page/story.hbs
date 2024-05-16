@@ -115,12 +115,15 @@
                 <li></li>
                 {{#ifEqual curPage 1}}
                 {{else}}
+                {{#ifEqual 0 curPage}}
+                {{else}}
                 <li class="page-item mx-2"><a class="page-link"
                         href="{{getUrlFromPath 'story/'}}{{storyName}}?page=1#chapters-list"><i
                             class="fa-solid fa-backward-step"></i></a></li>
                 <li class="page-item mx-2"><a class="page-link"
                         href="{{getUrlFromPath 'story/'}}{{storyName}}&page={{plus curPage -1}}#chapters-list"><i
                             class="fa-solid fa-chevron-left"></i></a></li>
+                {{/ifEqual}}
                 {{/ifEqual}}
 
                 {{#generatePagination curPage totalPages}}
