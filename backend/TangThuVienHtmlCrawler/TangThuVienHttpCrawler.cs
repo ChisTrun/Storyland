@@ -58,37 +58,30 @@ public class TangThuVienHttpCrawler : ICrawler
     {
         var categories = GetCategories();
         var categoryUrl = categories.FirstOrDefault((cate) => cate.Name == categoryName)?.Url ?? throw new Exception();
-        var document = GetWebPageDocument($"{categoryUrl}&{AllLimitParam}");    // Can be devided into pages and fetch async => speed
-        var storiesSelector = "#rank-view-list > div > ul > li > div.book-mid-info > h4 > a";
-        var storiesATags = document.QuerySelectorAll(storiesSelector);
-        var stories = GetRepresentativesFromATags(_createStory, storiesATags);
+
+        // Devided into pages fetch => increase speed
+        var baseUrl = $"{categoryUrl}&limit=10";
+        var createUrlFromPage = new CreateURLFromPage((page) => $"{baseUrl}&page={page}");
+        IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
         return stories;
     }
 
     // https://truyen.tangthuvien.vn/ket-qua-tim-kiem?term=dinh&page=2
     public IEnumerable<Story> GetStoriesBySearchName(string storyName)
     {
-        var baseSearchUrl = $"{DomainKetQuaTimKiem}?term={WebUtility.UrlEncode(storyName)}";
-        var liAbleNextPageSelector = "body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:not(.disabled):last-child";
-        var representativesATagSelector = "#rank-view-list > div > ul > li > div.book-mid-info > h4 > a";
-        var createUrlFromPage = new CreateURLFromPage((page) => $"{baseSearchUrl}&page={page}");
-        IEnumerable<Story> stories = GetRepresentativesFromATagsWithMultiplePages(_createStory, createUrlFromPage, liAbleNextPageSelector, representativesATagSelector);
+        var baseUrl = $"{DomainKetQuaTimKiem}?term={WebUtility.UrlEncode(storyName)}";
+        var createUrlFromPage = new CreateURLFromPage((page) => $"{baseUrl}&page={page}");
+        IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
         return stories;
     }
 
     // https://truyen.tangthuvien.vn/tac-gia?author=27&page=1
     public IEnumerable<Story> GetStoriesOfAuthor(string authorName)
     {
-        var author = GetAuthorInfoFromExactName(authorName);
-        if (author != null)
-        {
-            var createUrlFromPage = new CreateURLFromPage((page) => $"{author.Url}&page={page}");
-            var authorsSelector = "#rank-view-list > div.book-img-text > ul > li > div.book-mid-info > h4 > a";
-            var liAbleNextPageSelector = "body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:not(.disabled):last-child";
-            IEnumerable<Story> stories = GetRepresentativesFromATagsWithMultiplePages(_createStory, createUrlFromPage, liAbleNextPageSelector, authorsSelector);
-            return stories;
-        }
-        throw new Exception();
+        var author = GetAuthorInfoFromExactName(authorName) ?? throw new Exception();
+        var createUrlFromPage = new CreateURLFromPage((page) => $"{author.Url}&page={page}");
+        IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
+        return stories;
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/page/38020?page=0&limit=100000&web=1
@@ -135,32 +128,22 @@ public class TangThuVienHttpCrawler : ICrawler
         return new ChapterContent(content, nextChapUrl, prevChapUrl);
     }
 
-    // private functions
-    // private functions
-    // private functions
-
-
-    private delegate T CreateRepresentative<T>(string name, string url) where T : Representative;
-    private CreateRepresentative<Story> _createStory = new CreateRepresentative<Story>((name, url) => new Story(name, url));
-    private CreateRepresentative<Author> _createAuthor = new CreateRepresentative<Author>((name, url) => new Author(name, url));
     private delegate string CreateURLFromPage(int page);
 
-    private static IEnumerable<T> GetRepresentativesFromATagsWithMultiplePages<T>(CreateRepresentative<T> createRepresentative, CreateURLFromPage createURLFromPage, string liAbleNextPageSelector, string representativesATagSelector) where T : Representative
+    private static IEnumerable<T> GetRepresentativesFromATagsFromAllPages<T>(Func<HtmlDocument, IEnumerable<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible) where T : Representative
     {
         var page = 1;
-        IEnumerable<T> GetRepresentativesFromAPage(int page, HtmlDocument document)
-        {
-            var storiesATags = document.QuerySelectorAll(representativesATagSelector);
-            return GetRepresentativesFromATags(createRepresentative, storiesATags);
-        }
-        bool IsLastPage(HtmlDocument document) => document.QuerySelector(liAbleNextPageSelector) == null;
         var tasks = new List<Task<IEnumerable<T>>>();
         while (true)
         {
             var accessUrl = createURLFromPage.Invoke(page);
             var document = GetWebPageDocument(accessUrl);
-            tasks.Add(Task.Run(() => GetRepresentativesFromAPage(page, document)));
-            if (IsLastPage(document) == true)
+            tasks.Add(Task.Run(() =>
+            {
+                var results = crawlRepresentativesFromAPage.Invoke(document);
+                return results;
+            }));
+            if (nextPageAvailible.Invoke(document) == true)
             {
                 break;
             }
@@ -173,17 +156,9 @@ public class TangThuVienHttpCrawler : ICrawler
         return representatives;
     }
 
-    private static IEnumerable<T> GetRepresentativesFromATags<T>(CreateRepresentative<T> createRepresentative, IList<HtmlNode> storiesATags) where T : Representative
-    {
-        var representatives = new List<T>();
-        foreach (var storyATag in storiesATags)
-        {
-            var url = storyATag.GetAttributeValue("href", null) ?? throw new Exception();
-            var name = WebUtility.HtmlDecode(storyATag.GetDirectInnerText());
-            representatives.Add(createRepresentative.Invoke(name, url));
-        }
-        return representatives;
-    }
+    // Extra functions for later uses
+    // Extra functions for later uses
+    // Extra functions for later uses
 
     private Author? GetAuthorInfoFromExactName(string name)
     {
@@ -297,5 +272,33 @@ public class TangThuVienHttpCrawler : ICrawler
         //});
         //puppeteerTask.Wait();
         return storyInfos;
+    }
+
+    internal static class RankViewListFormat
+    {
+        public static IEnumerable<Story> CrawlStoriesFromAPage(HtmlDocument doc)
+        {
+            var framesSelector = "#rank-view-list > div > ul > li";
+            var aTagSelector = "div.book-mid-info > h4 > a";
+            var imageSelector = "div.book-img-box > a > img";
+            var frames = doc.QuerySelectorAll(framesSelector);
+            var stories = new List<Story>();
+            foreach (var frame in frames)
+            {
+                var aTag = frame.QuerySelector(aTagSelector);
+                var image = frame.QuerySelector(imageSelector);
+                var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
+                var name = WebUtility.HtmlDecode(aTag.GetDirectInnerText());
+                var imageUrl = image.GetAttributeValue("src", null);
+                stories.Add(new Story(name, url, imageUrl));
+            }
+            return stories;
+        }
+
+        public static bool IsLastPage(HtmlDocument doc)
+        {
+            var liAbleNextPageSelector = "body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:not(.disabled):last-child";
+            return doc.QuerySelector(liAbleNextPageSelector) == null;
+        }
     }
 }

@@ -7,8 +7,8 @@
 
         public Representative(string name, string url)
         {
-            this.Name = name;
-            this.Url = url;
+            Name = name;
+            Url = url;
         }
     }
 }

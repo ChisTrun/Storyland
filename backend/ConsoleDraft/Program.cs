@@ -24,12 +24,12 @@ class Program
     static void TestSet1(TangThuVienHttpCrawler crawler)
     {
         Console.OutputEncoding = Encoding.Unicode;
-        var GetCategoriesPass = true;
-        var GetStoriesOfCategoryPass = true;
-        var GetStoriesBySearchNamePass = true;
-        var GetStoriesOfAuthorPass = true;
-        var GetChaptersOfStoryPass = true;
-        var GetChapterContentPass = true;
+        var GetCategoriesPass = false;
+        var GetStoriesOfCategoryPass = false;
+        var GetStoriesBySearchNamePass = false;
+        var GetStoriesOfAuthorPass = false;
+        var GetChaptersOfStoryPass = false;
+        var GetChapterContentPass = false;
 
         if (GetCategoriesPass == false)
         {
