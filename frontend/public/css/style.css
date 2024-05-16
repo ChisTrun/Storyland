@@ -99,6 +99,10 @@ a {
     min-height: 100vh;
 }
 
+.text-nowrap {
+    white-space: nowrap;
+}
+
 .text-color-56ccf2 {
     color: #56ccf2;
 }
@@ -191,6 +195,33 @@ a {
 
 .read-font {
     font-family: 'Times New Roman', Times, serif;
+}
+
+.page-item .active {
+    background-color: peru;
+    border: 1px solid white;
+    color: white;
+}
+
+.page-link {
+    background-color: inherit;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+    width: 3rem;
+    height: 3rem;
+    padding: auto;
+    font-size: 1.3rem;
+    color: white;
+}
+
+.page-link:active,
+.page-link:hover {
+    background-color: peru;
+    color: white;
+    transition: 0.5s all;
 }
 
 #web-first-word {

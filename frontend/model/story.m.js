@@ -1,9 +1,17 @@
 const { BE_HOST } = require('../global/env');
 
 module.exports = class Story {
-    constructor({ name, url }) {
+    constructor(name, url) {
         this.name = name;
         this.url = url;
+    }
+
+    get name() {
+        return this.name;
+    }
+
+    get url() {
+        return this.url;    
     }
     
     static async getStoriesOfCategory(categoryName) {
@@ -13,7 +21,7 @@ module.exports = class Story {
         }
         const data = await response.json();
         return data.map(element => {
-            return new Story(element);
+            return new Story(element.name, element.url);
         }); 
     }
 
@@ -24,7 +32,7 @@ module.exports = class Story {
         }
         const data = await response.json();
         return data.map(element => {
-            return new Story(element);
+            return new Story(element.name, element.url);
         }); 
     }
 };

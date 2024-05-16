@@ -8,79 +8,51 @@
     <div class="row mb-3">
         <div class="container-fluid">
             <div class="row">
+                {{#each stories}}
                 <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" src="{{getUrlFromPath 'assets/logo.png'}}"
-                        alt="Story Name Thumb" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer"
-                        onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        Story name
+                    <img class="h-17dot5 border-white w-100 cursor-pointer" {{#if
+                        imageUrl}}src="{{getUrlFromPath imageUrl}}" {{else}}src={{getUrlFromPath 'assets/naimage.jpg'
+                        }}{{/if}} alt="{{name}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{name}}'" />
+                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer text-nowrap"
+                        onclick="location.href='{{getUrlFromPath 'story/'}}{{name}}'" title="{{name}}">
+                        {{limitText name 20}}
                     </div>
                 </div>
-                <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" src="{{getUrlFromPath 'assets/logo.png'}}"
-                        alt="Story Name Thumb" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer"
-                        onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        Story name
-                    </div>
-                </div>
-                <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" src="{{getUrlFromPath 'assets/logo.png'}}"
-                        alt="Story Name Thumb" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer"
-                        onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        Story name
-                    </div>
-                </div>
-                <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" src="{{getUrlFromPath 'assets/logo.png'}}"
-                        alt="Story Name Thumb" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer"
-                        onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        Story name
-                    </div>
-                </div>
-                <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" src="{{getUrlFromPath 'assets/logo.png'}}"
-                        alt="Story Name Thumb" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer"
-                        onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        Story name
-                    </div>
-                </div>
-                <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" src="{{getUrlFromPath 'assets/logo.png'}}"
-                        alt="Story Name Thumb" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer"
-                        onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        Story name
-                    </div>
-                </div>
-                <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" src="{{getUrlFromPath 'assets/logo.png'}}"
-                        alt="Story Name Thumb" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer"
-                        onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        Story name
-                    </div>
-                </div>
-                <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" src="{{getUrlFromPath 'assets/logo.png'}}"
-                        alt="Story Name Thumb" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer"
-                        onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        Story name
-                    </div>
-                </div>
-                <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" src="{{getUrlFromPath 'assets/logo.png'}}"
-                        alt="Story Name Thumb" onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer"
-                        onclick="location.href='{{getUrlFromPath 'home'}}'">
-                        Story name
-                    </div>
-                </div>
+                {{else}}
+                <div class="fs-2 my-3">Không tìm thấy kết quả nào!</div>
+                {{/each}}
             </div>
         </div>
+    </div>
+    <div class="row mt-3 mb-4">
+        <ul class="pagination d-flex align-items-center justify-content-center">
+            <li></li>
+            {{#ifEqual curPage 1}}
+            {{else}}
+            <li class="page-item mx-2"><a class="page-link"
+                    href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page=1"><i
+                        class="fa-solid fa-backward-step"></i></a></li>
+            <li class="page-item mx-2"><a class="page-link"
+                    href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page={{plus curPage -1}}"><i
+                        class="fa-solid fa-chevron-left"></i></a></li>
+            {{/ifEqual}}
+
+            {{#generatePagination curPage totalPages}}
+            <li class="page-item mx-2">
+                <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
+                    href="{{getUrlFromPath 'search?keyword='}}{{../keyword}}&page={{this}}">{{this}}</a>
+            </li>
+            {{/generatePagination}}
+            {{#ifEqual curPage totalPages}}
+            {{else}}
+            <li class="page-item mx-2"><a class="page-link"
+                    href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page={{plus curPage 1}}"><i
+                        class="fa-solid fa-chevron-right"></i></a></li>
+            <li class="page-item mx-2"><a class="page-link"
+                    href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page={{totalPages}}"><i
+                        class="fa-solid fa-forward-step"></i></a></li>
+            {{/ifEqual}}
+            <li></li>
+        </ul>
     </div>
 </div>

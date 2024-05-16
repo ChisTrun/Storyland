@@ -24,8 +24,8 @@
                 </div>
                 <div class="col-md-4 col-sm-12 col-12 d-flex align-items-center flex-row-reverse" id="header-search">
                     <div class="container position-relative">
-                        <form>
-                            <input class="form-control pe-5" placeholder="Nhập từ khóa để tìm kiếm"
+                        <form action="{{getUrlFromPath 'search'}}" method="GET">
+                            <input class="form-control pe-5" placeholder="Nhập từ khóa để tìm kiếm" name="keyword"
                                 aria-label="Search" />
                             <button type="submit"
                                 class="btn btn-link text-dark fs-5 position-absolute top-50 end-0 translate-middle-y me-2">
