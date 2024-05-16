@@ -3,6 +3,7 @@ using HtmlAgilityPack.CssSelectors.NetCore;
 using Newtonsoft.Json;
 using PluginBase.Contract;
 using PluginBase.Models;
+using PluginBase.Utils;
 using System.Net;
 using System.Web;
 
@@ -47,7 +48,7 @@ public class TangThuVienHttpCrawler : ICrawler
         {
             var id = categoryATag.GetDataAttribute("value").Value;
             var url = GetCategoryUrl(id);
-            var name = WebUtility.HtmlDecode(categoryATag.GetDirectInnerText());
+            var name = categoryATag.GetDirectInnerTextDecoded();
             categories.Add(new Category(name, url));
         }
         return categories;
@@ -56,8 +57,7 @@ public class TangThuVienHttpCrawler : ICrawler
     // https://truyen.tangthuvien.vn/tong-hop?ctg=1&limit=100000
     public IEnumerable<Story> GetStoriesOfCategory(string categoryName)
     {
-        var categories = GetCategories();
-        var categoryUrl = categories.FirstOrDefault((cate) => cate.Name == categoryName)?.Url ?? throw new Exception();
+        string categoryUrl = GetExactCategory(categoryName).Url;
 
         // Devided into pages fetch => increase speed
         var baseUrl = $"{categoryUrl}&limit=10";
@@ -78,7 +78,7 @@ public class TangThuVienHttpCrawler : ICrawler
     // https://truyen.tangthuvien.vn/tac-gia?author=27&page=1
     public IEnumerable<Story> GetStoriesOfAuthor(string authorName)
     {
-        var author = GetAuthorInfoFromExactName(authorName) ?? throw new Exception();
+        var author = GetAuthorInfoFromExactName(authorName);
         var createUrlFromPage = new CreateURLFromPage((page) => $"{author.Url}&page={page}");
         IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
         return stories;
@@ -87,31 +87,27 @@ public class TangThuVienHttpCrawler : ICrawler
     // https://truyen.tangthuvien.vn/doc-truyen/page/38020?page=0&limit=100000&web=1
     public List<Chapter> GetChaptersOfStory(string storyName)
     {
-        var story = GetStoryFromExactName(storyName);
-        if (story != null)
+        var story = GetExactStory(storyName);
+        var id = GetWebPageDocument(story.Url).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
+        var chapters = new List<Chapter>();
+        var chaptersUrl = $"{DomainDocTruyen}/page/{id}?page=0&limit=100000&web=1";
+        // watch it content, it not always return the same as browser render
+        var chaptersSelector = @"ul > li > a";
+        var document = GetWebPageDocument(chaptersUrl);
+        var aTags = document.QuerySelectorAll(chaptersSelector);
+        var count = 0;
+        foreach (var aTag in aTags)
         {
-            var id = GetWebPageDocument(story.Url).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
-            var chapters = new List<Chapter>();
-            var chaptersUrl = $"{DomainDocTruyen}/page/{id}?page=0&limit=100000&web=1";
-            // watch it content, it not always return the same as browser render
-            var chaptersSelector = @"ul > li > a";
-            var document = GetWebPageDocument(chaptersUrl);
-            var aTags = document.QuerySelectorAll(chaptersSelector);
-            var count = 0;
-            foreach (var aTag in aTags)
+            var fontTag = aTag.QuerySelector("font > font");
+            if (fontTag != null)
             {
-                var fontTag = aTag.QuerySelector("font > font");
-                if (fontTag != null)
-                {
-                    var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
-                    var name = WebUtility.HtmlDecode(fontTag.GetDirectInnerText());
-                    chapters.Add(new Chapter(name, url, count));
-                    count++;
-                }
+                var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
+                var name = fontTag.GetDirectInnerTextDecoded();
+                chapters.Add(new Chapter(name, url, count));
+                count++;
             }
-            return chapters;
         }
-        throw new Exception();
+        return chapters;
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/page/38020?page=1&limit=1&web=1
@@ -122,13 +118,35 @@ public class TangThuVienHttpCrawler : ICrawler
         var chapter = chapters[chapterIndex];
         var document = GetWebPageDocument(chapter.Url);
         var contentSelector = "div.chapter-c > div.chapter-c-content > div.box-chap:not(.hidden)";
-        var content = WebUtility.HtmlDecode(document.QuerySelector(contentSelector).GetDirectInnerText());
+        var content = document.QuerySelector(contentSelector).GetDirectInnerTextDecoded();
         var prevChapUrl = chapters[Math.Max(chapterIndex - 1, 0)].Url;
         var nextChapUrl = chapters[Math.Min(chapterIndex + 1, chapters.Count - 1)].Url;
         return new ChapterContent(content, nextChapUrl, prevChapUrl);
     }
 
+    public StoryDetail GetStoryDetail(string storyName)
+    {
+        var story = GetExactStory(storyName);
+        var url = story.Url;
+        var document = GetWebPageDocument(url);
+        var authorATag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > p.tag > a.blue");
+        var author = new Author(GetRepresentativeFromATag(authorATag));
+        var status = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > p.tag > span").GetDirectInnerTextDecoded();
+        var categoryTag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > p.tag > a.red");
+        var categoryName = categoryTag.GetDirectInnerTextDecoded();
+        var category = GetExactCategory(categoryName);
+        var descriptionPTag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-content-wrap.cf > div.left-wrap.fl > div.book-info-detail > div.book-intro > p");
+        var description = descriptionPTag.GetDirectInnerTextDecoded();
+        return new StoryDetail(story, author, status, [category], description);
+
+    }
+
+    // #rank-list-view format
+    // #rank-list-view format
+    // #rank-list-view format
+
     private delegate string CreateURLFromPage(int page);
+    private delegate Representative CreateDefaultRepresentative(string name, string url);
 
     private static IEnumerable<T> GetRepresentativesFromATagsFromAllPages<T>(Func<HtmlDocument, IEnumerable<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible) where T : Representative
     {
@@ -156,23 +174,41 @@ public class TangThuVienHttpCrawler : ICrawler
         return representatives;
     }
 
-    // Extra functions for later uses
-    // Extra functions for later uses
-    // Extra functions for later uses
+    // sub-methods
+    // sub-methods
+    // sub-methods
 
-    private Author? GetAuthorInfoFromExactName(string name)
+    private Representative GetRepresentativeFromATag(HtmlNode aTag)
+    {
+        var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
+        var name = aTag.GetDirectInnerTextDecoded();
+        return new Representative(url, name);
+    }
+
+    private Story GetExactStory(string storyName)
+    {
+        var stories = GetStoriesBySearchName(storyName);
+        var story = stories.FirstOrDefault((story) => story.Name == storyName) ?? throw new Exception();
+        return story;
+    }
+
+    private Author GetAuthorInfoFromExactName(string name)
     {
         var authors = GetAuthorsBySearchName(name);
         var author = authors.FirstOrDefault((author) => author.Name == name) ?? throw new Exception();
         return author;
     }
 
-    private Story? GetStoryFromExactName(string name)
+    private Category GetExactCategory(string categoryName)
     {
-        var stories = GetStoriesBySearchName(name);
-        var story = stories.FirstOrDefault((story) => story.Name == name) ?? throw new Exception();
-        return story;
+        var categories = GetCategories();
+        var category = categories.FirstOrDefault((cate) => cate.Name == categoryName) ?? throw new Exception();
+        return category;
     }
+
+    // Extra functions for later uses
+    // Extra functions for later uses
+    // Extra functions for later uses
 
     // note: &nbsp and ' ' may look the same but they aren't
     private int GetChapterIndexFromExactNameFromStory(string storyName, string name)
@@ -288,7 +324,7 @@ public class TangThuVienHttpCrawler : ICrawler
                 var aTag = frame.QuerySelector(aTagSelector);
                 var image = frame.QuerySelector(imageSelector);
                 var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
-                var name = WebUtility.HtmlDecode(aTag.GetDirectInnerText());
+                var name = aTag.GetDirectInnerTextDecoded();
                 var imageUrl = image.GetAttributeValue("src", null);
                 stories.Add(new Story(name, url, imageUrl));
             }

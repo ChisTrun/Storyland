@@ -208,4 +208,8 @@ public class TruyenFullCommand : ICrawler
         return new ChapterContent(text);
     }
 
+    public StoryDetail GetStoryDetail(string storyName)
+    {
+        throw new NotImplementedException();
+    }
 }

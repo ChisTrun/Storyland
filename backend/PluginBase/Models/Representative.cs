@@ -1,6 +1,6 @@
 ﻿namespace PluginBase.Models
 {
-    public abstract class Representative
+    public class Representative
     {
         public string Name { get; set; }
         public string Url { get; set; }

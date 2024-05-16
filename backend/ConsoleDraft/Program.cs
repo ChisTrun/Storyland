@@ -24,12 +24,20 @@ class Program
     static void TestSet1(TangThuVienHttpCrawler crawler)
     {
         Console.OutputEncoding = Encoding.Unicode;
-        var GetCategoriesPass = false;
-        var GetStoriesOfCategoryPass = false;
-        var GetStoriesBySearchNamePass = false;
-        var GetStoriesOfAuthorPass = false;
-        var GetChaptersOfStoryPass = false;
-        var GetChapterContentPass = false;
+        var GetCategoriesPass = true;
+        var GetStoriesOfCategoryPass = true;
+        var GetStoriesBySearchNamePass = true;
+        var GetStoriesOfAuthorPass = true;
+        var GetChaptersOfStoryPass = true;
+        var GetChapterContentPass = true;
+        var GetStoryDetail = true;
+        //GetCategoriesPass = false;
+        //GetStoriesOfCategoryPass = false;
+        //GetStoriesBySearchNamePass = false;
+        //GetStoriesOfAuthorPass = false;
+        //GetChaptersOfStoryPass = false;
+        //GetChapterContentPass = false;
+        GetStoryDetail = false;
 
         if (GetCategoriesPass == false)
         {
@@ -94,18 +102,19 @@ class Program
             Console.WriteLine(content2.NextChapUrl);
         }
 
-        //IEnumerable<Author> authorInfos = t.GetAuthorsBySearchName("Đỉnh");
-        //foreach (var authorInfo in authorInfos)
-        //{
-        //    Console.WriteLine(authorInfo.Name);
-        //    Console.WriteLine(authorInfo.Url);
-        //}
-
-        //var storyCategoriesPage = t.GetStoryInfoOfCategoryByPage("https://truyen.tangthuvien.vn/tong-hop?ctg=1", 1699, 2);
-        //foreach (var story in storyCategoriesPage)
-        //{
-        //    Console.WriteLine(story.Name);
-        //    Console.WriteLine(story.Url);
-        //}
+        if (GetStoryDetail == false)
+        {
+            var storyDetail = crawler.GetStoryDetail("Thì Ra, Họ Mới Là Nhân Vật Chính (Nguyên Lai Tha Môn Tài Thị Chủ Giác?)");
+            Console.WriteLine(storyDetail.Name);
+            Console.WriteLine(storyDetail.Url);
+            Console.WriteLine(storyDetail.ImageUrl);
+            Console.WriteLine(storyDetail.Author.Name);
+            Console.WriteLine(storyDetail.Author.Url);
+            Console.WriteLine(storyDetail.Status);
+            Console.WriteLine(storyDetail.Categories.Length);
+            Console.WriteLine(storyDetail.Categories[0].Name);
+            Console.WriteLine(storyDetail.Categories[0].Url);
+            Console.WriteLine(storyDetail.Description);
+        }
     }
 }

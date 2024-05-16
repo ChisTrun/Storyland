@@ -47,4 +47,11 @@ public interface ICrawler
     /// <param name="chapterName">Ten mot chuong cua truyen</param>
     /// <returns>Noi dung cua trang truyen</returns>
     public ChapterContent GetChapterContent(string storyName, int chapterIndex);
+
+    /// <summary>
+    /// Lay mo ta chi tiet cua mot truyen
+    /// </summary>
+    /// <param name="storyName">Ten truyen</param>
+    /// <returns></returns>
+    public StoryDetail GetStoryDetail(string storyName);
 }
