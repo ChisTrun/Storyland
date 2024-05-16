@@ -53,6 +53,8 @@
 		{{!-- only availible when using this layout --}}
 		<script src="/inner.client.js"></script>
 
+		<script src="{{getUrlFromPath 'js/index.js'}}"></script>
+
 		{{#each scripts}}
 		<script src="{{this}}"></script>
 		{{/each}}

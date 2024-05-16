@@ -5,7 +5,10 @@ module.exports = {
         return `https://${HOST}:${PORT}/${path}`;
     },
     length: function (list) {
-        return list.length;
+        return list ? list.length : 0;
+    },
+    toLoud: function(text) {
+        return text.toUpperCase();
     },
     limitText: function (text, maxLength) {
         if (text.length <= maxLength) {

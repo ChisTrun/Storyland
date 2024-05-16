@@ -5,14 +5,6 @@ module.exports = class Story {
         this.name = name;
         this.url = url;
     }
-
-    get name() {
-        return this.name;
-    }
-
-    get url() {
-        return this.url;    
-    }
     
     static async getStoriesOfCategory(categoryName) {
         const response = await fetch(`${BE_HOST}/api/category/${categoryName}`);

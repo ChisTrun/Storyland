@@ -4,18 +4,18 @@
             <ol class="breadcrumb text-color-cccccc">
                 <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
                 &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
-                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Name</a></li>
+                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'story/'}}{{storyName}}">{{storyName}}</a></li>
                 &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
-                <li class="breadcrumb-item" aria-current="page">Chapter</li>
+                <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>
         </nav>
     </div>
     <div class="row">
         <div class="text-center">
-            <a href="#" class="text-color-669900 fw-bold fs-3">THẦN ĐẠO ĐAN TÔN</a>
+            <a href="{{getUrlFromPath 'story/'}}{{storyName}}" class="text-color-669900 fw-bold fs-3">{{toLoud storyName}}</a>
         </div>
         <div class="text-center mt-1">
-            <div class="text-color-cccccc">Chương 2: Cường Thế</div>
+            <div class="text-color-cccccc">{{chapterName}}</div>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-3">
             <select class="form-select w-16dot875" id="source-menu" aria-label="Default select example">
@@ -25,11 +25,11 @@
             </select>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-4">
-            <button type="button" class="next-pre-button">
+            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/{{plus index -1}}'">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </button>
-            <button type="button" class="next-pre-button">
+            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/{{plus index 1}}'">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </button>
@@ -49,20 +49,7 @@
         </div>
         <div class="col-lg-10 col-md-8 col-sm-6 bg-color-202020 rounded">
             <div class="fs-3 px-5 py-5 read-font">
-                &emsp;&emsp;&emsp;Thường nhân muốn đi vào luyện khí kỳ, phải nếu có thể cú đi đầu cảm giác
-                được thiên địa trong lúc đó đích linh khí, sau đó Dẫn Khí Nhập Thể, hơn nữa có thể thành
-                công đích hành công nhất Chu Thiên, đem na một tia dẫn vào đích linh khí trữ nhập đan điền,
-                mới toán là thật đích bước vào luyện khí cảnh giới. Bất quá, có thể làm được một bước này,
-                cũng không tính là tiến nhập luyện khí tầng thứ nhất.
-                <br /><br />
-                &emsp;&emsp;&emsp;Lần đầu tiên hành công thì hoàn chỉnh đích hành công nhất Chu Thiên, cho
-                dù là tái thiên tư lớn lao đích thiên tài, cũng không thể nào làm được. Thông thường một
-                bước này, coi như là linh căn mãn giá trị, ngộ tính tuyệt hảo, từ bắt đầu tu hành đến hoàn
-                thành, cũng chí ít cần thời gian mấy tháng. Trong lúc mấy người then chốt đích khiếu huyệt,
-                càng là cần khổ cực đích linh lực tích lũy và kiên trì bền bỉ đích trùng kích mới có thể
-                vượt qua. Tu hành chi đạo, cũng không phải thuận buồm xuôi gió đích, từ bắt đầu tu hành đến
-                bước vào luyện khí một tầng, thập không tồn nhất. Như Dương Thần như vậy có vạn năm tu hành
-                kinh nghiệm đích, tuyệt vô cận hữu.
+                {{content}}
             </div>
         </div>
         <div class="col-lg-1 col-md-2 col-sm-3 d-flex justify-content-end">
@@ -76,11 +63,11 @@
 <div class="container border-rounded bg-color-202020 my-4 px-4">
     <div class="row">
         <div class="d-flex align-items-center justify-content-center my-4">
-            <button type="button" class="next-pre-button">
+            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/{{plus index -1}}'">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </button>
-            <button type="button" class="next-pre-button">
+            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/{{plus index 1}}'">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </button>
@@ -91,9 +78,9 @@
             <ol class="breadcrumb text-color-cccccc">
                 <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
                 &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
-                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Name</a></li>
+                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'story/'}}{{storyName}}">{{storyName}}</a></li>
                 &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
-                <li class="breadcrumb-item" aria-current="page">Chapter</li>
+                <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>
         </nav>
     </div>
