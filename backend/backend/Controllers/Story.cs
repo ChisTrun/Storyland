@@ -10,7 +10,7 @@ namespace backend.Controllers
         [Route("{storyName}")]
         public IActionResult GetAllChaptersOfStory(string storyName)
         {
-            var crawler = StorySourceScanner.Instance.commands[0];
+            var crawler = StorySourceScanner.Instance.Commands[0];
             return Ok(crawler.GetChaptersOfStory(storyName));
         }
 
@@ -18,7 +18,7 @@ namespace backend.Controllers
         [Route("chapter/{storyName}")]
         public IActionResult GetAllChapterContent(string storyName, [FromQuery(Name = "index")] int chapterIndex)
         {
-            return Ok(StorySourceScanner.Instance.commands[0].GetChapterContent(storyName, chapterIndex));
+            return Ok(StorySourceScanner.Instance.Commands[0].GetChapterContent(storyName, chapterIndex));
         }
     }
 }

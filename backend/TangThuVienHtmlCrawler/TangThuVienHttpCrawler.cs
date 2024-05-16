@@ -34,7 +34,7 @@ public class TangThuVienHttpCrawler : ICrawler
 
     public string Name => "Tàng Thư Viện";
 
-    public string Description => throw new NotImplementedException();
+    public string Description => "";
 
     public IEnumerable<Category> GetCategories()
     {

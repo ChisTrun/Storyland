@@ -10,14 +10,14 @@ namespace backend.Controllers
         [Route("tacgia/{author}")]
         public IActionResult SearchByAuthor(string author)
         {
-            return Ok(StorySourceScanner.Instance.commands[0].GetStoriesOfAuthor(author));
+            return Ok(StorySourceScanner.Instance.Commands[0].GetStoriesOfAuthor(author));
         }
 
         [HttpGet]
         [Route("truyen/{storyName}")]
         public IActionResult SearchByStoryName(string storyName)
         {
-            return Ok(StorySourceScanner.Instance.commands[0].GetStoriesBySearchName(storyName));
+            return Ok(StorySourceScanner.Instance.Commands[0].GetStoriesBySearchName(storyName));
         }
     }
 }

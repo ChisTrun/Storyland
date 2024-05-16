@@ -9,14 +9,14 @@ namespace backend.Controllers
         [HttpGet]
         public IActionResult GetAllCategories()
         {
-            return Ok(StorySourceScanner.Instance.commands[0].GetCategories());
+            return Ok(StorySourceScanner.Instance.Commands[0].GetCategories());
         }
 
         [HttpGet]
         [Route("{categoryName}")]
         public IActionResult GetAllStoriesOfCategory(string categoryName)
         {
-            return Ok(StorySourceScanner.Instance.commands[0].GetStoriesOfCategory(categoryName));
+            return Ok(StorySourceScanner.Instance.Commands[0].GetStoriesOfCategory(categoryName));
         }
     }
 }
