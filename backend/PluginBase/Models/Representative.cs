@@ -3,12 +3,12 @@
     public class Representative
     {
         public string Name { get; set; }
-        public string Url { get; set; }
+        public string Id { get; set; }
 
-        public Representative(string name, string url)
+        public Representative(string name, string id)
         {
             Name = name;
-            Url = url;
+            Id = id;
         }
     }
 }

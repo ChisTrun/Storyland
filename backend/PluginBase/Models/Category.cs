@@ -2,7 +2,7 @@
 {
     public class Category : Representative
     {
-        public Category(string name, string url) : base(name, url)
+        public Category(string name, string id) : base(name, id)
         {
         }
     }

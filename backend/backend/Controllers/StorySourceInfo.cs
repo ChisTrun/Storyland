@@ -8,9 +8,7 @@ namespace backend.Controllers
         [HttpGet]
         public IActionResult GetServers()
         {
-            return Ok(StorySourceScanner.Instance.Commands.Select((com ,index)=> new { name =  com.Name, index}));
+            return Ok(StorySourceScanner.Instance.Commands.Select((com, index) => new { name = com.Name, index }));
         }
     }
-
-
 }

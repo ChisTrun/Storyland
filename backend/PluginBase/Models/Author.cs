@@ -2,10 +2,10 @@
 {
     public class Author : Representative
     {
-        public Author(string name, string url) : base(name, url)
+        public Author(string name, string id) : base(name, id)
         {
         }
-        public Author(Representative representative) : this(representative.Name, representative.Url)
+        public Author(Representative representative) : this(representative.Name, representative.Id)
         {
         }
     }
