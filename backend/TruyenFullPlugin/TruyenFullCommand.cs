@@ -10,7 +10,7 @@ namespace TruyenFullPlugin;
 
 public class TruyenFullCommand : ICrawler
 {
-    public string Name =>  "truyenfull.com";
+    public string Name => "truyenfull.com";
     public string Description => "Plugin de lay data tu trang web truyenfull.com";
 
     private static readonly string _domain = "https://truyenfull.com/";
@@ -51,7 +51,7 @@ public class TruyenFullCommand : ICrawler
         return GetAllStoriesWithPagination($"{_domain}categoryName");
     }
 
-    private  List<Story> GetListOfStoriesFromHTMLNode(HtmlDocument document)
+    private List<Story> GetListOfStoriesFromHTMLNode(HtmlDocument document)
     {
         var main = document.DocumentNode.QuerySelectorAll(".container .col-truyen-main .list.list-truyen");
 
@@ -73,7 +73,7 @@ public class TruyenFullCommand : ICrawler
     }
 
     //Scrawling stories
-    private  List<Story> GetAllStoriesWithPagination(string sourceURL)
+    private List<Story> GetAllStoriesWithPagination(string sourceURL)
     {
         var pageDiscoverd = new List<string>
             {
@@ -90,7 +90,7 @@ public class TruyenFullCommand : ICrawler
             try
             {
                 var currentPage = pageToScrape.Dequeue();
-                var currentDocument =  GetWebPageDocument(currentPage);
+                var currentDocument = GetWebPageDocument(currentPage);
 
                 var paginationHTMLElements = currentDocument.DocumentNode.QuerySelectorAll(".pagination li a");
                 foreach (var paginationHTMLElement in paginationHTMLElements)
@@ -105,7 +105,7 @@ public class TruyenFullCommand : ICrawler
                         pageDiscoverd.Add(newPaginationLink);
                     }
                 }
-                listOfStories.AddRange((GetListOfStoriesFromHTMLNode(currentDocument)));  
+                listOfStories.AddRange((GetListOfStoriesFromHTMLNode(currentDocument)));
             }
             catch (Exception)
             {
@@ -124,10 +124,10 @@ public class TruyenFullCommand : ICrawler
     {
         searchWord = searchWord.Replace(' ', '-');
         searchWord = StringProblem.ConvertVietnameseToNormalizationForm(searchWord);
-        List <Story> listOfStories = new List<Story>();
+        List<Story> listOfStories = new List<Story>();
         try
         {
-   
+
             var document = GetWebPageDocument($"{_searchAuthorURL}{searchWord}");
             var searchRes = StringProblem.ConvertVietnameseToNormalizationForm(document.DocumentNode.QuerySelector(".breadcrumb-container h1 a").Attributes["title"].Value).Replace(' ', '-');
             var res = searchRes.Equals(searchWord);
@@ -143,7 +143,7 @@ public class TruyenFullCommand : ICrawler
         return listOfStories;
     }
 
-    public  List<Chapter> GetChaptersOfStory(string path)
+    public List<Chapter> GetChaptersOfStory(string path)
     {
         path = $"{_domain}{path}";
         var pageDiscoverd = new List<string>
@@ -185,7 +185,7 @@ public class TruyenFullCommand : ICrawler
                         var href = aTag.Attributes["href"].Value;
                         var title = (aTag.Attributes["title"].Value);
                         var name = title.Substring(title.IndexOf('-') + 2);
-                        listOfChapter.Add(new Chapter(name, href));
+                        listOfChapter.Add(new Chapter(name, href, null));
                     }
                 }
             }
@@ -196,7 +196,7 @@ public class TruyenFullCommand : ICrawler
 
         return listOfChapter;
     }
-    public  ChapterContent GetChapterContent(string path, int chapterIndex)
+    public ChapterContent GetChapterContent(string path, int chapterIndex)
     {
         path = $"{_domain}{path}";
         var document = GetWebPageDocument(path);
@@ -209,6 +209,26 @@ public class TruyenFullCommand : ICrawler
     }
 
     public StoryDetail GetStoryDetail(string storyName)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<Story> GetStoriesOfCategory(string categoryId, int page, int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<Story> GetStoriesBySearchName(string storyName, int page, int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<Story> GetStoriesOfAuthor(string authorId, int page, int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<Chapter> GetChaptersOfStory(string storyId, int page, int limit)
     {
         throw new NotImplementedException();
     }

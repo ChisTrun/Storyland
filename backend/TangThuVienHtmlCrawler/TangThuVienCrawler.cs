@@ -59,10 +59,19 @@ public class TangThuVienCrawler : ICrawler
     public IEnumerable<Story> GetStoriesOfCategory(string categoryId)
     {
         string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, categoryId);
-        // Devided into pages fetch => increase speed
-        var baseUrl = $"{categoryUrl}&limit=10";
-        var createUrlFromPage = new CreateURLFromPage((page) => $"{baseUrl}&page={page}");
-        IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
+        var baseUrl = $"{categoryUrl}&limit=10000";
+        var document = GetWebPageDocument(baseUrl);
+        var stories = RankViewListFormat.CrawlStoriesFromAPage(document);
+        return stories;
+    }
+
+    // https://truyen.tangthuvien.vn/tong-hop?ctg=1&page=800&limit=2
+    public IEnumerable<Story> GetStoriesOfCategory(string categoryId, int page, int limit)
+    {
+        string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, categoryId);
+        var baseUrl = $"{categoryUrl}&limit={limit}&page={page}";
+        var document = GetWebPageDocument(baseUrl);
+        var stories = RankViewListFormat.CrawlStoriesFromAPage(document);
         return stories;
     }
 
@@ -75,12 +84,32 @@ public class TangThuVienCrawler : ICrawler
         return stories;
     }
 
+    // https://truyen.tangthuvien.vn/ket-qua-tim-kiem?term=dinh&page=2
+    // dont have limit
+    public IEnumerable<Story> GetStoriesBySearchName(string storyName, int page, int limit)
+    {
+        var baseUrl = $"{DomainKetQuaTimKiem}?term={WebUtility.UrlEncode(storyName)}";
+        var createUrlFromPage = new CreateURLFromPage((page) => $"{baseUrl}&page={page}");
+        IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPagesFixedPageSize(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage, page, limit);
+        return stories;
+    }
+
     // https://truyen.tangthuvien.vn/tac-gia?author=27&page=1
     public IEnumerable<Story> GetStoriesOfAuthor(string authorId)
     {
         var authorUrl = ModelExtension.GetUrlFromID(ModelType.Author, authorId);
         var createUrlFromPage = new CreateURLFromPage((page) => $"{authorUrl}&page={page}");
         IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
+        return stories;
+    }
+
+    // https://truyen.tangthuvien.vn/tac-gia?author=27&page=1
+    // dont have limit
+    public IEnumerable<Story> GetStoriesOfAuthor(string authorId, int page, int limit)
+    {
+        var authorUrl = ModelExtension.GetUrlFromID(ModelType.Author, authorId);
+        var createUrlFromPage = new CreateURLFromPage((page) => $"{authorUrl}&page={page}");
+        IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPagesFixedPageSize(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage, page, limit);
         return stories;
     }
 
@@ -91,6 +120,32 @@ public class TangThuVienCrawler : ICrawler
         var id = GetWebPageDocument(story.GetUrl()).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
         var chapters = new List<Chapter>();
         var chaptersUrl = $"{DomainDocTruyen}/page/{id}?page=0&limit=100000&web=1";
+        // watch it content, it not always return the same as browser render
+        var chaptersSelector = @"ul > li > a";
+        var document = GetWebPageDocument(chaptersUrl);
+        var aTags = document.QuerySelectorAll(chaptersSelector);
+        var count = 0;
+        foreach (var aTag in aTags)
+        {
+            var fontTag = aTag.QuerySelector("font > font");
+            if (fontTag != null)
+            {
+                var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
+                var name = fontTag.GetDirectInnerTextDecoded();
+                chapters.Add(new Chapter(name, ModelExtension.GetIDFromUrl(ModelType.Chapter, url), story, count));
+                count++;
+            }
+        }
+        return chapters;
+    }
+
+    // https://truyen.tangthuvien.vn/doc-truyen/page/38020?page=0&limit=100000&web=1
+    public List<Chapter> GetChaptersOfStory(string storyId, int page, int limit)
+    {
+        var story = GetExactStory(storyId);
+        var id = GetWebPageDocument(story.GetUrl()).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
+        var chapters = new List<Chapter>();
+        var chaptersUrl = $"{DomainDocTruyen}/page/{id}?page={page - 1}&limit={limit}&web=1";
         // watch it content, it not always return the same as browser render
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
@@ -141,6 +196,7 @@ public class TangThuVienCrawler : ICrawler
         return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId);
     }
 
+    // https://truyen.tangthuvien.vn/doc-truyen/dichdinh-cao-quyen-luc-suu-tam
     public StoryDetail GetStoryDetail(string storyId)
     {
         var story = GetExactStory(storyId);
@@ -156,8 +212,11 @@ public class TangThuVienCrawler : ICrawler
         var descriptionPTag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-content-wrap.cf > div.left-wrap.fl > div.book-info-detail > div.book-intro > p");
         var description = descriptionPTag.GetDirectInnerTextDecoded();
         return new StoryDetail(story, author, status, [category], description);
-
     }
+
+    // ================= End Interface ====================
+    // ================= End Interface ====================
+    // ================= End Interface ====================
 
     // #rank-list-view format
     // #rank-list-view format
@@ -190,6 +249,44 @@ public class TangThuVienCrawler : ICrawler
         var representativesArray = resultTask.Result;
         var representatives = representativesArray.SelectMany(x => x).ToList();
         return representatives;
+    }
+
+    private static IEnumerable<T> GetRepresentativesFromATagsFromAllPagesFixedPageSize<T>(Func<HtmlDocument, IEnumerable<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible, int page, int limit) where T : Representative
+    {
+        int systemLimit;
+        {
+            var document = GetWebPageDocument(createURLFromPage.Invoke(0));
+            systemLimit = document.QuerySelectorAll("#rank-view-list > div > ul > li").Count;
+        }
+        int systemPageStart;
+        int systemPageEnd;
+        int systemOffsetStart;
+        int systemOffsetEnd;
+        {
+            var offsetStart = (page - 1) * limit;
+            var offsetEnd = (page * limit) - 1;
+            systemPageStart = offsetStart / systemLimit;
+            systemOffsetStart = offsetStart % systemLimit;
+            systemPageEnd = offsetEnd / systemLimit;
+            systemOffsetEnd = offsetEnd % systemLimit;
+        }
+        int systemCurrentPage = systemPageStart;
+        var results = new List<T>();
+        while (systemCurrentPage <= systemPageEnd)
+        {
+            var accessUrl = createURLFromPage.Invoke(systemCurrentPage);
+            var document = GetWebPageDocument(accessUrl);
+            var pageResults = crawlRepresentativesFromAPage.Invoke(document);
+            var offsetStart = systemCurrentPage == systemPageStart ? systemOffsetStart : 0;
+            var offsetEnd = systemCurrentPage == systemPageEnd ? systemOffsetEnd : systemLimit - 1;
+            results.AddRange(pageResults.Skip(offsetStart).Take(offsetEnd - offsetStart + 1));
+            if (nextPageAvailible.Invoke(document) == true)
+            {
+                break;
+            }
+            systemCurrentPage += 1;
+        }
+        return results;
     }
 
     // sub-methods
@@ -272,65 +369,6 @@ public class TangThuVienCrawler : ICrawler
             }
         }).Wait();
         return authors;
-    }
-
-    public IEnumerable<Story> GetStoryInfoOfCategoryByPage(string categoryUrl, int offset0, int limit)
-    {
-        var storyInfos = new List<Story>();
-        //var currentPage = 1;
-        //var aTagsSelector = "#rank-view-list > div > ul > li > div.book-mid-info > h4 > a";
-        //var liAbleNextPageSelector = "body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:not(.disabled):last-child";
-        //static string GetCategoryPageUrlFunc(string categoryUrl, int currentPage) => $"{categoryUrl}&page={currentPage}";
-        //static async Task<bool> CheckAbleToGoNextPageFunc(string? liAbleNextPageSelector, IPage page) => (await page.QuerySelectorAsync(liAbleNextPageSelector)) != null;
-        //var puppeteerTask = PuppeteerService.PerformHeadlessBrowser(async (browser, page) =>
-        //{
-        //    var perPage = -1;
-        //    await page.GoToAsync(GetCategoryPageUrlFunc(categoryUrl, currentPage));
-        //    var aTags = await page.QuerySelectorAllAsync(aTagsSelector);
-        //    if (await CheckAbleToGoNextPageFunc(liAbleNextPageSelector, page) == false)
-        //    {
-        //        var count = 0;
-        //        var len = aTags.Length;
-        //        for (var i = 0; i < len; ++i)
-        //        {
-        //            if (count == limit)
-        //            {
-        //                break;
-        //            }
-        //            var url = await aTags[i].GetPropertyStringValueAsync("href");
-        //            var name = await aTags[i].GetInnerTextAsync();
-        //            storyInfos.Add(new Story(name, url));
-        //            count++;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        perPage = aTags.Length;
-        //        var lowPage = (offset0 / perPage) + 1;
-        //        var highPage = ((offset0 + limit) / perPage) + 1;
-        //        currentPage = lowPage;
-        //        while (currentPage <= highPage)
-        //        {
-        //            await page.GoToAsync(GetCategoryPageUrlFunc(categoryUrl, currentPage));
-        //            aTags = await page.QuerySelectorAllAsync(aTagsSelector);
-        //            var start = currentPage == lowPage ? offset0 % perPage : 0;
-        //            var end = currentPage == highPage ? (offset0 + limit - 1) % perPage : perPage - 1;
-        //            for (var i = start; i <= end; ++i)
-        //            {
-        //                var url = await aTags[i].GetPropertyStringValueAsync("href");
-        //                var name = await aTags[i].GetInnerTextAsync();
-        //                storyInfos.Add(new Story(name, url));
-        //            }
-        //            if (await CheckAbleToGoNextPageFunc(liAbleNextPageSelector, page) == false)
-        //            {
-        //                break;
-        //            }
-        //            currentPage += 1;
-        //        }
-        //    }
-        //});
-        //puppeteerTask.Wait();
-        return storyInfos;
     }
 
     internal static class RankViewListFormat

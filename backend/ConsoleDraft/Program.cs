@@ -19,25 +19,25 @@ class Program
 
         var ttv = new TangThuVienCrawler();
         TestSet1(ttv);
+        TestSet2(ttv);
     }
 
     static void TestSet1(TangThuVienCrawler crawler)
     {
-        Console.OutputEncoding = Encoding.Unicode;
         var GetCategoriesPass = true;
         var GetStoriesOfCategoryPass = true;
         var GetStoriesBySearchNamePass = true;
         var GetStoriesOfAuthorPass = true;
         var GetChaptersOfStoryPass = true;
         var GetChapterContentPass = true;
-        var GetStoryDetail = true;
+        var GetStoryDetailPass = true;
         //GetCategoriesPass = false;
         //GetStoriesOfCategoryPass = false;
         //GetStoriesBySearchNamePass = false;
         //GetStoriesOfAuthorPass = false;
         //GetChaptersOfStoryPass = false;
         //GetChapterContentPass = false;
-        GetStoryDetail = false;
+        //GetStoryDetailPass = false;
 
         if (GetCategoriesPass == false)
         {
@@ -103,7 +103,7 @@ class Program
         }
         // Anh Hùng Liên Minh Chi Thái Điểu Chi Quang
 
-        if (GetStoryDetail == false)
+        if (GetStoryDetailPass == false)
         {
             var storyDetail = crawler.GetStoryDetail("/thi-ra-ho-moi-la-nhan-vat-chinh");
             Console.WriteLine(storyDetail.Name);
@@ -116,6 +116,58 @@ class Program
             Console.WriteLine(storyDetail.Categories[0].Name);
             Console.WriteLine(storyDetail.Categories[0].Id);
             Console.WriteLine(storyDetail.Description);
+        }
+    }
+
+    static void TestSet2(TangThuVienCrawler crawler)
+    {
+        var GetStoriesOfCategoryPass = true;
+        var GetStoriesBySearchNamePass = true;
+        var GetStoriesOfAuthorPass = true;
+        var GetChaptersOfStoryPass = true;
+        GetStoriesOfCategoryPass = false;
+        GetStoriesBySearchNamePass = false;
+        GetStoriesOfAuthorPass = false;
+        GetChaptersOfStoryPass = false;
+
+        if (GetStoriesOfCategoryPass == false)
+        {
+            var storiesCategory = crawler.GetStoriesOfCategory("?ctg=1", 2, 5);
+            foreach (var story in storiesCategory)
+            {
+                Console.WriteLine(story.Name);
+                Console.WriteLine(story.Id);
+            }
+        }
+
+        if (GetStoriesBySearchNamePass == false)
+        {
+            var storiesSearch = crawler.GetStoriesBySearchName("Đỉnh", 2, 5);
+            foreach (var story in storiesSearch)
+            {
+                Console.WriteLine(story.Name);
+                Console.WriteLine(story.Id);
+            }
+        }
+
+        if (GetStoriesOfAuthorPass == false)
+        {
+            var storiesAuthor = crawler.GetStoriesOfAuthor("?author=27", 2, 5);
+            foreach (var story in storiesAuthor)
+            {
+                Console.WriteLine(story.Name);
+                Console.WriteLine(story.Id);
+            }
+        }
+
+        if (GetChaptersOfStoryPass == false)
+        {
+            var chaptersOfStory = crawler.GetChaptersOfStory("/dichdinh-cao-quyen-luc-suu-tam", 2, 5);
+            foreach (var chapter in chaptersOfStory)
+            {
+                Console.WriteLine(chapter.Name);
+                Console.WriteLine(chapter.Id);
+            }
         }
     }
 }

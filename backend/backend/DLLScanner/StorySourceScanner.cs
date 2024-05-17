@@ -44,10 +44,8 @@ namespace backend.DLLScanner
                 {
                     Directory.CreateDirectory(pluginsFolder);
                 }
-
                 FileInfo[] scanAgain = new DirectoryInfo(_folder).GetFiles("./plugins/*.dll");
                 FileInfo[] newPlugins = scanAgain.Where(x => !_pluginPaths.Any(p => p.FullName == x.FullName)).ToArray();
-
                 if (newPlugins.Length != 0)
                 {
                     _pluginPaths = scanAgain.ToArray();
@@ -68,7 +66,8 @@ namespace backend.DLLScanner
 
         static Assembly LoadPlugin(string absolutePath)
         {
-            //            // Navigate up to the solution root
+            //            
+            // Navigate up to the solution root
             //#pragma warning disable CS8604 // Possible null reference argument.
             //            string root = Path.GetFullPath(Path.Combine(
             //                Path.GetDirectoryName(
