@@ -2,8 +2,11 @@
 {
     public class Story : Representative
     {
-        public Story(string name, string url) : base(name, url)
+        public string? ImageUrl { get; set; }
+        public Story(string name, string id, string? imageUrl = null) : base(name, id)
         {
+            ImageUrl = imageUrl;
         }
+
     }
 }

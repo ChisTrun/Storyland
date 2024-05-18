@@ -1,37 +1,36 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using PluginBase.Contract;
+﻿using PluginBase.Contract;
 using System.Reflection;
 
 namespace backend.DLLScanner
 {
     public class StorySourceScanner
     {
-        string exePath;
-        string folder;
-        FileInfo[] pluginPaths;
+        private readonly string _exePath;
+        private readonly string _folder;
+        private FileInfo[] _pluginPaths;
 
-        private object commandsLock = new object();
-        public List<ICrawler> commands { get; private set; }
+        private readonly object _commandsLock = new();
+        public List<ICrawler> Commands { get; private set; }
+        private bool _isCalled = false;
 
-        private static readonly Lazy<StorySourceScanner> lazy =
-        new Lazy<StorySourceScanner>(() => new StorySourceScanner());
+        public ICrawler? GetCurrentCrawler(int index) => Commands.Count > 0 ? Commands[index] : null;
 
-        public static StorySourceScanner Instance { get { return lazy.Value; } }
-
-        private bool isCalled = false;
+        private static readonly Lazy<StorySourceScanner> _lazy = new(() => new StorySourceScanner());
+        public static StorySourceScanner Instance => _lazy.Value;
 
         private StorySourceScanner()
         {
-            commands = new List<ICrawler>();
-            exePath = Assembly.GetExecutingAssembly().Location;
-            folder = Path.GetDirectoryName(exePath);
-            pluginPaths = Array.Empty<FileInfo>();
+            Commands = [];
+            _exePath = Assembly.GetExecutingAssembly().Location;
+            _folder = Path.GetDirectoryName(_exePath)!;
+            _pluginPaths = [];
         }
 
         public void StartScanThread()
         {
-            if (isCalled) return;
-            isCalled = true;
+            if (_isCalled)
+                return;
+            _isCalled = true;
             Thread ScanDLL = new Thread(new ThreadStart(Instance.ScanDLLFiles));
             ScanDLL.Start();
         }
@@ -45,36 +44,30 @@ namespace backend.DLLScanner
                 {
                     Directory.CreateDirectory(pluginsFolder);
                 }
-
-                FileInfo[] scanAgain = new DirectoryInfo(folder).GetFiles("./plugins/*.dll");
-                FileInfo[] newPlugins = scanAgain.Where(x => !pluginPaths.Any(p => p.FullName == x.FullName)).ToArray();
-
+                FileInfo[] scanAgain = new DirectoryInfo(_folder).GetFiles("./plugins/*.dll");
+                FileInfo[] newPlugins = scanAgain.Where(x => !_pluginPaths.Any(p => p.FullName == x.FullName)).ToArray();
                 if (newPlugins.Length != 0)
                 {
-                    pluginPaths = scanAgain.ToArray();
-
+                    _pluginPaths = scanAgain.ToArray();
                     var newCommands = newPlugins.SelectMany(pluginPath =>
                         {
                             string pluginPathString = pluginPath.FullName;
                             Assembly pluginAssembly = LoadPlugin(pluginPathString);
-
                             return CreateCommands(pluginAssembly);
-      
                         }).ToList();
-
-                    lock (commandsLock)
+                    lock (_commandsLock)
                     {
-                        commands.AddRange(newCommands);
+                        Commands.AddRange(newCommands);
                     }
                 }
-
                 Thread.Sleep(5000);
             }
         }
 
         static Assembly LoadPlugin(string absolutePath)
         {
-            //            // Navigate up to the solution root
+            //            
+            // Navigate up to the solution root
             //#pragma warning disable CS8604 // Possible null reference argument.
             //            string root = Path.GetFullPath(Path.Combine(
             //                Path.GetDirectoryName(
@@ -95,9 +88,7 @@ namespace backend.DLLScanner
         static IEnumerable<ICrawler> CreateCommands(Assembly assembly)
         {
             int count = 0;
-
             var t1 = typeof(ICrawler).FullName;
-
             foreach (Type type in assembly.GetTypes())
             {
                 if (typeof(ICrawler).IsAssignableFrom(type))

@@ -1,14 +1,14 @@
 ﻿namespace PluginBase.Models
 {
-    public abstract class Representative
+    public class Representative
     {
         public string Name { get; set; }
-        public string Url { get; set; }
+        public string Id { get; set; }
 
-        public Representative(string name, string url)
+        public Representative(string name, string id)
         {
-            this.Name = name;
-            this.Url = url;
+            Name = name;
+            Id = id;
         }
     }
 }

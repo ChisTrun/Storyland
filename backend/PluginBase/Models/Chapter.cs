@@ -2,11 +2,13 @@
 {
     public class Chapter : Representative
     {
-        public Chapter(string name, string url, int index = -1) : base(name, url)
+        public Story Belong { get; }
+        public int Index { get; }
+
+        public Chapter(string name, string id, Story belong, int index = -1) : base(name, id)
         {
+            Belong = belong;
             Index = index;
         }
-
-        public int Index { get; }
     }
 }
