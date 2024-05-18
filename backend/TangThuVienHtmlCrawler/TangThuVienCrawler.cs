@@ -186,8 +186,8 @@ public class TangThuVienCrawler : ICrawler
             total = int.Parse(documentChapters.QuerySelector("ul > li:last-child").GetAttributeValue("title", null) ?? throw new Exception());
         }
         var splitIndex = chapterId.LastIndexOf('-');
-        var chapSplit = chapterId[..(splitIndex + 1)];
-        var indexSplit = chapterId[(splitIndex + 1)..];
+        var chapSplit = chapterId.Substring(0, splitIndex + 1);
+        var indexSplit = chapterId.Substring(splitIndex + 1);
         var current = int.Parse(indexSplit);
         var prevChapIndex = Math.Max(0, current - 1);
         var nextChapIndex = Math.Min(total, current + 1);
@@ -316,13 +316,13 @@ public class TangThuVienCrawler : ICrawler
         var name = doc.QuerySelector("head > title").GetDirectInnerTextDecoded();
         var urlRaw = doc.QuerySelector("#update-tab > a").GetAttributeValue("href", null);
         int startIndex = urlRaw.IndexOf("ctg=");
-        string ctgSubstring = urlRaw[startIndex..];
+        string ctgSubstring = urlRaw.Substring(startIndex);
         int endIndex = ctgSubstring.IndexOf('&');
         if (endIndex == -1)
         {
             endIndex = ctgSubstring.Length;
         }
-        string ctgValue = ctgSubstring[..endIndex];
+        string ctgValue = ctgSubstring.Substring(0, endIndex);
         return new Category(name, "?" + ctgValue);
     }
 
