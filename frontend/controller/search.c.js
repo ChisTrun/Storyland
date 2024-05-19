@@ -9,20 +9,19 @@ const render = {
     footer: 'footer',
 };
 const perPage = 24;
+const serverIndex = 0;
 
 module.exports = {
     async render(req, res, next) {
         try {
             const keyword = req.query.keyword || '';
-            let curPage = parseInt(req.query.page) || 1;
+            const curPage = parseInt(req.query.page) || 1;
 
-            const response = await fetch(`${BE_HOST}/api/search/truyen/${keyword}/all`);
-            const data = await response.json();
+            const response = await fetch(`${BE_HOST}/api/search/${serverIndex}/truyen/${keyword}?page=${curPage}&limit=${perPage}`);
+            const resBody = await response.json();
+            const totalPages = resBody.totalPages ?  resBody.totalPages : 1;
 
-            const totalPages = data.length == 0 ? 1 : Math.ceil(data.length / perPage);
-            curPage = Math.min(Math.max(parseInt(curPage), 1), totalPages);
-
-            render.stories = data.slice((curPage - 1) * perPage, curPage * perPage);
+            render.stories = resBody.data;
             render.keyword = keyword;
             render.curPage = curPage;
             render.totalPages = totalPages;

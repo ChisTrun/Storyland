@@ -5,6 +5,9 @@ module.exports = {
         }
         return str;
     },
+    isDefined: function (value, block) {
+        return value !== undefined ? block.fn(this) : block.inverse(this);
+    },
     getLength: function (list) {
         return list ? list.length : 0;
     },

@@ -5,5 +5,35 @@
             Truyện thể loại: <span class="text-white">{{categoryName}}</span>
         </div>
     </div>
+
     {{> storiesList}}
+
+    <div class="row mt-3 mb-4">
+        <ul class="pagination d-flex align-items-center justify-content-center">
+            <li></li>
+            {{#ifNotEqual curPage 1}}
+            <li class="page-item mx-2"><a class="page-link" href="/category/{{categoryName}}?ctg={{categoryId}}&page=1"><i
+                        class="fa-solid fa-backward-step"></i></a></li>
+            <li class="page-item mx-2"><a class="page-link"
+                    href="/category/{{categoryName}}?ctg={{categoryId}}&page={{plus curPage -1}}"><i
+                        class="fa-solid fa-chevron-left"></i></a></li>
+            {{/ifNotEqual}}
+
+            {{#genPagination curPage totalPages}}
+            <li class="page-item mx-2">
+                <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
+                    href="/category/{{../categoryName}}?ctg={{../categoryId}}&page={{this}}">{{this}}</a>
+            </li>
+            {{/genPagination}}
+
+            {{#ifNotEqual curPage totalPages}}
+            <li class="page-item mx-2"><a class="page-link"
+                    href="/category/{{categoryName}}?ctg={{categoryId}}&page={{plus curPage 1}}"><i
+                        class="fa-solid fa-chevron-right"></i></a></li>
+            <li class="page-item mx-2"><a class="page-link" href="/category/{{categoryName}}?ctg={{categoryId}}&page={{totalPages}}"><i
+                        class="fa-solid fa-forward-step"></i></a></li>
+            {{/ifNotEqual}}
+            <li></li>
+        </ul>
+    </div>
 </div>

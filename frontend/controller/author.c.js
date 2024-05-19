@@ -9,24 +9,22 @@ const render = {
     footer: 'footer',
 };
 const perPage = 24;
+const serverIndex = 0;
 
 module.exports = {
     async render(req, res, next) {
         try {
-            const authorId = req.query.author;
-            const path = encodeURIComponent(`?author=${authorId}`);
+            const authorId = encodeURIComponent(`?author=${req.query.author}`);
             const authorName = req.params.authorName;
-            let curPage = parseInt(req.query.page) || 1;
+            const curPage = parseInt(req.query.page) || 1;
 
-            const response = await fetch(`${BE_HOST}/api/search/tacgia/${path}/all`);
-            const data = await response.json();
+            const response = await fetch(`${BE_HOST}/api/search/${serverIndex}/tacgia/${authorId}?page=${curPage}&limit=${perPage}`);
+            const resBody = await response.json();
+            const totalPages = resBody.totalPages ?  resBody.totalPages : 1;
 
-            const totalPages = data.length == 0 ? 1 : Math.ceil(data.length / perPage);
-            curPage = Math.min(Math.max(parseInt(curPage), 1), totalPages);
-
-            render.stories = data.slice((curPage - 1) * perPage, curPage * perPage);
+            render.stories = resBody.data;
             render.authorName = authorName;
-            render.authorId = authorId;
+            render.authorId = req.query.author;
             render.curPage = curPage;
             render.totalPages = totalPages;
             render.title = `Tác giả ${authorName}`;

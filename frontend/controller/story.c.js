@@ -9,35 +9,32 @@ const render = {
     footer: 'footer',
 };
 const perPage = 50;
+const serverIndex = 0;
 
 module.exports = {
     async render(req, res, next) {
         try {
-            storyId = encodeURIComponent(req.params.storyId);
-            let curPage = parseInt(req.query.page) || 1;
+            const storyId = encodeURIComponent(req.params.storyId);
+            const curPage = parseInt(req.query.page) || 1;
 
-            const storyResponse = await fetch(`${BE_HOST}/api/story/${storyId}`);
-            const storyData = await storyResponse.json();
-            const chapListResponse = await fetch(`${BE_HOST}/api/story/${storyId}/chapters/all`);
-            const chapListData = await chapListResponse.json();
+            const storyResponse = await fetch(`${BE_HOST}/api/story/${serverIndex}/${storyId}`);
+            const storyResBody = await storyResponse.json();
+            const chapListResponse = await fetch(`${BE_HOST}/api/story/${serverIndex}/${storyId}/chapters?page=${curPage}&limit=${perPage}`);
+            const chapListResBody = await chapListResponse.json();
+            const totalPages = chapListResBody.totalPages ?  chapListResBody.totalPages : 1;
 
-            const totalPages = chapListData.length == 0 ? 1 : Math.ceil(chapListData.length / perPage);
-            curPage = Math.min(Math.max(parseInt(curPage), 1), totalPages);
-
-            storyData.description = storyData.description.replace(/\r\n\r\n/g, '<br>')
+            storyResBody.description = storyResBody.description.replace(/\r\n\r\n/g, '<br>')
                 .replace(/\r\n/g, '<br>')
                 .replace(/\n/g, '<br>')
                 .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
             Object.assign(render, {
-                ...storyData
+                ...storyResBody
             });
-            render.chapters = chapListData.slice((curPage - 1) * perPage, curPage * perPage);
+            render.chapters = chapListResBody.data;
             render.curPage = curPage;
             render.totalPages = totalPages;
-            render.totalChapters = chapListData ? chapListData.length : 0;
-            render.firstIndex = chapListData ? chapListData[0].index : null;
-            render.lastIndex = chapListData ? chapListData[chapListData.length - 1].index : null;
-            render.title = storyData.name;
+            render.firstIndex = 0;
+            render.title = storyResBody.name;
 
             return res.render(view, render, null);
         }

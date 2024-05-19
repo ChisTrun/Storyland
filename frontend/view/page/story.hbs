@@ -30,7 +30,8 @@
                                 <i class="fa-solid fa-user"></i>
                                 Tác giả
                             </div>
-                            <div class="col-md-9 cursor-pointer" onclick="directTo('/author/{{author.name}}{{author.id}}')">
+                            <div class="col-md-9 cursor-pointer"
+                                onclick="directTo('/author/{{author.name}}{{author.id}}')">
                                 {{#if author}}{{author.name}}{{else}}n/a{{/if}}
                             </div>
                         </div>
@@ -74,20 +75,20 @@
                         </div>
                     </div>
                     <div class="container-fluid px-0 py-2">
-                        {{#if firstIndex}}
+                        {{#isDefined firstIndex}}
                         <button type="button" class="rounded me-2 p-2 bg-color-a9cf54"
                             onclick="directTo('/story/{{encodeUrl id}}/{{firstIndex}}')">
                             <i class="fa-solid fa-book-open"></i>
                             Đọc từ đầu
                         </button>
-                        {{/if}}
-                        {{#if lastIndex}}
+                        {{/isDefined}}
+                        {{#isDefined lastIndex}}
                         <button type="button" class="rounded mx-2 p-2 bg-color-8c3c4f"
                             onclick="directTo('/story/{{encodeUrl id}}/{{lastIndex}}')">
                             <i class="fa-solid fa-book-open"></i>
                             Đọc mới nhất
                         </button>
-                        {{/if}}
+                        {{/isDefined}}
                         <button type="button" class="rounded mx-2 p-2 bg-color-2090ce">
                             <i class="fa-solid fa-location-arrow"></i>
                             Đọc tiếp
@@ -101,9 +102,6 @@
         <div class="fw-bold">
             <i class="fa-solid fa-database pe-1"></i>
             Danh sách chương
-            <span class="fst-italic text-white-50 col-md-9 ps-2">
-                [{{totalChapters}} Chương]
-            </span>
         </div>
     </div>
     <div class="row border-white rounded mx-0 mt-2 my-4 py-3 ps-5">
