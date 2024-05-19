@@ -200,7 +200,7 @@ public class TangThuVienCrawler : ICrawler
         var chapSplit = chapterId.Substring(0, splitIndex + 1);
         var indexSplit = chapterId.Substring(splitIndex + 1);
         var current = int.Parse(indexSplit);
-        var prevChapIndex = Math.Max(0, current - 1);
+        var prevChapIndex = Math.Max(1, current - 1);
         var nextChapIndex = Math.Min(total, current + 1);
         var prevChapId = $"{chapSplit}{prevChapIndex}";
         var nextChapId = $"{chapSplit}{nextChapIndex}";
@@ -262,9 +262,18 @@ public class TangThuVienCrawler : ICrawler
         return representatives;
     }
 
-    // Tại vì khi tìm kiếm nó có lẫn lộn truyện của ngontinh.tangthuvien.vn nên không xài cách này nữa
     private static PagingRepresentative GetRepresentativesFromATagsFromAllPagesFixedPageSize<T>(Func<HtmlDocument, IEnumerable<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible, int page, int limit) where T : Representative
     {
+        // Tại vì khi tìm kiếm nó có lẫn lộn truyện của ngontinh.tangthuvien.vn nên không xài cách này nữa
+        // Trong trường hợp chuyển trang sang ngontinh.tangthuvien.vn có lỗi
+        //var allRecords = GetRepresentativesFromATagsFromAllPages<T>(crawlRepresentativesFromAPage, createURLFromPage, nextPageAvailible);
+        //var totalRecord = allRecords.Count();
+        //var totalPage = (totalRecord / limit) + (totalRecord % limit == 0 ? 0 : 1);
+        //var offsetStart = (page - 1) * limit;
+        //var offsetEnd = Math.Min((page * limit) - 1, totalRecord - 1);
+        //var pageResults = allRecords.Skip(offsetStart).Take(offsetEnd - offsetStart + 1);
+        //return new PagingRepresentative(page, limit, totalPage, pageResults);
+
         int systemLimit;
         int totalPage;
         int totalRecord;
@@ -274,7 +283,7 @@ public class TangThuVienCrawler : ICrawler
             systemLimit = documentFirstPage.QuerySelectorAll("#rank-view-list > div > ul > li > div.book-mid-info").Count;
             if (systemLimit == 0)
             {
-                return new PagingRepresentative(page, limit, 0, []);
+                return new PagingRepresentative(page, limit, 0, new List<T>());
             }
             var lastLiPagingTag = documentFirstPage.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:last-child");
             if (lastLiPagingTag == null)
@@ -409,15 +418,19 @@ public class TangThuVienCrawler : ICrawler
     {
         public static IEnumerable<Story> CrawlStoriesFromAPage(HtmlDocument doc)
         {
-            var framesSelector = "#rank-view-list > div > ul > li";
+            var lisSelector = "#rank-view-list > div > ul > li";
             var aTagSelector = "div.book-mid-info > h4 > a";
             var imageSelector = "div.book-img-box > a > img";
-            var frames = doc.QuerySelectorAll(framesSelector);
+            var liTags = doc.QuerySelectorAll(lisSelector);
             var stories = new List<Story>();
-            foreach (var frame in frames)
+            foreach (var li in liTags)
             {
-                var aTag = frame.QuerySelector(aTagSelector);
-                var image = frame.QuerySelector(imageSelector);
+                var aTag = li.QuerySelector(aTagSelector);
+                if (aTag == null)
+                {
+                    continue;
+                }
+                var image = li.QuerySelector(imageSelector);
                 var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
                 if (url.Contains("truyen.tangthuvien.vn") == false)
                 {

@@ -127,10 +127,10 @@ class Program
         var GetStoriesOfAuthorPass = true;
         var GetChaptersOfStoryPass = true;
         //GetStoriesOfCategoryPass = false;
-        GetStoriesBySearchNamePass = false;
-        GetStoriesBySearchNameNotFound = false;
-        //GetStoriesOfAuthorPass = false;
-        //GetChaptersOfStoryPass = false;
+        //GetStoriesBySearchNamePass = false;
+        //GetStoriesBySearchNameNotFound = false;
+        GetStoriesOfAuthorPass = false;
+        GetChaptersOfStoryPass = false;
 
         if (GetStoriesOfCategoryPass == false)
         {
@@ -152,11 +152,12 @@ class Program
                 Console.WriteLine(story.Id);
             }
             Console.WriteLine(storiesSearch.TotalPages);
+            var storiesSearch2 = crawler.GetStoriesBySearchName("Tình Anh Bán", 1, 5);
         }
-        
+
         if (GetStoriesBySearchNameNotFound == false)
         {
-            var storiesSearch = crawler.GetStoriesBySearchName("Đỉnh kkkk", 69, 5);
+            var storiesSearch = crawler.GetStoriesBySearchName("Đỉnh kkkk", 1, 5);
             foreach (var story in storiesSearch.Data)
             {
                 Console.WriteLine(story.Name);
@@ -174,6 +175,8 @@ class Program
                 Console.WriteLine(story.Id);
             }
             Console.WriteLine(storiesAuthor.TotalPages);
+            var storiesAuthor2 = crawler.GetStoriesOfAuthor("?author=21981", 1, 5);
+            var storiesAuthor3 = crawler.GetStoriesOfAuthor("?author=172312", 1, 5);
         }
 
         if (GetChaptersOfStoryPass == false)
@@ -185,6 +188,9 @@ class Program
                 Console.WriteLine(chapter.Id);
             }
             Console.WriteLine(chaptersOfStory.TotalPages);
+            var chaptersOfStory2 = crawler.GetChaptersOfStory("/tinh-dinh-kitty-cao-lanh-tong-tai-due-due-due", 1, 5);
+            var storyDetail = crawler.GetStoryDetail("/tinh-dinh-kitty-cao-lanh-tong-tai-due-due-due");
+            var chapterContent = crawler.GetChapterContent("/tinh-dinh-kitty-cao-lanh-tong-tai-due-due-due", 1);
         }
     }
 }
