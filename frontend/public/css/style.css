@@ -1,344 +1,344 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    list-style: none;
-    text-decoration: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
 }
 
 body {
-    background-color: #000000;
-    font-family: "Roboto", sans-serif;
-    color: white;
+  background-color: #000000;
+  font-family: "Roboto", sans-serif;
+  color: white;
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 .pe-6 {
-    padding-right: 4rem;
+  padding-right: 4rem;
 }
 
 .bg-color-4b6b64 {
-    background-color: #4b6b64;
+  background-color: #4b6b64;
 }
 
 .bg-color-202020 {
-    background-color: #202020;
+  background-color: #202020;
 }
 
 .bg-color-a9cf54 {
-    background-color: #a9cf54;
+  background-color: #a9cf54;
 }
 
 .bg-color-8c3c4f {
-    background-color: #8c3c4f;
+  background-color: #8c3c4f;
 }
 
 .bg-color-2090ce {
-    background-color: #2090ce;
+  background-color: #2090ce;
 }
 
 .border-9b9b9b {
-    border: 1px solid #9b9b9b;
+  border: 1px solid #9b9b9b;
 }
 
 .border-white {
-    border: 1px solid white;
+  border: 1px solid white;
 }
 
 .border-rounded {
-    border-radius: 0.4rem;
+  border-radius: 0.4rem;
 }
 
 .border-rectangle {
-    border-radius: 0rem;
+  border-radius: 0rem;
 }
 
 .border-circle {
-    border-radius: 50%;
+  border-radius: 50%;
 }
 
 .w-auto {
-    width: auto;
+  width: auto;
 }
 
 .w-16dot875 {
-    width: 16.875rem;
+  width: 16.875rem;
 }
 
 .w-16dot25 {
-    width: 16.25rem;
+  width: 16.25rem;
 }
 
 .w-3dot5 {
-    width: 3.5rem;
+  width: 3.5rem;
 }
 
 .w-8 {
-    width: 8rem;
+  width: 8rem;
 }
 
 .h-3dot5 {
-    height: 3.5rem;
+  height: 3.5rem;
 }
 
 .h-8 {
-    height: 8rem;
+  height: 8rem;
 }
 
 .h-17dot5 {
-    height: 17.5rem;
+  height: 17.5rem;
 }
 
 .h-100vh {
-    min-height: 100vh;
+  min-height: 100vh;
 }
 
 .text-nowrap {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 .text-color-56ccf2 {
-    color: #56ccf2;
+  color: #56ccf2;
 }
 
 .text-color-a9cf54 {
-    color: #a9cf54;
+  color: #a9cf54;
 }
 
 .text-color-fefefe {
-    color: #fefefe;
+  color: #fefefe;
 }
 
 .text-color-669900 {
-    color: #669900;
+  color: #669900;
 }
 
 .text-color-eeeeee {
-    color: #eeeeee;
+  color: #eeeeee;
 }
 
 .text-color-cccccc {
-    color: #cccccc;
+  color: #cccccc;
 }
 
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .footer-links {
-    display: flex;
-    flex-direction: column;
-    width: 12.5rem;
+  display: flex;
+  flex-direction: column;
+  width: 12.5rem;
 }
 
 .footer-links p {
-    font-size: 1.3rem;
-    margin-bottom: 0.8rem;
-    font-weight: 600;
-    color: white;
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  color: white;
 }
 
 .footer-links a {
-    font-size: 0.8rem;
-    text-decoration: none;
-    margin-bottom: 0.7rem;
-    font-weight: 600;
-    color: #cecece;
-    transition: 0.5s all;
+  font-size: 0.8rem;
+  text-decoration: none;
+  margin-bottom: 0.7rem;
+  font-weight: 600;
+  color: #cecece;
+  transition: 0.5s all;
 }
 
 .footer-links a:hover {
-    color: #303035;
+  color: #303035;
 }
 
 .category-tag {
-    background-color: inherit;
-    border: 1px solid #8c3c4f !important;
+  background-color: inherit;
+  border: 1px solid #8c3c4f !important;
 }
 
 .chapter-name-info {
-    opacity: 80%;
+  opacity: 80%;
 }
 
 .next-pre-button {
-    background: inherit;
-    font-size: 1.3rem;
-    border-radius: 0.4rem;
-    color: #a9cf54;
-    border: 2px solid #a9cf54;
-    width: 13rem;
-    padding: 0.3rem;
-    margin: 0 1rem;
+  background: inherit;
+  font-size: 1.3rem;
+  border-radius: 0.4rem;
+  color: #a9cf54;
+  border: 2px solid #a9cf54;
+  width: 13rem;
+  padding: 0.3rem;
+  margin: 0 1rem;
 }
 
 .next-pre-button:hover,
 .next-pre-button:active {
-    background: #a9cf54;
-    color: white;
+  background: #a9cf54;
+  color: white;
 }
 
 .option-button {
-    margin: 0;
-    width: 3.5rem;
-    height: 3.5rem;
-    text-align: center;
-    border: 1px solid #666666;
-    background: #202020;
-    color: white;
+  margin: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  text-align: center;
+  border: 1px solid #666666;
+  background: #202020;
+  color: white;
 }
 
 .read-font {
-    font-family: 'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .page-item .active {
-    background-color: peru;
-    border: 1px solid white;
-    color: white;
+  background-color: peru;
+  border: 1px solid white;
+  color: white;
 }
 
 .page-link {
-    background-color: inherit;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid white;
-    width: 3rem;
-    height: 3rem;
-    padding: auto;
-    font-size: 1.3rem;
-    color: white;
+  background-color: inherit;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  width: 3rem;
+  height: 3rem;
+  padding: auto;
+  font-size: 1.3rem;
+  color: white;
 }
 
 .page-link:active,
 .page-link:hover {
-    background-color: peru;
-    color: white;
-    transition: 0.5s all;
+  background-color: peru;
+  color: white;
+  transition: 0.5s all;
 }
 
 .d-none {
-    display: none;
+  display: none;
 }
 
 #web-first-word {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 2.2rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 2.2rem;
 }
 
 #web-last-word {
-    font-size: 1.12rem;
-    font-weight: 100;
+  font-size: 1.12rem;
+  font-weight: 100;
 }
 
 #header-link a {
-    font-size: 1.5rem;
-    margin-left: 1.5rem;
-    margin-right: 1.5rem;
+  font-size: 1.5rem;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
 }
 
 #header-link a:hover {
-    transition: 0.4s;
-    font-size: 1.6rem;
+  transition: 0.4s;
+  font-size: 1.6rem;
 }
 
 #header-link a:not(:hover) {
-    transition: 0.4s;
+  transition: 0.4s;
 }
 
 #nav-link a {
-    padding: 0.5rem 1.2rem 0.5rem 1.2rem;
-    font-size: 1.15rem;
+  padding: 0.5rem 1.2rem 0.5rem 1.2rem;
+  font-size: 1.15rem;
 }
 
 #nav-link a:hover {
-    background-color: #fff;
-    color: #4b6b64;
-    font-weight: 500;
+  background-color: #fff;
+  color: #4b6b64;
+  font-weight: 500;
 }
 
 #flex-chapters-container {
-    display: flex;
-    height: 60.5rem;
-    flex-flow: column wrap;
-    background-color: inherit;
+  display: flex;
+  height: 60.5rem;
+  flex-flow: column wrap;
+  background-color: inherit;
 }
 
-#flex-chapters-container>div {
-    width: auto;
-    margin: 0.2rem 2rem;
-    line-height: 2rem;
-    font-size: 1rem;
+#flex-chapters-container > div {
+  width: auto;
+  margin: 0.2rem 2rem;
+  line-height: 2rem;
+  font-size: 1rem;
 }
 
 #home-bg {
-    background-image: url("../assets/background.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100vh;
+  background-image: url("../assets/background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
 }
 
 #home-search-bar {
-    height: 5rem;
-    min-width: 31rem;
+  height: 5rem;
+  min-width: 31rem;
 }
 
 #home-search-bar input,
 #home-search-bar i {
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
 #story-image {
-    width: 16.875rem;
-    height: 25rem;
+  width: 16.875rem;
+  height: 25rem;
 }
 
 #story-info i {
-    padding-right: 0.3rem;
+  padding-right: 0.3rem;
 }
 
 #story-info button {
-    color: white;
-    border: 0px;
-    padding: 0.4rem 0.6rem;
+  color: white;
+  border: 0px;
+  padding: 0.4rem 0.6rem;
 }
 
 #story-info button:hover,
 #story-info button:active {
-    opacity: 70%;
-    border: 0px;
+  opacity: 70%;
+  border: 0px;
 }
 
 #source-menu {
-    font-style: italic;
-    color: #fefefe;
-    background-color: black;
-    border: 1px solid white;
-    padding: 0.6rem 0.8rem;
-    min-width: 18rem;
+  font-style: italic;
+  color: #fefefe;
+  background-color: black;
+  border: 1px solid white;
+  padding: 0.6rem 0.8rem;
+  min-width: 18rem;
 }
 
 @media only screen and (max-width: 768px) {
-    #header-link {
-        display: none;
-    }
+  #header-link {
+    display: none;
+  }
 
-    #header-search {
-        margin: 1.3rem 0 0 0;
-        padding: 0;
-    }
+  #header-search {
+    margin: 1.3rem 0 0 0;
+    padding: 0;
+  }
 }
 
 @media only screen and (max-width: 1200px) {
-    #header-link a {
-        display: none;
-    }
+  #header-link a {
+    display: none;
+  }
 }

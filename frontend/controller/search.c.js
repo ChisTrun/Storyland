@@ -1,13 +1,14 @@
+const { ErrorDisplay } = require('../middleware/error');
+const { BE_HOST } = require('../global/env');
 const view = 'search';
 const render = {
     layout: 'main',
-    scripts: ['/setting.client.js', '/page/home.client.js'],
+    scripts: null,
     styles: null,
     header: 'header',
     footer: 'footer',
 };
-const { BE_HOST } = require('../global/env');
-const perPage = 36;
+const perPage = 24;
 
 module.exports = {
     async render(req, res, next) {
@@ -15,22 +16,22 @@ module.exports = {
             const keyword = req.query.keyword || '';
             let curPage = parseInt(req.query.page) || 1;
 
-            const response = await fetch(`${BE_HOST}/api/search/truyen/${keyword}`);
+            const response = await fetch(`${BE_HOST}/api/search/truyen/${keyword}/all`);
             const data = await response.json();
 
-            const totalPages = Math.ceil(data.length / perPage);
+            const totalPages = data.length == 0 ? 1 : Math.ceil(data.length / perPage);
             curPage = Math.min(Math.max(parseInt(curPage), 1), totalPages);
 
             render.stories = data.slice((curPage - 1) * perPage, curPage * perPage);
             render.keyword = keyword;
             render.curPage = curPage;
             render.totalPages = totalPages;
+            render.title = "Kết quả tìm kiếm";
 
             return res.render(view, render, null);
         }
         catch (error) {
-            console.error(error);
-            next(error);
+            next(new ErrorDisplay("Tìm kiếm thất bại", 503, error.message));
         }
     },
 };

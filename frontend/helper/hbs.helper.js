@@ -1,13 +1,14 @@
-const { HOST, PORT } = require('../global/env');
-
 module.exports = {
-    getUrlFromPath: function (path) {
-        return `https://${HOST}:${PORT}/${path}`;
+    encodeUrl: function (str) {
+        if (str.indexOf('/') >= 0) {
+            return encodeURIComponent(str);
+        }
+        return str;
     },
-    length: function (list) {
+    getLength: function (list) {
         return list ? list.length : 0;
     },
-    toLoud: function(text) {
+    toLoud: function (text) {
         return text.toUpperCase();
     },
     limitText: function (text, maxLength) {
@@ -29,26 +30,34 @@ module.exports = {
             res += block.fn(i);
         return res;
     },
+    plus: function (a, b) {
+        const sum = parseInt(a) + parseInt(b);
+        return sum;
+    },
     ifEqual: function (a, b, block) {
         if (a == b) {
             return block.fn(this);
         }
         return block.inverse(this);
     },
-    plus: function (a, b) {
-        const sum = parseInt(a) + parseInt(b);
-        return sum;
+    ifNotEqual: function (a, b, block) {
+        if (a != b) {
+            return block.fn(this);
+        }
+        return block.inverse(this);
     },
-    generatePagination: function (curPage, totalPages, block) {
+    isLess: function (a, b) {
+        return (parseFloat(a) < parseFloat(b));
+    },
+    genPagination: function (curPage, totalPages, block) {
         const pagination = [];
-        let startShowPage = Math.max(1, curPage - 2);
-        let endShowPage = Math.min(totalPages, startShowPage + 4);
+        const startPage = Math.max(1, curPage - 2);
+        const endPage = Math.min(totalPages, startPage + 4);
 
-        for (let i = startShowPage; i <= endShowPage; i++) {
+        for (let i = startPage; i <= endPage; i++) {
             pagination.push(block.fn(i));
         }
 
-        pagination <= 1 ? [] : pagination;
-        return pagination.join(' ');
+        return pagination.length == 1 ? '' : pagination.join(' ');
     },
 };

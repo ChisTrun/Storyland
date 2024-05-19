@@ -2,9 +2,9 @@
     <div class="row fw-bold">
         <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
             <ol class="breadcrumb text-color-cccccc">
-                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
+                <li class="breadcrumb-item"><a href="/home">Home</a></li>
                 &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
-                <li class="breadcrumb-item" aria-current="page">{{storyName}}</li>
+                <li class="breadcrumb-item" aria-current="page">{{name}}</li>
             </ol>
         </nav>
     </div>
@@ -13,8 +13,8 @@
             <div class="row">
                 <div class="col-xxl-3 col-xl-4 col-md-12 col-sm-12 col-12">
                     <div class="text-center">
-                        <img class="border-white" id="story-image" {{#if imageUrl}}src="{{getUrlFromPath imageUrl}}"
-                            {{else}}src={{getUrlFromPath 'assets/naimage.jpg' }}{{/if}} alt="{{name}}" />
+                        <img class="border-white" id="story-image" {{#if imageUrl}} src="{{imageUrl}}" {{else}}
+                            src="/assets/naimage.jpg" {{/if}} alt="{{name}}" />
                     </div>
                     <div class="mt-3 text-center">
                         <button type="button" class="btn btn-outline-light w-16dot875 fs-5 border-rectangle">
@@ -23,15 +23,15 @@
                     </div>
                 </div>
                 <div class="col-xxl-9 col-xl-8 col-md-12 col-sm-12 col-12 mt-0 px-0" id="story-info">
-                    <div class="fw-bold fs-3 pb-2">{{storyName}}</div>
+                    <div class="fw-bold fs-3 pb-2">{{name}}</div>
                     <div class="container-fluid px-0">
                         <div class="row py-2">
                             <div class="col-md-3 fw-bold">
                                 <i class="fa-solid fa-user"></i>
                                 Tác giả
                             </div>
-                            <div class="col-md-9">
-                                {{#if author}}{{author}}{{else}}n/a{{/if}}
+                            <div class="col-md-9 cursor-pointer" onclick="directTo('/author/{{author.id}}')">
+                                {{#if author}}{{author.name}}{{else}}n/a{{/if}}
                             </div>
                         </div>
                         <div class="row py-2">
@@ -49,15 +49,14 @@
                                 Thể loại
                             </div>
                             <div class="col-md-12 mt-2">
-                                {{#if categories}}
                                 {{#each categories}}
-                                <button type="button" class="category-tag border-rounded py-1 px-2 me-2">
-                                    {{this}}
+                                <button type="button" class="category-tag border-rounded py-1 px-2 me-2"
+                                    onclick="directTo('/category{{id}}')">
+                                    {{name}}
                                 </button>
-                                {{/each}}
                                 {{else}}
                                 n/a
-                                {{/if}}
+                                {{/each}}
                             </div>
                         </div>
                         <div class="row py-2">
@@ -70,21 +69,25 @@
                     <div class="container-fluid px-0 pb-2">
                         <div class="row">
                             <div class="col-md-11">
-                                {{#if info}}{{info}}{{else}}n/a{{/if}}
+                                {{#if description}}{{{description}}}{{else}}n/a{{/if}}
                             </div>
                         </div>
                     </div>
                     <div class="container-fluid px-0 py-2">
+                        {{#if firstIndex}}
                         <button type="button" class="rounded me-2 p-2 bg-color-a9cf54"
-                            onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/0'">
+                            onclick="directTo('/story/{{encodeUrl id}}/{{firstIndex}}')">
                             <i class="fa-solid fa-book-open"></i>
                             Đọc từ đầu
                         </button>
+                        {{/if}}
+                        {{#if lastIndex}}
                         <button type="button" class="rounded mx-2 p-2 bg-color-8c3c4f"
-                            onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/{{latestIndex}}'">
+                            onclick="directTo('/story/{{encodeUrl id}}/{{lastIndex}}')">
                             <i class="fa-solid fa-book-open"></i>
                             Đọc mới nhất
                         </button>
+                        {{/if}}
                         <button type="button" class="rounded mx-2 p-2 bg-color-2090ce">
                             <i class="fa-solid fa-location-arrow"></i>
                             Đọc tiếp
@@ -106,42 +109,36 @@
     <div class="row border-white rounded mx-0 mt-2 my-4 py-3 ps-5">
         <div id="flex-chapters-container">
             {{#each chapters}}
-            <div class="cursor-pointer d-flex"
-                onclick="location.href='{{getUrlFromPath 'story/'}}{{../storyName}}/{{index}}'">{{name}}</div>
+            <div class="cursor-pointer d-flex" onclick="directTo('/story/{{encodeUrl belong.id}}/{{index}}')"
+                title="{{name}}">{{limitText name 45}}</div>
             {{/each}}
         </div>
         <div class="row mt-4 mb-2">
             <ul class="pagination d-flex align-items-center justify-content-center">
                 <li></li>
-                {{#ifEqual curPage 1}}
-                {{else}}
-                {{#ifEqual 0 curPage}}
-                {{else}}
-                <li class="page-item mx-2"><a class="page-link"
-                        href="{{getUrlFromPath 'story/'}}{{storyName}}?page=1#chapters-list"><i
+                {{#ifNotEqual curPage 1}}
+                <li class="page-item mx-2"><a class="page-link" href="/story/{{encodeUrl id}}#chapters-list"><i
                             class="fa-solid fa-backward-step"></i></a></li>
                 <li class="page-item mx-2"><a class="page-link"
-                        href="{{getUrlFromPath 'story/'}}{{storyName}}&page={{plus curPage -1}}#chapters-list"><i
+                        href="/story/{{encodeUrl id}}&page={{plus curPage -1}}#chapters-list"><i
                             class="fa-solid fa-chevron-left"></i></a></li>
-                {{/ifEqual}}
-                {{/ifEqual}}
+                {{/ifNotEqual}}
 
-                {{#generatePagination curPage totalPages}}
+                {{#genPagination curPage totalPages}}
                 <li class="page-item mx-2">
                     <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
-                        href="{{getUrlFromPath 'story/'}}{{../storyName}}?page={{this}}#chapters-list">{{this}}</a>
+                        href="/story/{{encodeUrl ../id}}?page={{this}}#chapters-list">{{this}}</a>
                 </li>
-                {{/generatePagination}}
+                {{/genPagination}}
 
-                {{#ifEqual curPage totalPages}}
-                {{else}}
+                {{#ifNotEqual curPage totalPages}}
                 <li class="page-item mx-2"><a class="page-link"
-                        href="{{getUrlFromPath 'story/'}}{{storyName}}?page={{plus curPage 1}}#chapters-list"><i
+                        href="/story/{{encodeUrl id}}?page={{plus curPage 1}}#chapters-list"><i
                             class="fa-solid fa-chevron-right"></i></a></li>
                 <li class="page-item mx-2"><a class="page-link"
-                        href="{{getUrlFromPath 'story/'}}{{storyName}}?page={{totalPages}}#chapters-list"><i
+                        href="/story/{{encodeUrl id}}?page={{totalPages}}#chapters-list"><i
                             class="fa-solid fa-forward-step"></i></a></li>
-                {{/ifEqual}}
+                {{/ifNotEqual}}
                 <li></li>
             </ul>
         </div>

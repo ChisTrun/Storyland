@@ -1,3 +1,9 @@
+const view = 'error';
+const render = {
+    layout: 'plain',
+    title: 'Error Page',
+};
+
 class ErrorDisplay {
     constructor(title, code, message) {
         this.title = title;
@@ -22,18 +28,20 @@ function xmlhttpError(err, req, res, next) {
 
 function predictedErrorPageDisplay(err, req, res, next) {
     if (err instanceof ErrorDisplay) {
-        return res.status(err.code).render('error/error', {
-            layout: 'plain',
-            name: err.title,
-            message: err.message,
-        }, null);
+        render.name = err.title;
+        render.code = err.code;
+        render.message = err.message;
+        return res.status(err.code).render(view, render, null);
     } else {
         return next(err);
     }
 }
 
 function finalHandler(err, req, res, next) {
-    return res.status(500).send('Something went down ... (:<)');
+    render.name = 'Something went down ... (:<)';
+    render.code = 500;
+    render.message = err.message;
+    return res.status(500).render(view, render, null);
 }
 
 module.exports = { ErrorDisplay, logDisplay, xmlhttpError, predictedErrorPageDisplay, finalHandler };

@@ -1,40 +1,48 @@
+const { ErrorDisplay } = require('../middleware/error');
+const { BE_HOST } = require('../global/env');
 const view = 'story';
 const render = {
     layout: 'main',
-    scripts: ['/setting.client.js', '/page/home.client.js'],
+    scripts: null,
     styles: null,
     header: 'header',
     footer: 'footer',
 };
-const { BE_HOST } = require('../global/env');
 const perPage = 50;
 
 module.exports = {
     async render(req, res, next) {
-        try 
-        {
-            storyName = req.params.storyName;
+        try {
+            storyId = encodeURIComponent(req.params.storyId);
             let curPage = parseInt(req.query.page) || 1;
 
-            const response = await fetch(`${BE_HOST}/api/story/${storyName}`);
-            const data = await response.json();
+            const storyResponse = await fetch(`${BE_HOST}/api/story/${storyId}`);
+            const storyData = await storyResponse.json();
+            const chapListResponse = await fetch(`${BE_HOST}/api/story/${storyId}/chapters/all`);
+            const chapListData = await chapListResponse.json();
 
-            const totalPages = Math.ceil(data.length / perPage);
+            const totalPages = chapListData.length == 0 ? 1 : Math.ceil(chapListData.length / perPage);
             curPage = Math.min(Math.max(parseInt(curPage), 1), totalPages);
 
-            render.storyName = storyName;
-            render.chapters = data.slice((curPage - 1) * perPage, curPage * perPage);
+            storyData.description = storyData.description.replace(/\r\n\r\n/g, '<br>')
+                .replace(/\r\n/g, '<br>')
+                .replace(/\n/g, '<br>')
+                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+            Object.assign(render, {
+                ...storyData
+            });
+            render.chapters = chapListData.slice((curPage - 1) * perPage, curPage * perPage);
             render.curPage = curPage;
             render.totalPages = totalPages;
-            render.totalChapters = data ? data.length : 0;
-            render.latestIndex = data ? data[data.length-1].index : 0;
+            render.totalChapters = chapListData ? chapListData.length : 0;
+            render.firstIndex = chapListData ? chapListData[0].index : null;
+            render.lastIndex = chapListData ? chapListData[chapListData.length - 1].index : null;
+            render.title = storyData.name;
 
             return res.render(view, render, null);
         }
-        catch (error) 
-        {
-            console.error(error);
-            next(error);
+        catch (error) {
+            next(new ErrorDisplay("Xem truyện thất bại", 503, error.message));
         }
     },
 };

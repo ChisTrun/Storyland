@@ -5,11 +5,10 @@
                 <div class="col-md-3 col-sm-6 col-6">
                     <div class="d-flex align-item-center">
                         <img class="w-3dot5 h-3dot5 border-circle cursor-pointer me-2" alt="The logo of website"
-                            src="{{getUrlFromPath 'assets/logo.png'}}"
-                            onclick="location.href='{{getUrlFromPath 'home'}}'" />
-                        <div onclick="location.href='{{getUrlFromPath 'home'}}'">
+                            src="/assets/logo.png" onclick="directTo('/home')" />
+                        <div onclick="directTo('/home')">
                             <pan class="cursor-pointer" id="web-first-word">Story</pan><!-- 
-                            --><pan class="cursor-pointer text-color-eeeeee" id="web-last-word">VERSE</pan>
+                            --><pan class="cursor-pointer text-color-eeeeee" id="web-last-word">LAND</pan>
                         </div>
                     </div>
                 </div>
@@ -24,7 +23,7 @@
                 </div>
                 <div class="col-md-4 col-sm-12 col-12 d-flex align-items-center flex-row-reverse" id="header-search">
                     <div class="container position-relative">
-                        <form action="{{getUrlFromPath 'search'}}" method="GET">
+                        <form action="/search" method="GET">
                             <input class="form-control pe-5" placeholder="Nhập từ khóa để tìm kiếm" name="keyword"
                                 aria-label="Search" />
                             <button type="submit"
@@ -49,5 +48,5 @@
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
 </header>

@@ -2,9 +2,9 @@
     <div class="row fw-bold">
         <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
             <ol class="breadcrumb text-color-cccccc">
-                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
+                <li class="breadcrumb-item"><a href="/home">Home</a></li>
                 &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
-                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'story/'}}{{storyName}}">{{storyName}}</a></li>
+                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}">{{storyName}}</a></li>
                 &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
                 <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>
@@ -12,7 +12,7 @@
     </div>
     <div class="row">
         <div class="text-center">
-            <a href="{{getUrlFromPath 'story/'}}{{storyName}}" class="text-color-669900 fw-bold fs-3">{{toLoud storyName}}</a>
+            <a href="/story/{{encodeUrl storyId}}" class="text-color-669900 fw-bold fs-3">{{toLoud storyName}}</a>
         </div>
         <div class="text-center mt-1">
             <div class="text-color-cccccc">{{chapterName}}</div>
@@ -25,11 +25,13 @@
             </select>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-4">
-            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/{{plus index -1}}'">
+            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
+                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index -1}}')">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </button>
-            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/{{plus index 1}}'">
+            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
+                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index 1}}')">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </button>
@@ -49,7 +51,7 @@
         </div>
         <div class="col-lg-10 col-md-8 col-sm-6 bg-color-202020 rounded">
             <div class="fs-3 px-5 py-5 read-font">
-                {{content}}
+                {{{content}}}
             </div>
         </div>
         <div class="col-lg-1 col-md-2 col-sm-3 d-flex justify-content-end">
@@ -63,11 +65,13 @@
 <div class="container border-rounded bg-color-202020 my-4 px-4">
     <div class="row">
         <div class="d-flex align-items-center justify-content-center my-4">
-            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/{{plus index -1}}'">
+            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
+                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index -1}}')">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </button>
-            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{storyName}}/{{plus index 1}}'">
+            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
+                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index 1}}')">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </button>
@@ -76,9 +80,9 @@
     <div class="row fw-bold mb-2">
         <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
             <ol class="breadcrumb text-color-cccccc">
-                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'home'}}">Home</a></li>
+                <li class="breadcrumb-item"><a href="/home">Home</a></li>
                 &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
-                <li class="breadcrumb-item"><a href="{{getUrlFromPath 'story/'}}{{storyName}}">{{storyName}}</a></li>
+                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}">{{storyName}}</a></li>
                 &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
                 <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>

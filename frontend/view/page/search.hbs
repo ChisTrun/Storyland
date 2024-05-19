@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-12 fs-5 mt-4 mb-2 text-color-56ccf2 fw-bold">
             <i class="fa-solid fa-flag pe-1"></i>
-            Kết quả tìm kiếm
+            Kết quả tìm kiếm với từ khoá: <span class="text-white">{{keyword}}</span>
         </div>
     </div>
     <div class="row mb-3">
@@ -10,11 +10,11 @@
             <div class="row">
                 {{#each stories}}
                 <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <img class="h-17dot5 border-white w-100 cursor-pointer" {{#if
-                        imageUrl}}src="{{getUrlFromPath imageUrl}}" {{else}}src={{getUrlFromPath 'assets/naimage.jpg'
-                        }}{{/if}} alt="{{name}}" onclick="location.href='{{getUrlFromPath 'story/'}}{{name}}'" />
+                    <img class="h-17dot5 border-white w-100 cursor-pointer" {{#if imageUrl}} src="{{imageUrl}}" {{else}}
+                        src="/assets/naimage.jpg" {{/if}} alt="{{name}}"
+                        onclick="directTo('/story/{{encodeUrl id}}')" />
                     <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer text-nowrap"
-                        onclick="location.href='{{getUrlFromPath 'story/'}}{{name}}'" title="{{name}}">
+                        onclick="directTo('/story/{{encodeUrl id}}')" title="{{name}}">
                         {{limitText name 20}}
                     </div>
                 </div>
@@ -27,35 +27,28 @@
     <div class="row mt-3 mb-4">
         <ul class="pagination d-flex align-items-center justify-content-center">
             <li></li>
-            {{#ifEqual 1 curPage}}
-            {{else}}
-            {{#ifEqual 0 curPage}}
-            {{else}}
-            <li class="page-item mx-2"><a class="page-link"
-                    href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page=1"><i
+            {{#ifNotEqual curPage 1}}
+            <li class="page-item mx-2"><a class="page-link" href="/search?keyword={{keyword}}"><i
                         class="fa-solid fa-backward-step"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
-                    href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page={{plus curPage -1}}"><i
+                    href="/search?keyword={{keyword}}&page={{plus curPage -1}}"><i
                         class="fa-solid fa-chevron-left"></i></a></li>
-            {{/ifEqual}}
-            {{/ifEqual}}
+            {{/ifNotEqual}}
 
-            {{#generatePagination curPage totalPages}}
+            {{#genPagination curPage totalPages}}
             <li class="page-item mx-2">
                 <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
-                    href="{{getUrlFromPath 'search?keyword='}}{{../keyword}}&page={{this}}">{{this}}</a>
+                    href="/search?keyword={{../keyword}}&page={{this}}">{{this}}</a>
             </li>
-            {{/generatePagination}}
+            {{/genPagination}}
 
-            {{#ifEqual curPage totalPages}}
-            {{else}}
+            {{#ifNotEqual curPage totalPages}}
             <li class="page-item mx-2"><a class="page-link"
-                    href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page={{plus curPage 1}}"><i
+                    href="/search?keyword={{keyword}}&page={{plus curPage 1}}"><i
                         class="fa-solid fa-chevron-right"></i></a></li>
-            <li class="page-item mx-2"><a class="page-link"
-                    href="{{getUrlFromPath 'search?keyword='}}{{keyword}}&page={{totalPages}}"><i
+            <li class="page-item mx-2"><a class="page-link" href="/search?keyword={{keyword}}&page={{totalPages}}"><i
                         class="fa-solid fa-forward-step"></i></a></li>
-            {{/ifEqual}}
+            {{/ifNotEqual}}
             <li></li>
         </ul>
     </div>

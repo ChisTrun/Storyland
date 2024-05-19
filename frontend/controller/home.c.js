@@ -1,12 +1,11 @@
 const view = 'home';
 const render = {
     layout: 'main',
-    scripts: ['/setting.client.js', '/page/home.client.js'],
+    scripts: null,
     styles: null,
     header: 'header',
     footer: 'footer',
 };
-
 
 module.exports = {
     async render(req, res, next) {

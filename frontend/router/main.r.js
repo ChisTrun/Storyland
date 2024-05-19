@@ -29,8 +29,9 @@ router.use(
 router.use((req, res, next) => {
     return res.status(404).render('error', {
         layout: 'plain',
-        err_name: '404 Not found!',
-        err_message: `Sorry can't find that`,
+        title: "Not found!",
+        code: '404',
+        message: `Sorry can't find that!`,
     }, null);
 });
 
