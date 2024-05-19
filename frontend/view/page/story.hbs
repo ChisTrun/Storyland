@@ -30,7 +30,7 @@
                                 <i class="fa-solid fa-user"></i>
                                 Tác giả
                             </div>
-                            <div class="col-md-9 cursor-pointer" onclick="directTo('/author/{{author.id}}')">
+                            <div class="col-md-9 cursor-pointer" onclick="directTo('/author/{{author.name}}{{author.id}}')">
                                 {{#if author}}{{author.name}}{{else}}n/a{{/if}}
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                             <div class="col-md-12 mt-2">
                                 {{#each categories}}
                                 <button type="button" class="category-tag border-rounded py-1 px-2 me-2"
-                                    onclick="directTo('/category{{id}}')">
+                                    onclick="directTo('/category/{{name}}{{id}}')">
                                     {{name}}
                                 </button>
                                 {{else}}

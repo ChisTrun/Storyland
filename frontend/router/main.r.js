@@ -8,10 +8,14 @@ const router = express.Router();
 const { router: homeRouter } = require('./home.r');
 const { router: storyRouter } = require('./story.r');
 const { router: searchRouter } = require('./search.r');
+const { router: authorRouter } = require('./author.r');
+const { router: categoryRouter } = require('./category.r');
 
 router.use('/home', homeRouter);
 router.use('/story', storyRouter);
 router.use('/search', searchRouter);
+router.use('/author', authorRouter);
+router.use('/category', categoryRouter);
 
 // >>>> =============================================
 // Error

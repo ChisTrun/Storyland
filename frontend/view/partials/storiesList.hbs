@@ -1,0 +1,47 @@
+<div class="row mb-3">
+        <div class="container-fluid">
+            <div class="row">
+                {{#each stories}}
+                <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+                    <img class="h-17dot5 border-white w-100 cursor-pointer" {{#if imageUrl}} src="{{imageUrl}}" {{else}}
+                        src="/assets/naimage.jpg" {{/if}} alt="{{name}}"
+                        onclick="directTo('/story/{{encodeUrl id}}')" />
+                    <div class="text-center mt-2 mb-1 fw-bold text-color-eeeeee cursor-pointer text-nowrap"
+                        onclick="directTo('/story/{{encodeUrl id}}')" title="{{name}}">
+                        {{limitText name 20}}
+                    </div>
+                </div>
+                {{else}}
+                <div class="fs-2 my-3">Không tìm thấy kết quả nào!</div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 mb-4">
+        <ul class="pagination d-flex align-items-center justify-content-center">
+            <li></li>
+            {{#ifNotEqual curPage 1}}
+            <li class="page-item mx-2"><a class="page-link" href="/search?keyword={{keyword}}"><i
+                        class="fa-solid fa-backward-step"></i></a></li>
+            <li class="page-item mx-2"><a class="page-link"
+                    href="/search?keyword={{keyword}}&page={{plus curPage -1}}"><i
+                        class="fa-solid fa-chevron-left"></i></a></li>
+            {{/ifNotEqual}}
+
+            {{#genPagination curPage totalPages}}
+            <li class="page-item mx-2">
+                <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
+                    href="/search?keyword={{../keyword}}&page={{this}}">{{this}}</a>
+            </li>
+            {{/genPagination}}
+
+            {{#ifNotEqual curPage totalPages}}
+            <li class="page-item mx-2"><a class="page-link"
+                    href="/search?keyword={{keyword}}&page={{plus curPage 1}}"><i
+                        class="fa-solid fa-chevron-right"></i></a></li>
+            <li class="page-item mx-2"><a class="page-link" href="/search?keyword={{keyword}}&page={{totalPages}}"><i
+                        class="fa-solid fa-forward-step"></i></a></li>
+            {{/ifNotEqual}}
+            <li></li>
+        </ul>
+    </div>
