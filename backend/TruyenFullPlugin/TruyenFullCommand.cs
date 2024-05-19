@@ -233,27 +233,27 @@ public class TruyenFullCommand : ICrawler
         throw new NotImplementedException();
     }
 
-    PagingRepresentative ICrawler.GetStoriesOfCategory(string categoryId, int page, int limit)
+    PagingRepresentative<Story> ICrawler.GetStoriesOfCategory(string categoryId, int page, int limit)
     {
         throw new NotImplementedException();
     }
 
-    PagingRepresentative ICrawler.GetStoriesBySearchName(string storyName, int page, int limit)
+    PagingRepresentative<Story> ICrawler.GetStoriesBySearchName(string storyName, int page, int limit)
     {
         throw new NotImplementedException();
     }
 
-    PagingRepresentative ICrawler.GetStoriesOfAuthor(string authorId, int page, int limit)
+    PagingRepresentative<Story> ICrawler.GetStoriesOfAuthor(string authorId, int page, int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    PagingRepresentative<Chapter> ICrawler.GetChaptersOfStory(string storyId, int page, int limit)
     {
         throw new NotImplementedException();
     }
 
     IEnumerable<Chapter> ICrawler.GetChaptersOfStory(string storyId)
-    {
-        throw new NotImplementedException();
-    }
-
-    PagingRepresentative ICrawler.GetChaptersOfStory(string storyId, int page, int limit)
     {
         throw new NotImplementedException();
     }

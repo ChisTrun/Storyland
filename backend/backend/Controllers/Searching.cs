@@ -25,7 +25,7 @@ namespace backend.Controllers
         /// <param name="authorId" example="?author=27">Author's identity of each page, usally the last section of URL.</param>
         /// <param name="page" example="2">Current page (starts from 1).</param>
         /// <param name="limit" example="5">Records per page.</param>
-        [ProducesResponseType(typeof(PagingRepresentative), 200)]
+        [ProducesResponseType(typeof(PagingRepresentative<PluginBase.Models.Story>), 200)]
         [HttpGet]
         [Route("tacgia/{authorId}")]
         public IActionResult SearchByAuthor(string authorId, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
@@ -51,7 +51,7 @@ namespace backend.Controllers
         /// <param name="storyName" example="Đỉnh">Story name's searching keyword.</param>
         /// <param name="page" example="2">Current page (starts from 1).</param>
         /// <param name="limit" example="5">Records per page.</param>
-        [ProducesResponseType(typeof(PagingRepresentative), 200)]
+        [ProducesResponseType(typeof(PagingRepresentative<PluginBase.Models.Story>), 200)]
         [HttpGet]
         [Route("truyen/{storyName}")]
         public IActionResult SearchByStoryName(string storyName, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)

@@ -19,7 +19,7 @@ public interface ICrawler
     /// <param name="categoryId">Ten the loai</param>
     /// <returns>Danh sach cac truyen thuoc the loai do</returns>
     public IEnumerable<Story> GetStoriesOfCategory(string categoryId);
-    public PagingRepresentative GetStoriesOfCategory(string categoryId, int page, int limit);
+    public PagingRepresentative<Story> GetStoriesOfCategory(string categoryId, int page, int limit);
 
     /// <summary>
     /// Tim kiem truyen theo ten
@@ -27,7 +27,7 @@ public interface ICrawler
     /// <param name="storyName">Ten truyen</param>
     /// <returns>Danh sach cac truyen la ket qua tim kiem</returns>
     public IEnumerable<Story> GetStoriesBySearchName(string storyName);
-    public PagingRepresentative GetStoriesBySearchName(string storyName, int page, int limit);
+    public PagingRepresentative<Story> GetStoriesBySearchName(string storyName, int page, int limit);
 
     /// <summary>
     /// Tim thong tin truyen dua tren 'Chinh Xac' ten tac gia
@@ -35,7 +35,7 @@ public interface ICrawler
     /// <param name="authorId">Ten tac gia</param>
     /// <returns>Danh sach cac truyen la ket qua tim kiem</returns>
     public IEnumerable<Story> GetStoriesOfAuthor(string authorId);
-    public PagingRepresentative GetStoriesOfAuthor(string authorId, int page, int limit);
+    public PagingRepresentative<Story> GetStoriesOfAuthor(string authorId, int page, int limit);
 
     /// <summary>
     /// Lay thong tin cac chuong cua mot truyen
@@ -43,7 +43,7 @@ public interface ICrawler
     /// <param name="storyId">Ten truyen</param>
     /// <returns>Danh sach cac chuong cua truyen do</returns>
     public IEnumerable<Chapter> GetChaptersOfStory(string storyId);
-    public PagingRepresentative GetChaptersOfStory(string storyId, int page, int limit);
+    public PagingRepresentative<Chapter> GetChaptersOfStory(string storyId, int page, int limit);
 
     /// <summary>
     /// Lay noi dung cua mot chuong cua mot truyen

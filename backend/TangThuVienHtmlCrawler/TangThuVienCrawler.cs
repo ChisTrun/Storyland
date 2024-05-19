@@ -68,7 +68,7 @@ public class TangThuVienCrawler : ICrawler
     }
 
     // https://truyen.tangthuvien.vn/tong-hop?ctg=1&page=800&limit=2
-    public PagingRepresentative GetStoriesOfCategory(string categoryId, int page, int limit)
+    public PagingRepresentative<Story> GetStoriesOfCategory(string categoryId, int page, int limit)
     {
         string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, categoryId);
         var baseUrl = $"{categoryUrl}&limit={limit}&page={page}";
@@ -77,7 +77,7 @@ public class TangThuVienCrawler : ICrawler
         var lastLiTag = document.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:last-child");
         var aTag = lastLiTag.PreviousSiblingElement().GetChildElements().First();
         var totalPage = int.Parse(aTag.GetDirectInnerTextDecoded());
-        var paging = new PagingRepresentative(page, limit, totalPage, stories);
+        var paging = new PagingRepresentative<Story>(page, limit, totalPage, stories);
         return paging;
     }
 
@@ -92,7 +92,7 @@ public class TangThuVienCrawler : ICrawler
 
     // https://truyen.tangthuvien.vn/ket-qua-tim-kiem?term=dinh&page=2
     // dont have limit
-    public PagingRepresentative GetStoriesBySearchName(string storyName, int page, int limit)
+    public PagingRepresentative<Story> GetStoriesBySearchName(string storyName, int page, int limit)
     {
         var baseUrl = $"{DomainKetQuaTimKiem}?term={WebUtility.UrlEncode(storyName)}";
         var createUrlFromPage = new CreateURLFromPage((page) => $"{baseUrl}&page={page}");
@@ -111,7 +111,7 @@ public class TangThuVienCrawler : ICrawler
 
     // https://truyen.tangthuvien.vn/tac-gia?author=27&page=1
     // dont have limit
-    public PagingRepresentative GetStoriesOfAuthor(string authorId, int page, int limit)
+    public PagingRepresentative<Story> GetStoriesOfAuthor(string authorId, int page, int limit)
     {
         var authorUrl = ModelExtension.GetUrlFromID(ModelType.Author, authorId);
         var createUrlFromPage = new CreateURLFromPage((page) => $"{authorUrl}&page={page}");
@@ -147,7 +147,7 @@ public class TangThuVienCrawler : ICrawler
 
     // https://truyen.tangthuvien.vn/doc-truyen/page/6270?page=2&limit=10&web=1
     // https://truyen.tangthuvien.vn/story/chapters?story_id=6270
-    public PagingRepresentative GetChaptersOfStory(string storyId, int page, int limit)
+    public PagingRepresentative<Chapter> GetChaptersOfStory(string storyId, int page, int limit)
     {
         var story = GetExactStory(storyId);
         var id = GetWebPageDocument(story.GetUrl()).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
@@ -172,7 +172,7 @@ public class TangThuVienCrawler : ICrawler
         var documentTotal = GetWebPageDocument($"https://truyen.tangthuvien.vn/story/chapters?story_id={id}");
         var totalRecord = documentTotal.QuerySelectorAll("ul > li").Count;
         var totalPage = (totalRecord / limit) + (totalRecord % limit == 0 ? 0 : 1);
-        return new PagingRepresentative(page, limit, totalPage, chapters);
+        return new PagingRepresentative<Chapter>(page, limit, totalPage, chapters);
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
@@ -262,7 +262,7 @@ public class TangThuVienCrawler : ICrawler
         return representatives;
     }
 
-    private static PagingRepresentative GetRepresentativesFromATagsFromAllPagesFixedPageSize<T>(Func<HtmlDocument, IEnumerable<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible, int page, int limit) where T : Representative
+    private static PagingRepresentative<T> GetRepresentativesFromATagsFromAllPagesFixedPageSize<T>(Func<HtmlDocument, IEnumerable<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible, int page, int limit) where T : Representative
     {
         // Tại vì khi tìm kiếm nó có lẫn lộn truyện của ngontinh.tangthuvien.vn nên không xài cách này nữa
         // Trong trường hợp chuyển trang sang ngontinh.tangthuvien.vn có lỗi
@@ -283,7 +283,7 @@ public class TangThuVienCrawler : ICrawler
             systemLimit = documentFirstPage.QuerySelectorAll("#rank-view-list > div > ul > li > div.book-mid-info").Count;
             if (systemLimit == 0)
             {
-                return new PagingRepresentative(page, limit, 0, new List<T>());
+                return new PagingRepresentative<T>(page, limit, 0, new List<T>());
             }
             var lastLiPagingTag = documentFirstPage.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:last-child");
             if (lastLiPagingTag == null)
@@ -329,7 +329,7 @@ public class TangThuVienCrawler : ICrawler
             }
             systemCurrentPage += 1;
         }
-        return new PagingRepresentative(page, limit, totalPage, results);
+        return new PagingRepresentative<T>(page, limit, totalPage, results);
     }
 
     // sub-methods
