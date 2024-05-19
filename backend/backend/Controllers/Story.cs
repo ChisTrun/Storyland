@@ -39,7 +39,7 @@ namespace backend.Controllers
         /// <param name="storyId" example="/dao-gia-muon-phi-thang-dao-gia-yeu-phi-thang">Story's identity of each page, usally the last section of URL.</param>
         /// <param name="page" example="2">Current page (starts from 1).</param>
         /// <param name="limit" example="5">Records per page.</param>
-        [ProducesResponseType(typeof(Chapter[]), 200)]
+        [ProducesResponseType(typeof(PagingRepresentative), 200)]
         [HttpGet]
         [Route("{storyId}/chapters")]
         public IActionResult GetChaptersOfStory(string storyId, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)

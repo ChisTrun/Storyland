@@ -35,7 +35,7 @@ namespace backend.Controllers
         /// <param name="categoryId" example="?ctg=1">Category's identity of each page, usally the last section of URL.</param>
         /// <param name="page" example="2">Current page (starts from 1).</param>
         /// <param name="limit" example="5">Records per page.</param>
-        [ProducesResponseType(typeof(PluginBase.Models.Story[]), 200)]
+        [ProducesResponseType(typeof(PagingRepresentative), 200)]
         [HttpGet]
         [Route("{categoryId}")]
         public IActionResult GetAllStoriesOfCategory(string categoryId, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
