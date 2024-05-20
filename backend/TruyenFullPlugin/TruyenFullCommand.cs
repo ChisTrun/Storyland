@@ -1,21 +1,28 @@
 ﻿using PluginBase.Models;
 using HtmlAgilityPack;
-using HtmlAgilityPack.CssSelectors;
 using PluginBase.Utils;
 using System.Web;
 using PluginBase.Contract;
 using HtmlAgilityPack.CssSelectors.NetCore;
+using System.Text.RegularExpressions;
 
 namespace TruyenFullPlugin;
 
 public class TruyenFullCommand : ICrawler
 {
-    public string Name => "truyenfull.com";
+    public string Name => "Truyện Full";
     public string Description => "Plugin de lay data tu trang web truyenfull.com";
 
-    private static readonly string _domain = "https://truyenfull.com/";
-    private static readonly string _searchStoryURL = "https://truyenfull.com/tim-kiem/?tukhoa=";
-    private static readonly string _searchAuthorURL = "https://truyenfull.com/tac-gia/";
+    public static string Domain => "https://truyenfull.com/";
+    //public static string DomainTongHop => $"{Domain}/tong-hop";
+    public static string DomainTimKiem => "https://truyenfull.com/tim-kiem/?tukhoa=";
+    //public static string DomainKetQuaTimKiem => $"{Domain}/ket-qua-tim-kiem";
+    public static string DomainDocTruyen => $"{Domain}/doc-truyen";
+    public static string DomainTacGia => $"{Domain}/tac-gia";
+
+    //private static readonly string Domain = "https://truyenfull.com/";
+    //private static readonly string DomainTimKiem = "https://truyenfull.com/tim-kiem/?tukhoa=";
+    //private static readonly string DomainTacGia = "https://truyenfull.com/tac-gia/";
 
     private HtmlDocument GetWebPageDocument(string sourceURL)
     {
@@ -29,7 +36,7 @@ public class TruyenFullCommand : ICrawler
 
     public IEnumerable<Category> GetCategories()
     {
-        var document = GetWebPageDocument(_domain);
+        var document = GetWebPageDocument(Domain);
 
         var liTags = document.DocumentNode.QuerySelectorAll("ul.control.navbar-nav > li")[1];
         var lists = liTags.QuerySelectorAll("a");
@@ -40,18 +47,59 @@ public class TruyenFullCommand : ICrawler
         {
             var url = list.Attributes["href"].Value;
             var name = list.InnerText;
-            listOfCategories.Add(new Category(name, url));
+            listOfCategories.Add(new Category(name, ModelExtension.GetIDFromUrl(ModelType.Category, url)));
         }
 
         return listOfCategories;
     }
 
-    public IEnumerable<Story> GetStoriesOfCategory(string categoryName)
+    public IEnumerable<Story> GetStoriesOfCategory(string categoryId)
     {
-        return GetAllStoriesWithPagination($"{_domain}categoryName");
+        return GetAllStoriesWithPagination(ModelExtension.GetUrlFromID(ModelType.Category, categoryId));
     }
 
-    private List<Story> GetListOfStoriesFromHTMLNode(HtmlDocument document)
+    PagingRepresentative<Story> ICrawler.GetStoriesOfCategory(string categoryId, int page, int limit)
+    {
+        int systemLimit;
+        int totalPage;
+        int totalRecord;
+        {
+            var firstURL = ModelExtension.GetUrlFromID(ModelType.Category, categoryId);
+            var documentFirstPage = GetWebPageDocument(firstURL);
+            systemLimit = documentFirstPage.QuerySelectorAll("#list-page  .list.list-truyen  .row .col-list-image").Count;
+            if (systemLimit == 0)
+            {
+#pragma warning disable IDE0028 // Simplify collection initialization
+                return new PagingRepresentative<Story>(page, limit, 0, new List<Story>());
+#pragma warning restore IDE0028 // Simplify collection initialization
+            }
+            var lastLiPagingTag = documentFirstPage.QuerySelector(".pagination-container  ul  li:last-child");
+            if (lastLiPagingTag == null)
+            {
+                totalRecord = systemLimit;
+            }
+            else
+            {
+                var aTag = lastLiPagingTag.PreviousSiblingElement().GetChildElements().First();
+                var lastURL = aTag.Attributes["href"].Value;
+
+                var systemTotalPage = int.Parse((new Regex(@"[^\d]")).Replace(lastURL, ""));
+
+                var documentLastPage = GetWebPageDocument(lastURL);
+                var systemLastPageCount = documentLastPage.QuerySelectorAll("#list-page  .list.list-truyen  .row .col-list-image").Count;
+                totalRecord = systemLimit * (systemTotalPage - 1) + systemLastPageCount;
+            }
+            totalPage = (totalRecord / limit) + (totalRecord % limit == 0 ? 0 : 1);
+        }
+        var pageToGet = CalculatePageAndLimit(systemLimit, page, limit);
+        var systemPageStart = pageToGet.Item1;
+        var systemOffsetStart = pageToGet.Item2;
+
+        return new PagingRepresentative<Story>(page, limit, totalPage, GetAllStoriesWithOffsetAndLimit($"{Domain}{categoryId}/{(systemPageStart > 1 ? "trang-" + systemPageStart : "")}",systemOffsetStart,limit));
+    }
+
+
+    private List<Story> GetListOfStoriesFromHTMLNode(HtmlDocument document, ref int? needRemain, int offset)
     {
         var main = document.DocumentNode.QuerySelectorAll(".container .col-truyen-main .list.list-truyen");
 
@@ -61,12 +109,22 @@ public class TruyenFullCommand : ICrawler
 
         foreach (var row in rows)
         {
+            if (needRemain <= 0)
+            {
+                break;
+            }
+            if (offset >0 )
+            {
+                offset--;
+                continue;
+            }
             var url = HtmlEntity.DeEntitize(row.QuerySelector("a").Attributes["href"].Value);
             var name = HtmlEntity.DeEntitize(row.QuerySelector("a").InnerText);
 
             var img = row.SelectSingleNode(".//div[@data-desk-image]")?.Attributes["data-desk-image"]?.Value;
 
             listOfStories.Add(new Story(name, url));
+            needRemain--;
         }
 
         return listOfStories;
@@ -105,7 +163,8 @@ public class TruyenFullCommand : ICrawler
                         pageDiscoverd.Add(newPaginationLink);
                     }
                 }
-                listOfStories.AddRange((GetListOfStoriesFromHTMLNode(currentDocument)));
+                int? tmp = int.MaxValue;
+                listOfStories.AddRange((GetListOfStoriesFromHTMLNode(currentDocument, ref tmp , 0)));
             }
             catch (Exception)
             {
@@ -115,9 +174,51 @@ public class TruyenFullCommand : ICrawler
         return listOfStories;
     }
 
+    private List<Story> GetAllStoriesWithOffsetAndLimit(string sourceURL, int firstOffset, int limit)
+    {
+        var pageDiscoverd = new List<string>
+            {
+                sourceURL // first page to scrape
+            };
+
+        var pageToScrape = new Queue<string>();
+        pageToScrape.Enqueue(sourceURL);
+
+        List<Story> listOfStories = new List<Story>();
+
+        int? needRemain = limit;
+        while (pageToScrape.Count > 0 && needRemain > 0)
+        {
+            try
+            {
+                var currentPage = pageToScrape.Dequeue();
+                var currentDocument = GetWebPageDocument(currentPage);
+
+                var curpaginationHTMLElement = currentDocument.DocumentNode.QuerySelector(".pagination li.active");
+                var nextpaginationElement = curpaginationHTMLElement.NextSiblingElement().QuerySelector("a");
+                var newPaginationLink = nextpaginationElement.Attributes["href"].Value;
+                if (!pageDiscoverd.Contains(newPaginationLink))
+                {
+                    if (!pageToScrape.Contains(newPaginationLink))
+                    {
+                        pageToScrape.Enqueue(newPaginationLink);
+                    }
+                    pageDiscoverd.Add(newPaginationLink);
+                }
+                listOfStories.AddRange((GetListOfStoriesFromHTMLNode(currentDocument, ref needRemain, currentPage.Equals(sourceURL)?firstOffset:0)));
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        return listOfStories;
+    }
+
+    //todo:decode lai searchword
     public IEnumerable<Story> GetStoriesBySearchName(string searchWord)
     {
-        return GetAllStoriesWithPagination($"{_searchStoryURL}{searchWord}");
+        return GetAllStoriesWithPagination($"{DomainTimKiem}{searchWord}");
     }
 
     public IEnumerable<Story> GetStoriesOfAuthor(string searchWord)
@@ -128,13 +229,13 @@ public class TruyenFullCommand : ICrawler
         try
         {
 
-            var document = GetWebPageDocument($"{_searchAuthorURL}{searchWord}");
+            var document = GetWebPageDocument($"{DomainTacGia}{searchWord}");
             var searchRes = StringProblem.ConvertVietnameseToNormalizationForm(document.DocumentNode.QuerySelector(".breadcrumb-container h1 a").Attributes["title"].Value).Replace(' ', '-');
             var res = searchRes.Equals(searchWord);
 
             if (res)
             {
-                listOfStories = GetAllStoriesWithPagination($"{_searchAuthorURL}{searchWord}");
+                listOfStories = GetAllStoriesWithPagination($"{DomainTacGia}{searchWord}");
             }
         }
         catch (Exception)
@@ -145,7 +246,7 @@ public class TruyenFullCommand : ICrawler
 
     public List<Chapter> GetChaptersOfStory(string path)
     {
-        path = $"{_domain}{path}";
+        path = $"{Domain}{path}";
         var pageDiscoverd = new List<string>
         {
            path // first page to scrape
@@ -198,7 +299,7 @@ public class TruyenFullCommand : ICrawler
     }
     public ChapterContent GetChapterContent(string path, int chapterIndex)
     {
-        path = $"{_domain}{path}";
+        path = $"{Domain}{path}";
         var document = GetWebPageDocument(path);
 
         HtmlNode mainContent = document.DocumentNode.QuerySelector(".chapter-c");
@@ -209,11 +310,6 @@ public class TruyenFullCommand : ICrawler
     }
 
     public StoryDetail GetStoryDetail(string storyName)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<Story> GetStoriesOfCategory(string categoryId, int page, int limit)
     {
         throw new NotImplementedException();
     }
@@ -233,10 +329,6 @@ public class TruyenFullCommand : ICrawler
         throw new NotImplementedException();
     }
 
-    PagingRepresentative<Story> ICrawler.GetStoriesOfCategory(string categoryId, int page, int limit)
-    {
-        throw new NotImplementedException();
-    }
 
     PagingRepresentative<Story> ICrawler.GetStoriesBySearchName(string storyName, int page, int limit)
     {
@@ -256,5 +348,46 @@ public class TruyenFullCommand : ICrawler
     IEnumerable<Chapter> ICrawler.GetChaptersOfStory(string storyId)
     {
         throw new NotImplementedException();
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="systemLimit"></param>
+    /// <param name="page"></param>
+    /// <param name="limit"></param>
+    /// <returns>Tuple of systemPageStart and systemOffsetStart</returns>
+    private Tuple<int, int> CalculatePageAndLimit(int systemLimit, int page, int limit)
+    {
+        //int systemPageEnd = 0;
+        int systemOffsetStart = 0;
+        //int systemOffsetEnd = 0;
+
+        var offsetStart = (page - 1) * limit;
+        //var offsetEnd = Math.Min((page * limit) - 1, totalRecord - 1);
+        int systemPageStart = offsetStart / systemLimit + 1;
+        systemOffsetStart = offsetStart % systemLimit;
+        //systemPageEnd = (offsetEnd / systemLimit) + 1;
+        //systemOffsetEnd = offsetEnd % systemLimit;
+
+        //int systemCurrentPage = systemPageStart;
+        //while (systemCurrentPage <= systemPageEnd)
+        //{
+        //    var accessUrl = createURLFromPage.Invoke(systemCurrentPage);
+        //    var document = GetWebPageDocument(accessUrl);
+        //    var pageResults = crawlRepresentativesFromAPage.Invoke(document);
+        //    var offsetStart = systemCurrentPage == systemPageStart ? systemOffsetStart : 0;
+        //    var offsetEnd = systemCurrentPage == systemPageEnd ? systemOffsetEnd : systemLimit - 1;
+        //    results.AddRange(pageResults.Skip(offsetStart).Take(offsetEnd - offsetStart + 1));
+        //    if (nextPageAvailible.Invoke(document) == true)
+        //    {
+        //        break;
+        //    }
+        //    systemCurrentPage += 1;
+        //}
+        //return new PagingRepresentative<T>(page, limit, totalPage, results);
+
+        return new Tuple<int, int>(systemPageStart, systemOffsetStart);
     }
 }

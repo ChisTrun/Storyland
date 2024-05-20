@@ -1,7 +1,7 @@
 ﻿using PluginBase.Contract;
 using PluginBase.Models;
 using System.Text;
-using TangThuVienHtmlCrawler;
+using TruyenFullPlugin;
 
 
 namespace ConsoleDraft;

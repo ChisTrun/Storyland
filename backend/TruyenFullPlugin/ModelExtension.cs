@@ -18,13 +18,13 @@ namespace TruyenFullPlugin
             switch (type)
             {
                 case ModelType.Story:
-                    return Regex.Replace(url, TangThuVienCrawler.DomainDocTruyen, "");
+                    return Regex.Replace(url, TruyenFullCommand.DomainDocTruyen, "");
                 case ModelType.Author:
-                    return Regex.Replace(url, TangThuVienCrawler.DomainTacGia, "");
+                    return Regex.Replace(url, TruyenFullCommand.DomainTacGia, "");
                 case ModelType.Category:
-                    return Regex.Replace(url, TangThuVienCrawler.DomainTongHop, "");
+                    return Regex.Replace(url, TruyenFullCommand.Domain, "");
                 case ModelType.Chapter:
-                    return Regex.Replace(url, TangThuVienCrawler.DomainDocTruyen, "");
+                    return Regex.Replace(url, TruyenFullCommand.DomainDocTruyen, "");
                 default:
                     break;
             }
@@ -36,13 +36,13 @@ namespace TruyenFullPlugin
             switch (type)
             {
                 case ModelType.Story:
-                    return $"{TangThuVienCrawler.DomainDocTruyen}{id}";
+                    return $"{TruyenFullCommand.DomainDocTruyen}{id}";
                 case ModelType.Author:
-                    return $"{TangThuVienCrawler.DomainTacGia}{id}";
+                    return $"{TruyenFullCommand.DomainTacGia}{id}";
                 case ModelType.Category:
-                    return $"{TangThuVienCrawler.DomainTongHop}{id}";
+                    return $"{TruyenFullCommand.Domain}{id}";
                 case ModelType.Chapter:
-                    return $"{TangThuVienCrawler.DomainDocTruyen}{id}";
+                    return $"{TruyenFullCommand.DomainDocTruyen}{id}";
                 default:
                     break;
             }
@@ -51,19 +51,19 @@ namespace TruyenFullPlugin
 
         public static string GetUrl(this Story representative)
         {
-            return $"{TangThuVienCrawler.DomainDocTruyen}{representative.Id}";
+            return $"{TruyenFullCommand.DomainDocTruyen}{representative.Id}";
         }
         public static string GetUrl(this Author representative)
         {
-            return $"{TangThuVienCrawler.DomainTacGia}{representative.Id}";
+            return $"{TruyenFullCommand.DomainTacGia}{representative.Id}";
         }
         public static string GetUrl(this Category representative)
         {
-            return $"{TangThuVienCrawler.DomainTongHop}{representative.Id}";
+            return $"{TruyenFullCommand.Domain}{representative.Id}";
         }
         public static string GetUrl(this Chapter representative)
         {
-            return $"{TangThuVienCrawler.DomainDocTruyen}{representative.Id}";
+            return $"{TruyenFullCommand.DomainDocTruyen}{representative.Id}";
         }
 
 

@@ -14,7 +14,7 @@ namespace backend.Controllers
         [HttpGet]
         public IActionResult GetAllCategories()
         {
-            return Ok(StorySourceScanner.Instance.Commands[0].GetCategories());
+            return Ok(StorySourceScanner.Instance.Commands[1].GetCategories());
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace backend.Controllers
         [Route("{categoryId}/all")]
         public IActionResult GetAllStoriesOfCategory(string categoryId)
         {
-            return Ok(StorySourceScanner.Instance.Commands[0].GetStoriesOfCategory(categoryId));
+            return Ok(StorySourceScanner.Instance.Commands[1].GetStoriesOfCategory(categoryId));
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace backend.Controllers
         [Route("{categoryId}")]
         public IActionResult GetAllStoriesOfCategory(string categoryId, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
         {
-            return Ok(StorySourceScanner.Instance.Commands[0].GetStoriesOfCategory(categoryId, page, limit));
+            return Ok(StorySourceScanner.Instance.Commands[1].GetStoriesOfCategory(categoryId, page, limit));
         }
     }
 }
