@@ -24,7 +24,7 @@ a {
 }
 
 .bg-color-4b6b64 {
-  background-color: #4b6b64;
+  background-color: #4b6b64 !important;
 }
 
 .bg-color-202020 {

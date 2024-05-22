@@ -38,7 +38,7 @@ namespace backend.Controllers
         {
             bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
             if (!isValid) return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[0].GetStoriesOfAuthor(authorId, page, limit));
+            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesOfAuthor(authorId, page, limit));
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace backend.Controllers
         {
             bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
             if (!isValid) return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[0].GetStoriesBySearchName(storyName));
+            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesBySearchName(storyName));
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace backend.Controllers
         {
             bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
             if (!isValid) return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[0].GetStoriesBySearchName(storyName, page, limit));
+            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesBySearchName(storyName, page, limit));
         }
     }
 }

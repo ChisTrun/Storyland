@@ -10,12 +10,18 @@ const { router: storyRouter } = require('./story.r');
 const { router: searchRouter } = require('./search.r');
 const { router: authorRouter } = require('./author.r');
 const { router: categoryRouter } = require('./category.r');
+const { router: extensionRouter } = require('./extension.r');
+const { router: startRouter } = require('./start.r');
 
+
+router.use("/",startRouter)
 router.use('/home', homeRouter);
 router.use('/story', storyRouter);
 router.use('/search', searchRouter);
 router.use('/author', authorRouter);
 router.use('/category', categoryRouter);
+router.use('/extension',extensionRouter);
+
 
 // >>>> =============================================
 // Error

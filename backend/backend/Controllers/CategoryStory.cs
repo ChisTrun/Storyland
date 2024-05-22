@@ -19,7 +19,7 @@ namespace backend.Controllers
         {
             bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
             if (!isValid) return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[0].GetCategories());
+            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetCategories());
         }
 
         /// <summary>

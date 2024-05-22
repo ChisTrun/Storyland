@@ -60,7 +60,6 @@ module.exports = {
         for (let i = startPage; i <= endPage; i++) {
             pagination.push(block.fn(i));
         }
-
         return pagination.length == 1 ? '' : pagination.join(' ');
     },
 };

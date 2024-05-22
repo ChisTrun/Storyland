@@ -5,6 +5,6 @@ const storyController = require('../controller/story.c');
 const chapterController = require('../controller/chapter.c');
 
 router.get('/:storyId', storyController.render);
-router.get('/:storyId/:index', chapterController.render);
+router.get('/:storyId/:index/:server', chapterController.render);
 
 module.exports = { router };

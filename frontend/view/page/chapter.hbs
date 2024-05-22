@@ -19,19 +19,20 @@
         </div>
         <div class="d-flex align-items-center justify-content-center mt-3">
             <select class="form-select w-16dot875" id="source-menu" aria-label="Default select example">
-                <option value="0" selected>Nguồn: truyen.tangthuvien.vn</option>
-                <option value="1">Nguồn: truyenfull.vn</option>
-                <option value="2">Nguồn: lightnovel.vn</option>
+                {{#each serverArr}}
+                    <option value="{{index}}"{{#ifEqual index ../curServer}}selected {{else}}  onclick="directTo('/story/{{encodeUrl ../storyId}}/{{../index}}/{{index}}')" {{/ifEqual}}>{{name}}</option>
+                {{/each}}
+                
             </select>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-4">
             <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index -1}}')">
+                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index -1}}/{{curServer}}')">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </button>
             <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index 1}}')">
+                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index 1}}/{{curServer}}')">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </button>

@@ -77,14 +77,14 @@
                     <div class="container-fluid px-0 py-2">
                         {{#isDefined firstIndex}}
                         <button type="button" class="rounded me-2 p-2 bg-color-a9cf54"
-                            onclick="directTo('/story/{{encodeUrl id}}/{{firstIndex}}')">
+                            onclick="directTo('/story/{{encodeUrl id}}/{{firstIndex}}/{{serverIndex}}')">
                             <i class="fa-solid fa-book-open"></i>
                             Đọc từ đầu
                         </button>
                         {{/isDefined}}
                         {{#isDefined lastIndex}}
                         <button type="button" class="rounded mx-2 p-2 bg-color-8c3c4f"
-                            onclick="directTo('/story/{{encodeUrl id}}/{{lastIndex}}')">
+                            onclick="directTo('/story/{{encodeUrl id}}/{{lastIndex}}/{{serverIndex}}')">
                             <i class="fa-solid fa-book-open"></i>
                             Đọc mới nhất
                         </button>
@@ -107,7 +107,7 @@
     <div class="row border-white rounded mx-0 mt-2 my-4 py-3 ps-5">
         <div id="flex-chapters-container">
             {{#each chapters}}
-            <div class="cursor-pointer d-flex" onclick="directTo('/story/{{encodeUrl belong.id}}/{{index}}')"
+            <div class="cursor-pointer d-flex" onclick="directTo('/story/{{encodeUrl belong.id}}/{{index}}/{{../serverIndex}}')"
                 title="{{name}}">{{limitText name 45}}</div>
             {{/each}}
         </div>

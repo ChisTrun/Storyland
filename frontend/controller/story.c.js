@@ -1,5 +1,5 @@
 const { ErrorDisplay } = require('../middleware/error');
-const { BE_HOST } = require('../global/env');
+const { BE_HOST ,HOST,PORT} = require('../global/env');
 const view = 'story';
 const render = {
     layout: 'main',
@@ -7,19 +7,23 @@ const render = {
     styles: null,
     header: 'header',
     footer: 'footer',
+    host : `https://${HOST}:${PORT}`,
 };
 const perPage = 50;
-const serverIndex = 0;
+
 
 module.exports = {
     async render(req, res, next) {
         try {
+            const serverIndex = req.session.serverIndex;
             const storyId = encodeURIComponent(req.params.storyId);
             const curPage = parseInt(req.query.page) || 1;
 
             const storyResponse = await fetch(`${BE_HOST}/api/story/${serverIndex}/${storyId}`);
             const storyResBody = await storyResponse.json();
+           
             const chapListResponse = await fetch(`${BE_HOST}/api/story/${serverIndex}/${storyId}/chapters?page=${curPage}&limit=${perPage}`);
+            
             const chapListResBody = await chapListResponse.json();
             const totalPages = chapListResBody.totalPages ?  chapListResBody.totalPages : 1;
 
@@ -30,6 +34,8 @@ module.exports = {
             Object.assign(render, {
                 ...storyResBody
             });
+
+            render.serverIndex = serverIndex
             render.chapters = chapListResBody.data;
             render.curPage = curPage;
             render.totalPages = totalPages;

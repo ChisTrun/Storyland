@@ -1,5 +1,5 @@
 const { ErrorDisplay } = require('../middleware/error');
-const { BE_HOST } = require('../global/env');
+const { BE_HOST ,HOST,PORT} = require('../global/env');
 const view = 'category';
 const render = {
     layout: 'main',
@@ -7,6 +7,7 @@ const render = {
     styles: null,
     header: 'header',
     footer: 'footer',
+    host : `https://${HOST}:${PORT}`,
 };
 const perPage = 24;
 const serverIndex = 0;
@@ -22,6 +23,7 @@ module.exports = {
             const resBody = await response.json();
             const totalPages = resBody.totalPages ?  resBody.totalPages : 1;
 
+            render.serverIndex = req.session.serverIndex
             render.stories = resBody.data;
             render.categoryName = categoryName;
             render.categoryId = req.query.ctg;
