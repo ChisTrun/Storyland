@@ -18,13 +18,13 @@ namespace TruyenFullPlugin
             switch (type)
             {
                 case ModelType.Story:
-                    return Regex.Replace(url, TruyenFullCommand.DomainDocTruyen, "");
+                    return Regex.Replace(url, TruyenFullCommand.Domain, "");
                 case ModelType.Author:
                     return Regex.Replace(url, TruyenFullCommand.DomainTacGia, "");
                 case ModelType.Category:
                     return Regex.Replace(url, TruyenFullCommand.Domain, "");
                 case ModelType.Chapter:
-                    return Regex.Replace(url, TruyenFullCommand.DomainDocTruyen, "");
+                    return Regex.Replace(url, TruyenFullCommand.Domain, "");
                 default:
                     break;
             }
@@ -36,13 +36,13 @@ namespace TruyenFullPlugin
             switch (type)
             {
                 case ModelType.Story:
-                    return $"{TruyenFullCommand.DomainDocTruyen}{id}";
+                    return $"{TruyenFullCommand.Domain}{id}";
                 case ModelType.Author:
                     return $"{TruyenFullCommand.DomainTacGia}{id}";
                 case ModelType.Category:
                     return $"{TruyenFullCommand.Domain}{id}";
                 case ModelType.Chapter:
-                    return $"{TruyenFullCommand.DomainDocTruyen}{id}";
+                    return $"{TruyenFullCommand.Domain}{id}";
                 default:
                     break;
             }
@@ -51,7 +51,7 @@ namespace TruyenFullPlugin
 
         public static string GetUrl(this Story representative)
         {
-            return $"{TruyenFullCommand.DomainDocTruyen}{representative.Id}";
+            return $"{TruyenFullCommand.Domain}{representative.Id}";
         }
         public static string GetUrl(this Author representative)
         {
@@ -63,7 +63,7 @@ namespace TruyenFullPlugin
         }
         public static string GetUrl(this Chapter representative)
         {
-            return $"{TruyenFullCommand.DomainDocTruyen}{representative.Id}";
+            return $"{TruyenFullCommand.Domain}{representative.Id}";
         }
 
         public static string PagingType(ModelType modelType)
