@@ -66,8 +66,17 @@ namespace TruyenFullPlugin
             return $"{TruyenFullCommand.DomainDocTruyen}{representative.Id}";
         }
 
-
-
-
+        public static string PagingType(ModelType modelType)
+        {
+            switch (modelType)
+            {
+                case ModelType.Category:
+                    return $"/trang-";
+                case ModelType.Story:
+                    return $"&paged=";
+                default: break;
+            }
+            throw new NotImplementedException();
+        }
     }
 }
