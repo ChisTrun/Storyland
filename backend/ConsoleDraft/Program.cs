@@ -1,8 +1,7 @@
 ﻿using PluginBase.Contract;
 using PluginBase.Models;
 using System.Text;
-using TruyenFullPlugin;
-
+using TangThuVien;
 
 namespace ConsoleDraft;
 
@@ -19,7 +18,7 @@ class Program
 
         var ttv = new TangThuVienCrawler();
         TestSet1(ttv);
-        TestSet2(ttv);
+        //TestSet2(ttv);
     }
 
     static void TestSet1(TangThuVienCrawler crawler)
@@ -37,7 +36,7 @@ class Program
         //GetStoriesOfAuthorPass = false;
         //GetChaptersOfStoryPass = false;
         //GetChapterContentPass = false;
-        //GetStoryDetailPass = false;
+        GetStoryDetailPass = false;
 
         if (GetCategoriesPass == false)
         {
@@ -51,7 +50,7 @@ class Program
 
         if (GetStoriesOfCategoryPass == false)
         {
-            var storiesCategory = crawler.GetStoriesOfCategory("?ctg=1");
+            var storiesCategory = crawler.GetStoriesOfCategory("tien-hiep");
             foreach (var story in storiesCategory)
             {
                 Console.WriteLine(story.Name);
@@ -81,7 +80,7 @@ class Program
 
         if (GetChaptersOfStoryPass == false)
         {
-            var chapters = crawler.GetChaptersOfStory("/thi-ra-ho-moi-la-nhan-vat-chinh");
+            var chapters = crawler.GetChaptersOfStory("thi-ra-ho-moi-la-nhan-vat-chinh");
             foreach (var chapter in chapters)
             {
                 Console.WriteLine(chapter.Name);
@@ -92,8 +91,8 @@ class Program
         if (GetChapterContentPass == false)
         {
             //Console.WriteLine("Chương 1 : Vai Phụ Đúng Là Bản Thân Tôi" == "Chương 1 : Vai Phụ Đúng Là Bản Thân Tôi");
-            var content1 = crawler.GetChapterContent("/thi-ra-ho-moi-la-nhan-vat-chinh", 1);
-            var content2 = crawler.GetChapterContent("/thi-ra-ho-moi-la-nhan-vat-chinh", 2);
+            var content1 = crawler.GetChapterContent("thi-ra-ho-moi-la-nhan-vat-chinh", 1);
+            var content2 = crawler.GetChapterContent("thi-ra-ho-moi-la-nhan-vat-chinh", 2);
             Console.WriteLine(content1.Content);
             Console.WriteLine(content1.PrevChapID);
             Console.WriteLine(content1.NextChapID);
@@ -105,7 +104,7 @@ class Program
 
         if (GetStoryDetailPass == false)
         {
-            var storyDetail = crawler.GetStoryDetail("/thi-ra-ho-moi-la-nhan-vat-chinh");
+            var storyDetail = crawler.GetStoryDetail("thi-ra-ho-moi-la-nhan-vat-chinh");
             Console.WriteLine(storyDetail.Name);
             Console.WriteLine(storyDetail.Id);
             Console.WriteLine(storyDetail.ImageUrl);
@@ -134,7 +133,7 @@ class Program
 
         if (GetStoriesOfCategoryPass == false)
         {
-            var storiesCategory = crawler.GetStoriesOfCategory("?ctg=1", 342, 5);
+            var storiesCategory = crawler.GetStoriesOfCategory("tien-hiep", 342, 5);
             foreach (var story in storiesCategory.Data)
             {
                 Console.WriteLine(story.Name);
@@ -181,16 +180,16 @@ class Program
 
         if (GetChaptersOfStoryPass == false)
         {
-            var chaptersOfStory = crawler.GetChaptersOfStory("/dichdinh-cao-quyen-luc-suu-tam", 144, 5);
+            var chaptersOfStory = crawler.GetChaptersOfStory("dichdinh-cao-quyen-luc-suu-tam", 144, 5);
             foreach (var chapter in chaptersOfStory.Data)
             {
                 Console.WriteLine(chapter.Name);
                 Console.WriteLine(chapter.Id);
             }
             Console.WriteLine(chaptersOfStory.TotalPages);
-            var chaptersOfStory2 = crawler.GetChaptersOfStory("/tinh-dinh-kitty-cao-lanh-tong-tai-due-due-due", 1, 5);
-            var storyDetail = crawler.GetStoryDetail("/tinh-dinh-kitty-cao-lanh-tong-tai-due-due-due");
-            var chapterContent = crawler.GetChapterContent("/tinh-dinh-kitty-cao-lanh-tong-tai-due-due-due", 1);
+            var chaptersOfStory2 = crawler.GetChaptersOfStory("tinh-dinh-kitty-cao-lanh-tong-tai-due-due-due", 1, 5);
+            var storyDetail = crawler.GetStoryDetail("tinh-dinh-kitty-cao-lanh-tong-tai-due-due-due");
+            var chapterContent = crawler.GetChapterContent("tinh-dinh-kitty-cao-lanh-tong-tai-due-due-due", 1);
         }
     }
 }
