@@ -308,6 +308,7 @@ public class TruyenFullCommand : ICrawler
         int totalRecord;
         var systemPageStart = 1;
         var systemOffsetStart = 0;
+        var systemTotalPage = 0;
         if (limit >= 0 && page >= 0)
         {
             {
@@ -329,8 +330,12 @@ public class TruyenFullCommand : ICrawler
                     var aTag = lastLiPagingTag.PreviousSiblingElement().GetChildElements().First();
                     var lastURL = aTag.Attributes["href"].Value;
 
-                    var systemTotalPage = int.Parse((new Regex(@"[^\d]")).Replace(lastURL, ""));
-
+                    var regex = new Regex(@"trang-(\d+)");
+                    var match = regex.Match(lastURL);
+                    if (match.Success)
+                    {
+                        systemTotalPage = int.Parse(match.Groups[1].Value);
+                    }
                     var documentLastPage = GetWebPageDocument(lastURL);
                     var systemLastPageCount = documentLastPage.QuerySelectorAll("#list-chapter .row ul.list-chapter li a").Count;
                     totalRecord = systemLimit * (systemTotalPage - 1) + systemLastPageCount;
@@ -422,11 +427,20 @@ public class TruyenFullCommand : ICrawler
         var next = "";
         try
         {
-            storyId = storyId.Substring(0, storyId.LastIndexOf("."));
-            storyId = $"{Domain}/{storyId}/chuong-{chapterIndex}.html";
-            var document = GetWebPageDocument(storyId);
-
+            var storySubId = storyId.Substring(0, storyId.LastIndexOf("."));
+            var path = $"{Domain}/{storySubId}/chuong-{chapterIndex}.html";
+            var document = GetWebPageDocument(path);
             var mainContent = document.QuerySelector("#chapter-c");
+
+            //storyId co the la "cuc-pham-o-re.29119/" hoac "con-duong-ba-chu-f24.20355/" 
+            if (mainContent == null)
+            {
+                storySubId = storyId.Substring(0, storyId.LastIndexOf('-'));
+                path = $"{Domain}/{storySubId}/chuong-{chapterIndex}.html";
+                document = GetWebPageDocument(path);
+                mainContent = document.QuerySelector("#chapter-c");
+            }
+
             mainContent.SelectNodes("//div[contains(@class, 'ads')]")?.ToList().ForEach(n => n.Remove());
             text = mainContent.InnerHtml;
             text = text.Replace("<br>", "\n");
@@ -494,8 +508,12 @@ public class TruyenFullCommand : ICrawler
         authorATag = authorATag.QuerySelector("a");
         var tuple = GetNameUrlFromATag(authorATag);
         var author = new Author(tuple.Item2, ModelExtension.GetIDFromUrl(ModelType.Author, tuple.Item1));
-        var status = document.QuerySelector(".col-info-desc  .info > div > .text-success").GetDirectInnerTextDecoded();
-        var categoryTags = document.QuerySelectorAll(".col-info-desc  .info div ")[1].QuerySelectorAll("a");
+
+        var t = document.QuerySelectorAll(".col-info-desc  .info  div");
+        var statusSpan = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[2];
+        var tmp = statusSpan.QuerySelector("span");
+        var status = tmp.GetDirectInnerTextDecoded();
+        var categoryTags = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[1].QuerySelectorAll("a");
 
         var categories = new List<Category>();
         foreach (var categoryTag in categoryTags)

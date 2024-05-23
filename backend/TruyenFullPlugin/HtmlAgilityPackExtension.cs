@@ -7,7 +7,14 @@ namespace PluginBase.Utils
     {
         public static string GetDirectInnerTextDecoded(this HtmlNode node)
         {
+            try
+            {
             return WebUtility.HtmlDecode(node.GetDirectInnerText());
+            }
+            catch
+            {
+            }
+            return "";
         }
     }
 }
