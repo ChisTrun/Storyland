@@ -27,7 +27,7 @@ setInterval(GetServer, 100);
 
 let saveButton = $('#save-btn')
 saveButton.click(async () => {
-    fetch(`${host}/extension/server/set`, {
+    await fetch(`${host}/extension/server/set`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
