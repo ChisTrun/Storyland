@@ -14,7 +14,7 @@ namespace backend.Controllers
         /// Get detail of a Story.
         /// </summary>
         /// <param name="serverIndex">Index of the server to check.</param>
-        /// <param name="storyId" example="/dao-gia-muon-phi-thang-dao-gia-yeu-phi-thang">Story's identity of each page, usally the last section of URL.</param>
+        /// <param name="storyId" example="bat-lo-thanh-sac.28076/">Story's identity of each page, usally the last section of URL.</param>
         [ProducesResponseType(typeof(StoryDetail), 200)]
         [HttpGet]
         [Route("{serverIndex}/{storyId}")]
@@ -22,7 +22,7 @@ namespace backend.Controllers
         {
             bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
             if (!isValid) return BadRequest("Invalid server index.");
-            var crawler = StorySourceScanner.Instance.Commands[0];
+            var crawler = StorySourceScanner.Instance.Commands[serverIndex];
             return Ok(crawler.GetStoryDetail(storyId));
         }
 
@@ -30,7 +30,7 @@ namespace backend.Controllers
         /// Get all chapters of a Story.
         /// </summary>
         /// <param name="serverIndex">Index of the server to check.</param>
-        /// <param name="storyId" example="/dao-gia-muon-phi-thang-dao-gia-yeu-phi-thang">Story's identity of each page, usally the last section of URL.</param>
+        /// <param name="storyId" example="khuyet-tu-tam-sa.38965/">Story's identity of each page, usally the last section of URL.</param>
         [ProducesResponseType(typeof(Chapter[]), 200)]
         [HttpGet]
         [Route("{serverIndex}/{storyId}/chapters/all")]
@@ -46,7 +46,7 @@ namespace backend.Controllers
         /// Get chapters of a Story with paging.
         /// </summary>
         /// <param name="serverIndex">Index of the server to check.</param>
-        /// <param name="storyId" example="/dao-gia-muon-phi-thang-dao-gia-yeu-phi-thang">Story's identity of each page, usally the last section of URL.</param>
+        /// <param name="storyId" example="khuyet-tu-tam-sa.38965/">Story's identity of each page, usally the last section of URL.</param>
         /// <param name="page" example="2">Current page (starts from 1).</param>
         /// <param name="limit" example="5">Records per page.</param>
         [ProducesResponseType(typeof(PagingRepresentative<Chapter>), 200)]
@@ -64,7 +64,7 @@ namespace backend.Controllers
         /// Get Chapter content from a Story.
         /// </summary>
         /// <param name="serverIndex">Index of the server to check.</param>
-        /// <param name="storyId" example="/dao-gia-muon-phi-thang-dao-gia-yeu-phi-thang">Story's identity of each page, usally the last section of URL.</param>
+        /// <param name="storyId" example="bat-lo-thanh-sac.28076/">Story's identity of each page, usally the last section of URL.</param>
         /// <param name="chapterIndex" example="1">Index of chapter (starts from 1).</param>
         [ProducesResponseType(typeof(ChapterContent), 200)]
         [HttpGet]

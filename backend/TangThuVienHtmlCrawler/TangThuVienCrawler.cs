@@ -10,7 +10,7 @@ using System.Net;
 using System.Reflection.Metadata;
 using System.Web;
 
-namespace TangThuVienHtmlCrawler;
+namespace TruyenFullPlugin;
 
 public class TangThuVienCrawler : ICrawler
 {

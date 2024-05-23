@@ -13,7 +13,7 @@ namespace backend.Controllers
         /// Get all stories of an Author.
         /// </summary>
         /// <param name="serverIndex">Index of the server to check.</param>
-        /// <param name="authorId" example="?author=27">Author's identity of each page, usally the last section of URL.</param>
+        /// <param name="authorId" example="vainy">Author's identity of each page, usally the last section of URL.</param>
         [ProducesResponseType(typeof(PluginBase.Models.Story[]), 200)]
         [HttpGet]
         [Route("{serverIndex}/tacgia/{authorId}/all")]
@@ -28,7 +28,7 @@ namespace backend.Controllers
         /// Get stories of an Author with paging.
         /// </summary>
         /// <param name="serverIndex">Index of the server to check.</param>
-        /// <param name="authorId" example="?author=27">Author's identity of each page, usally the last section of URL.</param>
+        /// <param name="authorId" example="vainy">Author's identity of each page, usally the last section of URL.</param>
         /// <param name="page" example="2">Current page (starts from 1).</param>
         /// <param name="limit" example="5">Records per page.</param>
         [ProducesResponseType(typeof(PagingRepresentative<PluginBase.Models.Story>), 200)]
