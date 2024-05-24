@@ -169,7 +169,7 @@ public partial class TangThuVienCrawler : ICrawler
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
         var aTags = document.QuerySelectorAll(chaptersSelector);
-        var count = 0;
+        var count = 1;
         foreach (var aTag in aTags)
         {
             var fontTag = aTag.QuerySelector("font > font");
