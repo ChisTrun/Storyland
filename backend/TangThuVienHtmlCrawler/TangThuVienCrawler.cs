@@ -46,7 +46,7 @@ public partial class TangThuVienCrawler : ICrawler
         var xemThem = doc.QuerySelector("#update-tab > a");
         var xemThemURL = xemThem.GetAttributeValue("href", null) ?? throw new Exception();
         var id = GetCTG().Match(xemThemURL).Value;
-        return id;
+        return "?" + id;
     }
 
     public IEnumerable<Category> GetCategories()
@@ -69,7 +69,8 @@ public partial class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/tong-hop?ctg=1&limit=100000
     public IEnumerable<Story> GetStoriesOfCategory(string categoryId)
     {
-        string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, CategoryIDCast(categoryId));
+        string castId = CategoryIDCast(categoryId);
+        string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, castId);
         var baseUrl = $"{categoryUrl}&limit=10000";
         var document = GetWebPageDocument(baseUrl);
         var stories = RankViewListFormat.CrawlStoriesFromAPage(document);
@@ -363,16 +364,16 @@ public partial class TangThuVienCrawler : ICrawler
         return new Story(name, id, imgUrl);
     }
 
-    private Category GetExactCategory(string id)
-    {
-        var doc = GetWebPageDocument(ModelExtension.GetUrlFromID(ModelType.Category, id));
-        var name = doc.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.rank-header > div > div > div > div > p:nth - child(1) > a.act").GetDirectInnerTextDecoded();
-        return new Category(name, id);
-    }
+    // Extra functions for later uses
+    // Extra functions for later uses
+    // Extra functions for later uses
 
-    // Extra functions for later uses
-    // Extra functions for later uses
-    // Extra functions for later uses
+    //private Category GetExactCategory(string id)
+    //{
+    //    var doc = GetWebPageDocument(ModelExtension.GetUrlFromID(ModelType.Category, id));
+    //    var name = doc.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.rank-header > div > div > div > div > p:nth - child(1) > a.act").GetDirectInnerTextDecoded();
+    //    return new Category(name, id);
+    //}
 
     // note: search engine của trang này không được ổn định
     public IEnumerable<Author> GetAuthorsBySearchName(string name)
