@@ -30,6 +30,7 @@ module.exports = {
             render.curPage = curPage;
             render.totalPages = totalPages;
             render.title = `Tác giả ${authorName}`;
+            render.isDark = req.session.isDark;
 
             return res.render(view, render, null);
         }

@@ -30,6 +30,7 @@ module.exports = {
             render.curPage = curPage;
             render.totalPages = totalPages;
             render.title = `Thể loại ${categoryName}`;
+            render.isDark = req.session.isDark;
 
             return res.render(view, render, null);
         }
@@ -37,4 +38,15 @@ module.exports = {
             next(new ErrorDisplay("Tìm kiếm thể loại thất bại", 503, error.message));
         }
     },
+    async getAll(req, res, next) {
+        try {
+            const response = await fetch(`${BE_HOST}/api/category/${serverIndex}`);
+            const resBody = await response.json();
+
+            return res.json(resBody)
+        }
+        catch (error) {
+            next(new ErrorDisplay("Không thể lấy danh sách thể loại", 503, error.message));
+        }
+    }
 };

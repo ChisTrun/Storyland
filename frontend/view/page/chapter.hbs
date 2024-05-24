@@ -1,24 +1,24 @@
-<div class="container border-rounded bg-color-202020 my-4 p-4">
+<div class="container rounded main-container my-4 p-4">
     <div class="row fw-bold">
         <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
-            <ol class="breadcrumb text-color-cccccc">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}">{{storyName}}</a></li>
-                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>
         </nav>
     </div>
     <div class="row">
         <div class="text-center">
-            <a href="/story/{{encodeUrl storyId}}" class="text-color-669900 fw-bold fs-3">{{toLoud storyName}}</a>
+            <a href="/story/{{encodeUrl storyId}}" class="chapter-title fw-bold fs-3">{{toLoud storyName}}</a>
         </div>
         <div class="text-center mt-1">
-            <div class="text-color-cccccc">{{chapterName}}</div>
+            <div>{{chapterName}}</div>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-3">
-            <select class="form-select w-16dot875" id="source-menu" aria-label="Default select example">
+            <select class="form-select" id="source-menu" aria-label="Default select example">
                 {{#each serverArr}}
                     <option value="{{index}}"{{#ifEqual index ../curServer}}selected {{else}}  onclick="directTo('/story/{{encodeUrl ../storyId}}/{{../index}}/{{index}}')" {{/ifEqual}}>{{name}}</option>
                 {{/each}}
@@ -26,22 +26,22 @@
             </select>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-4">
-            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index -1}}/{{curServer}}')">
+            <a type="button" class="text-center next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/{{plus index -1}}/{{curServer}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
-            </button>
-            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index 1}}/{{curServer}}')">
+            </a>
+            <a type="button" class="text-center next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/{{plus index 1}}/{{curServer}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
-            </button>
+            </a>
         </div>
     </div>
 </div>
 
 <div class="container mt-3">
-    <div class="row text-white">
+    <div class="row">
         <div class="col-lg-1 col-md-2 col-sm-3">
             <button class="option-button">
                 <i class="fa-solid fa-list fs-5"></i>
@@ -50,7 +50,7 @@
                 <i class="fa-solid fa-font fs-5"></i>
             </button>
         </div>
-        <div class="col-lg-10 col-md-8 col-sm-6 bg-color-202020 rounded">
+        <div class="col-lg-10 col-md-8 col-sm-6 main-container rounded">
             <div class="fs-3 px-5 py-5 read-font">
                 {{{content}}}
             </div>
@@ -63,28 +63,28 @@
     </div>
 </div>
 
-<div class="container border-rounded bg-color-202020 my-4 px-4">
+<div class="container rounded main-container my-4 px-4">
     <div class="row">
         <div class="d-flex align-items-center justify-content-center my-4">
-            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index -1}}')">
+            <a type="button" class="text-center next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/{{plus index -1}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
-            </button>
-            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index 1}}')">
+            </a>
+            <a type="button" class="text-center next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/{{plus index 1}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
-            </button>
+            </a>
         </div>
     </div>
     <div class="row fw-bold mb-2">
         <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
-            <ol class="breadcrumb text-color-cccccc">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}">{{storyName}}</a></li>
-                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>
         </nav>

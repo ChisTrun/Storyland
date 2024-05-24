@@ -12,6 +12,7 @@ const { router: authorRouter } = require('./author.r');
 const { router: categoryRouter } = require('./category.r');
 const { router: extensionRouter } = require('./extension.r');
 const { router: startRouter } = require('./start.r');
+const { router: historyRouter } = require('./history.r');
 
 
 router.use("/",startRouter)
@@ -20,7 +21,8 @@ router.use('/story', storyRouter);
 router.use('/search', searchRouter);
 router.use('/author', authorRouter);
 router.use('/category', categoryRouter);
-router.use('/extension',extensionRouter);
+router.use('/extension', extensionRouter);
+router.use('/history', historyRouter);
 
 
 // >>>> =============================================

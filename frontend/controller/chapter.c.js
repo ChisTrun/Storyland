@@ -1,5 +1,5 @@
 const { ErrorDisplay } = require('../middleware/error');
-const { BE_HOST,HOST,PORT } = require('../global/env');
+const { BE_HOST, HOST, PORT } = require('../global/env');
 const view = 'chapter';
 const render = {
     layout: 'main',
@@ -7,7 +7,7 @@ const render = {
     styles: null,
     header: 'header',
     footer: 'footer',
-    host : `https://${HOST}:${PORT}`,
+    host: `https://${HOST}:${PORT}`,
 };
 
 
@@ -37,6 +37,17 @@ module.exports = {
             render.minIndex = chapListResBody[0].index;
             render.chapterName = chapListResBody[index].name;
             render.title = `${render.storyName} - ${render.chapterName}`;
+            render.isDark = req.session.isDark;
+
+            req.session.history[`${storyId}-${req.session.serverIndex}`] = {
+                id: storyId,
+                imageUrl: chapListResBody[index].belong.imageUrl,
+                storyName: render.storyName,
+                chapterName: render.chapterName,
+                server: curServer,
+                index: index,
+            }
+
             return res.render(view, render, null);
         } catch (error) {
             next(new ErrorDisplay("Đọc truyện thất bại", 503, error.message));

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="{{#if isDark}}dark{{else}}light{{/if}}">
 
 <head>
 	<title>{{title}}</title>
@@ -35,7 +35,7 @@
 			aria-labelledby="staticBackdropLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
-					<div class="modal-header bg-color-4b6b64">
+					<div class="modal-header bg-color-primary">
 						<h1 class="modal-title fs-5" id="staticBackdropLabel">Chọn nguồn ưu tiên</h1>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
@@ -44,7 +44,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="button" id="save-btn" class="btn bg-color-4b6b64 text-light">Save Change</button>
+						<button type="button" id="save-btn" class="btn bg-color-primary text-light">Save Change</button>
 					</div>
 				</div>
 			</div>
@@ -62,9 +62,9 @@
 		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
 		crossorigin="anonymous"></script>
 
-	<script src="/helper.client.js"></script>
+	{{!-- <script src="/helper.client.js"></script> --}}
 	{{!-- only availible when using this layout --}}
-	<script src="/inner.client.js"></script>
+	{{!-- <script src="/inner.client.js"></script> --}}
 
 	<script src="/js/index.js"></script>
 

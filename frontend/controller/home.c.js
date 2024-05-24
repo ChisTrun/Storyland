@@ -12,7 +12,9 @@ const render = {
 
 module.exports = {
     async render(req, res, next) {
-        render.serverIndex = req.session.serverIndex
+        render.serverIndex = req.session.serverIndex;
+        render.title = "Trang chủ";
+        render.isDark = req.session.isDark;
         return res.render(view, render, null);
     },
 };

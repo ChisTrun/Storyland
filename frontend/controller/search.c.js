@@ -28,6 +28,7 @@ module.exports = {
             render.curPage = curPage;
             render.totalPages = totalPages;
             render.title = "Kết quả tìm kiếm";
+            render.isDark = req.session.isDark;
 
             return res.render(view, render, null);
         }

@@ -31,6 +31,8 @@ module.exports = {
                 .replace(/\r\n/g, '<br>')
                 .replace(/\n/g, '<br>')
                 .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+            storyResBody.description = storyResBody.description.replace(/<br>(\s*&nbsp;)*/g, '<br>');
+            
             Object.assign(render, {
                 ...storyResBody
             });
@@ -41,6 +43,12 @@ module.exports = {
             render.totalPages = totalPages;
             render.firstIndex = 0;
             render.title = storyResBody.name;
+            render.isDark = req.session.isDark;
+
+            if (req.session.history[`${storyId}-${serverIndex}`]) {
+                const story = req.session.history[`${storyId}-${serverIndex}`];
+                render.conIndex = story.index;
+            }
 
             return res.render(view, render, null);
         }
