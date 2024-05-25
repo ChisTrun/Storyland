@@ -9,6 +9,7 @@
   --senary-color: #a9cf54;
   --septenary-color: #2090ce;
   --octonary-color: #ff8d1b;
+  --nonary-color: #a5a5a5;
   --text-color: #fefefe;
 }
 
@@ -20,6 +21,7 @@
   --quinary-color: #1d97c0;
   --senary-color: #658819;
   --septenary-color: #2090ce;
+  --nonary-color: #9c9c9c;
   --text-color: #202020;
 }
 
@@ -188,8 +190,9 @@ footer .web-logo {
   color: var(--text-color);
 }
 
-.read-font {
+.reading-font {
   font-family: "Times New Roman", Times, serif;
+  font-size: 28px;
 }
 
 .page-item .active {
@@ -252,7 +255,7 @@ footer .web-logo {
 .story-card-image {
   display: inline-block;
   height: auto;
-  width: auto;
+  width: 100%;
   overflow: hidden;
   border: 1px solid white;
 }
@@ -305,7 +308,7 @@ footer .web-logo {
   color: #669900;
 }
 
-.chapters-list {
+#chapters-list {
   border: 1px solid var(--text-color);
 }
 
@@ -353,8 +356,8 @@ footer .web-logo {
 
 #flex-chapters-container > a {
   display: block;
-  width: auto;
-  margin: 0.2rem 2rem;
+  width: 40% !important;
+  margin: 0.2rem 2rem 0.2rem 1rem;
   line-height: 2rem;
   font-size: 1rem;
   font-weight: bold;
@@ -362,7 +365,7 @@ footer .web-logo {
 
 #flex-chapters-container > a:hover,
 #flex-chapters-container > a:active {
-  transition: 0.3s ease;
+  transition: 0.1s ease;
   color: var(--octonary-color);
 }
 
@@ -389,6 +392,7 @@ footer .web-logo {
   margin: 0 0.2rem;
   width: 100%;
   max-width: 16.875rem;
+  aspect-ratio: 1 / 1.5;
   max-height: 25rem;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
@@ -433,6 +437,139 @@ footer .web-logo {
   border: 2px solid var(--text-color);
   padding: 0.6rem 0.8rem;
   min-width: 18rem;
+}
+
+#text-format-panel {
+  position: relative;
+  left: 60px;
+  top: -56px;
+  background-color: var(--tertiary-color);
+  color: var(--text-color);
+  width: max-content;
+  border: 1px solid var(--text-color);
+  padding: 1.2rem 1rem 0.8rem;
+}
+
+.button-container {
+  width: 34rem;
+  flex-direction: row;
+  height: 3rem;
+  line-height: 2.5rem;
+}
+
+.text-container {
+  width: 7rem;
+  text-align: left;
+  background: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--text-color);
+  display: inline-block;
+}
+
+.text-format-button {
+  min-width: 8rem;
+  padding: 0 0.5rem;
+  text-align: center;
+  border: 1px solid var(--text-color);
+  background: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.color-text-format-button {
+  display: inline-block;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 2px solid var(--text-color);
+  border-radius: 50%;
+}
+
+.background-color-button {
+  display: inline-block;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 2px solid var(--text-color);
+  border-radius: 50%;
+}
+
+.active {
+  border: 2px solid var(--octonary-color);
+  color: var(--octonary-color);
+}
+
+#up-btn {
+  display: none;
+  position: fixed;
+  bottom: 1.4rem;
+  right: 1.4rem;
+  z-index: 99;
+  font-size: 1.2rem;
+  border: 1px solid var(--octonary-color);
+  outline: none;
+  background: none;
+  color: var(--octonary-color);
+  cursor: pointer;
+  padding: 0.7rem 0.9rem 0.5rem;
+  border-radius: 0.4rem;
+  transition: 0.3s ease;
+}
+
+#up-btn:hover {
+  color: var(--secondary-color);
+  background: var(--octonary-color);
+}
+
+#chapters-list-panel {
+  position: relative;
+  left: 60px;
+  top: -111px;
+  background-color: var(--tertiary-color);
+  color: var(--text-color);
+  width: max-content;
+  max-height: 25rem;
+  border: 1px solid var(--text-color);
+  padding: 0.8rem 1rem;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chapter-item {
+  display: block;
+  border: 1px solid var(--nonary-color);
+  width: 13rem;
+  text-align: center;
+  padding: 0.2rem 0.7rem;
+  margin: 0.6rem;
+}
+
+.active-chapter {
+  border: 1px solid var(--octonary-color);
+}
+
+.chapter-item:hover,
+.chapter-item:active {
+  border: 1px solid var(--octonary-color);
+}
+
+.history-delete-btn {
+  position: absolute;
+  right: 0.8rem;
+  top: 0.4rem;
+  font-size: 2rem;
+  text-shadow: 0 0 3px #ffffff, 0 0 7px #ffffff;
+  font-weight: bold;
+  color: #610017;
+  z-index: 1;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.history-delete-btn:hover,
+.history-delete-btn:active {
+  border: none;
+  color: red!important;
 }
 
 @media only screen and (max-width: 768px) {

@@ -3,11 +3,11 @@ const { HOST, PORT } = require('./global/env');
 const cors = require('cors');
 const app = express();
 
-app.use(cors())
-require('./config/session.config')(app)
-require('./config/reader.config')(app)
-require('./config/hbs.config')(app)
-require('./config/router.config')(app)
+app.use(cors());
+require('./config/session.config')(app);
+require('./config/reader.config')(app);
+require('./config/hbs.config')(app);
+require('./config/router.config')(app);
 
 
 const server = https.createServer({

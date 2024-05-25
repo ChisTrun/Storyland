@@ -15,4 +15,4 @@ module.exports = (app) => {
     app.use(express.static('./view/script'));
     app.use(express.static('./view/style'));
     app.use(express.static('./public'));
-}
+};

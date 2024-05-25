@@ -6,5 +6,5 @@ module.exports = (app) => {
         resave: false,
         saveUninitialized: true,
         cookie: { secure: true }
-      }))
-}
+    }));
+};

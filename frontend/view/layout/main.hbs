@@ -3,6 +3,8 @@
 
 <head>
 	<title>{{title}}</title>
+	<link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -21,6 +23,9 @@
 </head>
 
 <body>
+	<div id="up-btn" title="Back to top">
+		<i class="fa-solid fa-chevron-up"></i>
+	</div>
 
 	{{!-- https://handlebarsjs.com/guide/builtin-helpers.html#lookup --}}
 	{{!-- The dot means the render context (the main context), which is the object
@@ -40,7 +45,7 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body bg-dark-subtle text-black server-modal">
-					
+
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -49,7 +54,6 @@
 				</div>
 			</div>
 		</div>
-
 	</main>
 
 	{{> (lookup . 'footer') }}
@@ -62,14 +66,16 @@
 		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
 		crossorigin="anonymous"></script>
 
-	{{!-- <script src="/helper.client.js"></script> --}}
+	{{!--
+	<script src="/helper.client.js"></script> --}}
 	{{!-- only availible when using this layout --}}
-	{{!-- <script src="/inner.client.js"></script> --}}
+	{{!--
+	<script src="/inner.client.js"></script> --}}
 
 	<script src="/js/index.js"></script>
 
 	<script>
-		let serverIndex = {{serverIndex}}
+		let serverIndex = {{ serverIndex }}
 		let host = "{{host}}"
 	</script>
 

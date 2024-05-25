@@ -12,25 +12,26 @@
         <ul class="pagination d-flex align-items-center justify-content-center">
             <li></li>
             {{#ifNotEqual curPage 1}}
-            <li class="page-item mx-2"><a class="page-link" href="/author/{{authorName}}?author={{authorId}}&page=1"><i
+            <li class="page-item mx-2"><a class="page-link" href="/author/{{curServer}}/{{authorName}}?id={{encodeUrl authorId}}&page=1"><i
                         class="fa-solid fa-backward-step"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
-                    href="/author/{{authorName}}?author={{authorId}}&page={{plus curPage -1}}"><i
+                    href="/author/{{curServer}}/{{authorName}}?id={{encodeUrl authorId}}&page={{plus curPage -1}}"><i
                         class="fa-solid fa-chevron-left"></i></a></li>
             {{/ifNotEqual}}
 
             {{#genPagination curPage totalPages}}
             <li class="page-item mx-2">
                 <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
-                    href="/author/{{../authorName}}?author={{../authorId}}&page={{this}}">{{this}}</a>
+                    href="/author/{{../curServer}}/{{../authorName}}?id={{encodeUrl ../authorId}}&page={{this}}">{{this}}</a>
             </li>
             {{/genPagination}}
 
             {{#ifNotEqual curPage totalPages}}
             <li class="page-item mx-2"><a class="page-link"
-                    href="/author/{{authorName}}?author={{authorId}}&page={{plus curPage 1}}"><i
+                    href="/author/{{curServer}}/{{authorName}}?id={{encodeUrl authorId}}&page={{plus curPage 1}}"><i
                         class="fa-solid fa-chevron-right"></i></a></li>
-            <li class="page-item mx-2"><a class="page-link" href="/author/{{authorName}}?author={{authorId}}&page={{totalPages}}"><i
+            <li class="page-item mx-2"><a class="page-link"
+                    href="/author/{{curServer}}/{{authorName}}?id={{encodeUrl authorId}}&page={{totalPages}}"><i
                         class="fa-solid fa-forward-step"></i></a></li>
             {{/ifNotEqual}}
             <li></li>
