@@ -30,7 +30,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\ExporterEPUB\ExporterEPUB.csproj" />
 		<ProjectReference Include="..\PluginBase\PluginBase.csproj" />
+		<ProjectReference Include="..\TestExporter\TestExporter.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

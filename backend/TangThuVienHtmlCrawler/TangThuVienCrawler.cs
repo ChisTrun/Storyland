@@ -20,6 +20,18 @@ public partial class TangThuVienCrawler : ICrawler
         var web = new HtmlWeb();
         web.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
         var document = web.Load(sourceURL);
+        while (true)
+        {
+            var title = document.QuerySelector("title");
+            if (title != null && title.GetDirectInnerTextDecoded() == "Site Maintenance")
+            {
+                document = web.Load(sourceURL);
+            }
+            else
+            {
+                break;
+            }
+        }
         return document;
     }
 
@@ -200,7 +212,8 @@ public partial class TangThuVienCrawler : ICrawler
         var chapterUrl = ModelExtension.GetUrlFromID(ModelType.Chapter, chapterId);
         var document = GetWebPageDocument(chapterUrl);
         var contentSelector = "div.chapter-c > div.chapter-c-content > div.box-chap:not(.hidden)";
-        var content = document.QuerySelector(contentSelector).GetDirectInnerTextDecoded();
+        var node = document.QuerySelector(contentSelector);
+        var content = node.GetDirectInnerTextDecoded();
         int total;
         {
             var storyId = document.QuerySelector("body > div.box-report > form > input[name=story_id]").GetAttributeValue("value", null);

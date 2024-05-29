@@ -2,14 +2,13 @@
 {
     public class Story : Representative
     {
-        public string? ImageUrl { get; set; }
+        public string ImageUrl { get; set; }
         /// <param name="name" example="Kiếm Lai"></param>
         /// <param name="id" exmaple="kiem-lai"></param>
         /// <param name="imageUrl" example="https://www.nae.vn/ttv/ttv/public/images/story/af6eb3e654cc2282cad5a1d7b5f8ba149ed358cb521d8bf63b9a3c8aec88f03f.jpg"></param>
-        public Story(string name, string id, string? imageUrl = null) : base(name, id)
+        public Story(string name, string id, string? imageUrl) : base(name, id)
         {
-            ImageUrl = imageUrl;
+            ImageUrl = imageUrl ?? "https://birkhauser.de/product-not-found.png";
         }
-
     }
 }
