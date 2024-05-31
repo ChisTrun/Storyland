@@ -153,7 +153,7 @@ namespace DtruyenHtmlCrawler
                     HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/{storyId}?page={iCopy}/#danh-sach-chuong");
                     foreach (var node in curPage.QuerySelectorAll("#danh-sach-chuong > div")[1].QuerySelectorAll("ul li a"))
                     {
-                        chapters.Add(new Chapter(node.InnerText, node.GetAttributeValue("href", ""), story, int.Parse(_regex03.Match(node.GetAttributeValue("href", "")).Groups[1].Value)));
+                        chapters.Add(new Chapter(node.InnerText, node.GetAttributeValue("href", ""), story, int.Parse(_regex03.Match(node.GetAttributeValue("href", "")).Groups[1].Value) - 1));
                     }
                     return chapters;
                 }));
@@ -188,7 +188,7 @@ namespace DtruyenHtmlCrawler
                     count++;
                     if (count > limit || startIndex >= nodes.Count) break;
                     HtmlNode node = doc.QuerySelectorAll("#danh-sach-chuong > div")[1].QuerySelectorAll("ul li a")[startIndex];
-                    chapters.Add(new Chapter(node.InnerText, node.GetAttributeValue("href", ""), story, count + skippedElements));
+                    chapters.Add(new Chapter(node.InnerText, node.GetAttributeValue("href", ""), story, count + skippedElements - 1));
                 }
                 startIndex = 0;
                 startPage += 1;
