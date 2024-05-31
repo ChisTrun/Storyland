@@ -8,7 +8,7 @@ namespace TruyenFullPlugin
         Story,
         Author,
         Category,
-        Chapter,
+        Chapter
     }
 
     public static class ModelExtension
@@ -22,7 +22,7 @@ namespace TruyenFullPlugin
                 case ModelType.Author:
                     return Regex.Replace(url, TruyenFullCommand.DomainTacGia, "");
                 case ModelType.Category:
-                    return Regex.Replace(url, TruyenFullCommand.Domain, "");
+                    return Regex.Replace(url, TruyenFullCommand.DomainTheLoai, "");
                 case ModelType.Chapter:
                     return Regex.Replace(url, TruyenFullCommand.Domain, "");
                 default:
@@ -40,7 +40,7 @@ namespace TruyenFullPlugin
                 case ModelType.Author:
                     return $"{TruyenFullCommand.DomainTacGia}{id}";
                 case ModelType.Category:
-                    return $"{TruyenFullCommand.Domain}{id}";
+                    return $"{TruyenFullCommand.DomainTheLoai}{id}";
                 case ModelType.Chapter:
                     return $"{TruyenFullCommand.Domain}{id}";
                 default:
@@ -59,7 +59,7 @@ namespace TruyenFullPlugin
         }
         public static string GetUrl(this Category representative)
         {
-            return $"{TruyenFullCommand.Domain}{representative.Id}";
+            return $"{TruyenFullCommand.DomainTheLoai}{representative.Id}";
         }
         public static string GetUrl(this Chapter representative)
         {
@@ -71,9 +71,24 @@ namespace TruyenFullPlugin
             switch (modelType)
             {
                 case ModelType.Category:
-                    return $"/trang-";
+                case ModelType.Chapter:
+                    return $"trang-";
                 case ModelType.Story:
                     return $"&paged=";
+                default: break;
+            }
+            throw new NotImplementedException();
+        }
+
+        public static Regex PageNumberRegrex(ModelType modelType)
+        {
+            switch (modelType)
+            {
+                case ModelType.Category:
+                case ModelType.Chapter:
+                    return new Regex(@"trang-(\d+)");
+                case ModelType.Story:
+                    return new Regex(@"&paged=(\d+)");
                 default: break;
             }
             throw new NotImplementedException();

@@ -9,7 +9,7 @@ namespace PluginBase.Utils
         {
             try
             {
-            return WebUtility.HtmlDecode(node.GetDirectInnerText());
+            return WebUtility.HtmlDecode(node.InnerText);
             }
             catch
             {

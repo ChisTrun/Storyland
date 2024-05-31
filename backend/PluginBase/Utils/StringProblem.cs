@@ -14,7 +14,8 @@ namespace PluginBase.Utils
 
             var regex = new Regex(@"\p{Mn}", RegexOptions.Compiled);
             string standardString = regex.Replace(normalizedString, string.Empty);
-
+            standardString = standardString.Replace("đ", "d");
+            standardString = standardString.Replace("Đ", "D");
             standardString = standardString.ToLower();
 
             return standardString;
