@@ -30,7 +30,8 @@
                                 <i class="fa-solid fa-user"></i>
                                 Tác giả
                             </div>
-                            <a class="col-md-9 d-block" {{#if author}}href="/author/{{curServer}}/{{author.name}}?id={{encodeUrl author.id}}{{/if}}">
+                            <a class="col-md-9 d-block" {{#if
+                                author}}href="/author/{{author.name}}?id={{encodeUrl author.id}}{{/if}}">
                                 {{#if author}}{{author.name}}{{else}}n/a{{/if}}
                             </a>
                         </div>
@@ -45,13 +46,28 @@
                         </div>
                         <div class="row py-2">
                             <div class="col-md-3 fw-bold">
+                                <i class="fa-solid fa-server"></i>
+                                Nguồn
+                            </div>
+                            <div class="col-md-9">
+                                {{#each serverArr}}
+                                {{#ifEqual index ../storyServer}}
+                                {{name}}
+                                {{/ifEqual}}
+                                {{else}}
+                                n/a
+                                {{/each}}
+                            </div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-md-3 fw-bold">
                                 <i class="fa-solid fa-tags"></i>
                                 Thể loại
                             </div>
                             <div class="col-md-12 mt-2">
                                 {{#each categories}}
                                 <a type="button" class="category-tag rounded py-1 px-2 me-2"
-                                    href="/category/{{../curServer}}/{{this.name}}?id={{encodeUrl this.id}}">
+                                    href="/category/{{this.name}}?id={{encodeUrl this.id}}">
                                     {{this.name}}
                                 </a>
                                 {{else}}
@@ -61,16 +77,16 @@
                         </div>
                     </div>
                     <div class="container-fluid px-0 py-2">
-                        {{#isDefined firstIndex}}
+                        {{#isDefined storyFirstIndex}}
                         <a type="button" class="rounded me-2 p-2 start-chapter-btn"
-                            href="/story/{{curServer}}/{{encodeUrl id}}/{{firstIndex}}">
+                            href="/story/{{encodeUrl id}}/s{{storyServer}}/chapter/{{storyFirstIndex}}">
                             <i class="fa-solid fa-book-open"></i>
                             Đọc từ đầu
                         </a>
                         {{/isDefined}}
                         {{#isDefined conIndex}}
                         <a type="button" class="rounded mx-2 p-2 con-chapter-btn"
-                            href="/story/{{curServer}}/{{encodeUrl id}}/{{conIndex}}">
+                            href="/story/{{encodeUrl id}}/s{{storyServer}}/chapter/{{conIndex}}">
                             <i class="fa-solid fa-location-arrow"></i>
                             Đọc tiếp
                         </a>
@@ -97,41 +113,12 @@
             Danh sách chương
         </div>
     </div>
-    <div class="row rounded mb-2 py-3 mx-0 ps-5" id="chapters-list">
-        <div id="flex-chapters-container">
-            {{#each chapters}}
-            <a class="truncate chapterName" href="/story/{{../curServer}}/{{encodeUrl ../id}}/{{this.index}}/" title="{{this.name}}">
-                {{this.name}}</a>
-            {{/each}}
-        </div>
-        <div class="row mt-3 mb-1">
-            <ul class="pagination d-flex align-items-center justify-content-center">
-                <li></li>
-                {{#ifNotEqual curPage 1}}
-                <li class="page-item mx-2"><a class="page-link" href="/story/{{curServer}}/{{encodeUrl id}}#chapters-list"><i
-                            class="fa-solid fa-backward-step"></i></a></li>
-                <li class="page-item mx-2"><a class="page-link"
-                        href="/story/{{curServer}}/{{encodeUrl id}}?page={{plus curPage -1}}#chapters-list"><i
-                            class="fa-solid fa-chevron-left"></i></a></li>
-                {{/ifNotEqual}}
-
-                {{#genPagination curPage totalPages}}
-                <li class="page-item mx-2">
-                    <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
-                        href="/story/{{../curServer}}/{{encodeUrl ../id}}?page={{this}}#chapters-list">{{this}}</a>
-                </li>
-                {{/genPagination}}
-
-                {{#ifNotEqual curPage totalPages}}
-                <li class="page-item mx-2"><a class="page-link"
-                        href="/story/{{curServer}}/{{encodeUrl id}}?page={{plus curPage 1}}#chapters-list"><i
-                            class="fa-solid fa-chevron-right"></i></a></li>
-                <li class="page-item mx-2"><a class="page-link"
-                        href="/story/{{curServer}}/{{encodeUrl id}}?page={{totalPages}}#chapters-list"><i
-                            class="fa-solid fa-forward-step"></i></a></li>
-                {{/ifNotEqual}}
-                <li></li>
-            </ul>
-        </div>
+    <div class="row rounded mb-2 mx-0 py-3" id="chapters-container">
+        <img src="/assets/loading.gif" class="load-img m-auto text-center" />
     </div>
 </div>
+
+<script>
+    const storyId = `{{encodeUrl storyId}}`;
+    const storyServer = `{{storyServer}}`;
+</script>

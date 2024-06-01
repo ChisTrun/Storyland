@@ -1,6 +1,6 @@
 module.exports = {
     async redirectToHomePage(req, res, next) {
-        res.redirect("/home");
+        return res.redirect("/home");
     },
     async setUpCookies(req, res, next) {
         if (req.session.isDark == undefined) {
@@ -16,7 +16,7 @@ module.exports = {
     },
     async changeDarkMode(req, res, next) {
         const curMode = req.body.curMode;
-        curMode === 'light' ? req.session.isDark = true : req.session.isDark = false;
+        curMode == 'light' ? req.session.isDark = true : req.session.isDark = false;
         return res.json({ isDark: req.session.isDark });
     },
 };

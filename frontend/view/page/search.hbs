@@ -21,7 +21,7 @@
 
             {{#genPagination curPage totalPages}}
             <li class="page-item mx-2">
-                <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
+                <a class="page-link {{#ifEqual this ../curPage}}page-active{{/ifEqual}}"
                     href="/search?keyword={{../keyword}}&page={{this}}">{{this}}</a>
             </li>
             {{/genPagination}}

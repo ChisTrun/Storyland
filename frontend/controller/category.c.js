@@ -15,16 +15,18 @@ const perPage = 24;
 module.exports = {
     async render(req, res, next) {
         try {
-            const curServer = req.params.serverIndex;
-            const categoryId = req.query.id;
+            const serverIndex = req.session.serverIndex;
+            const categoryId = decodeURIComponent(req.query.id);
             const categoryName = req.params.categoryName;
             const curPage = parseInt(req.query.page) || 1;
 
-            const response = await fetch(`${BE_HOST}/api/category/${curServer}/${categoryId}?page=${curPage}&limit=${perPage}`);
+            const response = await fetch(`${BE_HOST}/api/category/${serverIndex}/${encodeURIComponent(categoryId)}?page=${curPage}&limit=${perPage}`);
             const resBody = await response.json();
             const totalPages = resBody.totalPages ? resBody.totalPages : 1;
-
-            render.curServer = curServer;
+            if (curPage > totalPages) {
+                return res.redirect('back');
+            }
+            
             render.stories = resBody.data;
             render.categoryName = categoryName;
             render.categoryId = categoryId;
@@ -43,14 +45,15 @@ module.exports = {
     },
     async getAll(req, res, next) {
         try {
-            const response = await fetch(`${BE_HOST}/api/category/${req.params.serverIndex}`);
+            const serverIndex = req.session.serverIndex;
+            const response = await fetch(`${BE_HOST}/api/category/${serverIndex}`);
             const resBody = await response.json();
 
             return res.json(resBody);
         }
         catch (error) {
             console.log(error.message);
-            return res.json({});
+            return res.json([]);
         }
     },
 };

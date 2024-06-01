@@ -2,21 +2,15 @@
 <html lang="en" data-theme="{{#if isDark}}dark{{else}}light{{/if}}">
 
 <head>
-	<title>{{title}}</title>
-	<link rel="icon" type="image/x-icon" href="/assets/favicon.png">
-
-	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<!-- Bootstrap CSS -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+	<title>{{title}}</title>
+	<link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
 		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-	<!-- Font awesome CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
 	<link rel="stylesheet" href="/css/style.css">
-
 	{{#each styles}}
 	<link rel="stylesheet" href="{{this}}">
 	{{/each}}
@@ -34,51 +28,20 @@
 
 	<main>
 		{{{body}}}
-
-		<!-- Modal -->
-		<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-			aria-labelledby="staticBackdropLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-				<div class="modal-content">
-					<div class="modal-header bg-color-primary">
-						<h1 class="modal-title fs-5" id="staticBackdropLabel">Chọn nguồn ưu tiên</h1>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body bg-dark-subtle text-black server-modal">
-
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="button" id="save-btn" class="btn bg-color-primary text-light">Save Change</button>
-					</div>
-				</div>
-			</div>
-		</div>
 	</main>
 
 	{{> (lookup . 'footer') }}
 
-	<!-- Jquery JS -->
 	<script src="https://code.jquery.com/jquery-3.7.1.js"
 		integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
 		crossorigin="anonymous"></script>
-
-	{{!--
-	<script src="/helper.client.js"></script> --}}
-	{{!-- only availible when using this layout --}}
-	{{!--
-	<script src="/inner.client.js"></script> --}}
-
-	<script src="/js/index.js"></script>
-
 	<script>
-		let serverIndex = {{ serverIndex }}
-		let host = "{{host}}"
+		let serverIndex = {{ serverIndex }};
+		let host = "{{host}}";
 	</script>
-
+	<script src="/js/index.js"></script>
 	{{#each scripts}}
 	<script src="{{this}}"></script>
 	{{/each}}

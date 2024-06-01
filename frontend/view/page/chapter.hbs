@@ -4,7 +4,8 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
-                <li class="breadcrumb-item"><a href="/story/{{curServer}}/{{encodeUrl storyId}}">{{storyName}}</a></li>
+                <li class="breadcrumb-item"><a
+                        href="/story/{{encodeUrl storyId}}/s{{storyServer}}">{{storyName}}</a></li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>
@@ -12,32 +13,30 @@
     </div>
     <div class="row">
         <div class="text-center">
-            <a href="/story/{{curServer}}/{{encodeUrl storyId}}" class="chapter-title fw-bold fs-3">{{toLoud
+            <a href="/story/{{encodeUrl storyId}}/s{{storyServer}}" class="chapter-title fw-bold fs-3">{{toLoud
                 storyName}}</a>
         </div>
         <div class="text-center mt-1">
             <div>{{chapterName}}</div>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-3">
-            <select class="form-select" id="source-menu" aria-label="Default select example">
+            <select class="form-select" id="source-menu" aria-label="Default select example" onchange="if (typeof(this.selectedIndex) != 'undefined') getContent(this.selectedIndex);">
                 {{#each serverArr}}
-                <option value="{{index}}" {{#ifEqual index ../curServer}}selected {{else}}
-                    onclick="directTo('/story/{{index}}/{{encodeUrl ../storyId}}/{{../index}}')" {{/ifEqual}}>{{name}}
+                <option value="{{index}}" {{#ifEqual ../storyServer index}} selected {{/ifEqual}}>{{name}}
                 </option>
                 {{/each}}
-
             </select>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-4">
             <a type="button"
-                class="text-center next-pre-button pre-chapter-btn {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
-                href="/story/{{curServer}}/{{encodeUrl storyId}}/{{plus index -1}}">
+                class="text-center next-pre-button pre-chapter-btn {{#ifEqual chapterMinIndex chapterIndex}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/s{{storyServer}}/chapter/{{plus chapterIndex -1}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </a>
             <a type="button"
-                class="text-center next-pre-button next-chapter-btn {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
-                href="/story/{{curServer}}/{{encodeUrl storyId}}/{{plus index 1}}">
+                class="text-center next-pre-button next-chapter-btn {{#ifEqual chapterMaxIndex chapterIndex}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/s{{storyServer}}/chapter/{{plus chapterIndex 1}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </a>
@@ -48,16 +47,14 @@
 <div class="container mt-3">
     <div class="row">
         <div class="col-lg-1 col-md-2 col-sm-3 p-relative">
-            <button class="option-button" onclick="togglePanel('#chapters-list-panel'); setChapterPanel({{index}});">
+            <button class="option-button" onclick="togglePanel('#chapters-list-panel'); setChapterPanel({{chapterIndex}});">
                 <i class="fa-solid fa-list fs-5"></i>
             </button>
             <button class="option-button" onclick="togglePanel('#text-format-panel')">
                 <i class="fa-solid fa-font fs-5"></i>
             </button>
             <div id="chapters-list-panel" style="display: none">
-                {{#each chaptersList}}
-                    <a class="chapter-item truncate {{#ifEqual ../index index}}active-chapter{{/ifEqual}}" id="chapter-index-{{index}}" title="{{name}}" href="/story/{{../curServer}}/{{encodeUrl ../storyId}}/{{index}}">{{name}}</a>
-                {{/each}}
+                <img src="/assets/loading.gif" class="load-img m-auto text-center" />
             </div>
             <div id="text-format-panel" style="display: none">
                 <div class="button-container">
@@ -144,7 +141,7 @@
         </div>
         <div class="col-lg-10 col-md-8 col-sm-6 main-container rounded">
             <div class="px-5 py-5 reading-font">
-                {{{content}}}
+                <img src="/assets/loading.gif" class="load-img m-auto text-center" />
             </div>
         </div>
         <div class="col-lg-1 col-md-2 col-sm-3 d-flex justify-content-end">
@@ -158,13 +155,13 @@
 <div class="container rounded main-container my-4 px-4">
     <div class="row">
         <div class="d-flex align-items-center justify-content-center my-4">
-            <a type="button" class="text-center next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
-                href="/story/{{curServer}}/{{encodeUrl storyId}}/{{plus index -1}}">
+            <a type="button" class="text-center next-pre-button {{#ifEqual chapterMinIndex chapterIndex}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/s{{storyServer}}/chapter/{{plus chapterIndex -1}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </a>
-            <a type="button" class="text-center next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
-                href="/story/{{curServer}}/{{encodeUrl storyId}}/{{plus index 1}}">
+            <a type="button" class="text-center next-pre-button {{#ifEqual chapterMaxIndex chapterIndex}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/s{{storyServer}}/chapter/{{plus chapterIndex 1}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </a>
@@ -175,10 +172,16 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
-                <li class="breadcrumb-item"><a href="/story/{{curServer}}/{{encodeUrl storyId}}">{{storyName}}</a></li>
+                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}/s{{storyServer}}">{{storyName}}</a></li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>
         </nav>
     </div>
 </div>
+
+<script>
+    const chapterIndex = "{{ chapterIndex }}";
+    const storyId = "{{ storyId }}";
+    const storyServer = "{{ storyServer }}";
+</script>

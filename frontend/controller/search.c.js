@@ -11,18 +11,20 @@ const render = {
     host: `https://${HOST}:${PORT}`,
 };
 const perPage = 24;
-const serverIndex = 0;
-
 
 module.exports = {
     async render(req, res, next) {
         try {
-            const keyword = req.query.keyword || '';
+            const serverIndex = req.session.serverIndex;
+            const keyword = req.query.keyword || ' ';
             const curPage = parseInt(req.query.page) || 1;
             
             const response = await fetch(`${BE_HOST}/api/search/${serverIndex}/truyen/${encodeURIComponent(keyword)}?page=${curPage}&limit=${perPage}`);
             const resBody = await response.json();
             const totalPages = resBody.totalPages ? resBody.totalPages : 1;
+            if (curPage > totalPages) {
+                res.redirect('back');
+            }
 
             render.stories = resBody.data;
             render.keyword = keyword;

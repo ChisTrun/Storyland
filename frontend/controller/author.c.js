@@ -15,25 +15,27 @@ const perPage = 24;
 module.exports = {
     async render(req, res, next) {
         try {
-            const curServer = req.params.serverIndex;
+            const serverIndex = req.session.serverIndex;
             const authorId = decodeURIComponent(req.query.id);
             const authorName = req.params.authorName;
             const curPage = parseInt(req.query.page) || 1;
 
-            const response = await fetch(`${BE_HOST}/api/search/${curServer}/tacgia/${encodeURIComponent(authorId)}?page=${curPage}&limit=${perPage}`);
+            const response = await fetch(`${BE_HOST}/api/search/${serverIndex}/tacgia/${encodeURIComponent(authorId)}?page=${curPage}&limit=${perPage}`);
             const resBody = await response.json();
             const totalPages = resBody.totalPages ? resBody.totalPages : 1;
+            if (curPage > totalPages) {
+                return res.redirect('back');
+            }
 
             render.stories = resBody.data;
             render.authorName = authorName;
             render.authorId = authorId;
             render.curPage = curPage;
             render.totalPages = totalPages;
-            render.curServer = curServer;
 
             render.serverIndex = req.session.serverIndex;
             render.isDark = req.session.isDark;
-            render.title = `Tác giả ${authorName} | StoryLand`;
+            render.title = `Tác giả ${render.authorName} | StoryLand`;
 
             return res.render(view, render, null);
         }
