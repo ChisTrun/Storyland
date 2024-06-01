@@ -3,11 +3,11 @@ const { HOST, PORT } = require('./global/env');
 const cors = require('cors');
 const app = express();
 
-app.use(cors())
-require('./config/session.config')(app)
-require('./config/reader.config')(app)
-require('./config/hbs.config')(app)
-require('./config/router.config')(app)
+app.use(cors());
+require('./config/session.config')(app);
+require('./config/reader.config')(app);
+require('./config/hbs.config')(app);
+require('./config/router.config')(app);
 
 
 const server = https.createServer({
@@ -18,6 +18,3 @@ const server = https.createServer({
 server.listen(PORT, HOST, () => {
     console.log(`App Server is on: ${HOST}:${PORT}`);
 });
-
-
-

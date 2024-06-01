@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginBase", "PluginBase\Pl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TruyenFullPlugin", "TruyenFullPlugin\TruyenFullPlugin.csproj", "{43DE4F1B-609E-419C-9A27-95BB691F7A2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleDraft", "ConsoleDraft\ConsoleDraft.csproj", "{1DBBF0E1-DA9B-49FA-8841-C01B662EB34A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCrawler", "ConsoleDraft\TestCrawler.csproj", "{1DBBF0E1-DA9B-49FA-8841-C01B662EB34A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TangThuVienHtmlCrawler", "TangThuVienHtmlCrawler\TangThuVienHtmlCrawler.csproj", "{987892E9-5908-4B28-80D3-911DD589DFFB}"
 EndProject
@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExporterEPUB", "ExporterEPUB\ExporterEPUB.csproj", "{58A03673-5EE8-4357-AF5F-C0CAD0F0CC48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{987892E9-5908-4B28-80D3-911DD589DFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{987892E9-5908-4B28-80D3-911DD589DFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{987892E9-5908-4B28-80D3-911DD589DFFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58A03673-5EE8-4357-AF5F-C0CAD0F0CC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58A03673-5EE8-4357-AF5F-C0CAD0F0CC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58A03673-5EE8-4357-AF5F-C0CAD0F0CC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58A03673-5EE8-4357-AF5F-C0CAD0F0CC48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,15 +4,13 @@ using Newtonsoft.Json;
 using PluginBase.Contract;
 using PluginBase.Models;
 using PluginBase.Utils;
-using System;
-using System.Dynamic;
 using System.Net;
-using System.Reflection.Metadata;
+using System.Text.RegularExpressions;
 using System.Web;
 
-namespace TruyenFullPlugin;
+namespace TangThuVien;
 
-public class TangThuVienCrawler : ICrawler
+public partial class TangThuVienCrawler : ICrawler
 {
 
     protected static HtmlDocument GetWebPageDocument(string sourceURL)
@@ -22,6 +20,18 @@ public class TangThuVienCrawler : ICrawler
         var web = new HtmlWeb();
         web.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
         var document = web.Load(sourceURL);
+        while (true)
+        {
+            var title = document.QuerySelector("title");
+            if (title != null && title.GetDirectInnerTextDecoded() == "Site Maintenance")
+            {
+                document = web.Load(sourceURL);
+            }
+            else
+            {
+                break;
+            }
+        }
         return document;
     }
 
@@ -35,24 +45,35 @@ public class TangThuVienCrawler : ICrawler
     public static string DomainKetQuaTimKiem => $"{Domain}/ket-qua-tim-kiem";
     public static string DomainDocTruyen => $"{Domain}/doc-truyen";
     public static string DomainTacGia => $"{Domain}/tac-gia";
+    public static string DomainTheLoai => $"{Domain}/the-loai";
 
     public string Name => "Tàng Thư Viện";
 
     public string Description => "";
 
+    private string CategoryIDCast(string orgID)
+    {
+        var url = $"{DomainTheLoai}/{orgID}";
+        var doc = GetWebPageDocument(url);
+        var xemThem = doc.QuerySelector("#update-tab > a");
+        var xemThemURL = xemThem.GetAttributeValue("href", null) ?? throw new Exception();
+        var id = GetCTG().Match(xemThemURL).Value;
+        return "?" + id;
+    }
+
     public IEnumerable<Category> GetCategories()
     {
         var categories = new List<Category>();
-        var document = GetWebPageDocument(DomainTongHop);
-        var categoriesSelector = @"body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.rank-header > div > div > div > div > p > a[data-value]";
-        var categoryATags = document.QuerySelectorAll(categoriesSelector);
-        string GetCategoryUrl(string cateId) => $"{DomainTongHop}?ctg={cateId}";
-        foreach (var categoryATag in categoryATags)
+        var document = GetWebPageDocument(Domain);
+        var rawCategories = document.QuerySelectorAll("#classify-list > dl > dd > a");
+        foreach (var rawCate in rawCategories)
         {
-            var id = categoryATag.GetDataAttribute("value").Value;
-            var url = GetCategoryUrl(id);
-            var name = categoryATag.GetDirectInnerTextDecoded();
-            categories.Add(new Category(name, ModelExtension.GetIDFromUrl(ModelType.Category, url)));
+            if (rawCate.QuerySelector("cite > span > b") != null)
+            {
+                var name = rawCate.QuerySelector("cite > span > i").GetDirectInnerTextDecoded();
+                var url = rawCate.GetAttributeValue("href", null);
+                categories.Add(new Category(name, url.TakeLastParamURL()));
+            }
         }
         return categories;
     }
@@ -60,7 +81,8 @@ public class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/tong-hop?ctg=1&limit=100000
     public IEnumerable<Story> GetStoriesOfCategory(string categoryId)
     {
-        string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, categoryId);
+        string castId = CategoryIDCast(categoryId);
+        string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, castId);
         var baseUrl = $"{categoryUrl}&limit=10000";
         var document = GetWebPageDocument(baseUrl);
         var stories = RankViewListFormat.CrawlStoriesFromAPage(document);
@@ -70,7 +92,7 @@ public class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/tong-hop?ctg=1&page=800&limit=2
     public PagingRepresentative<Story> GetStoriesOfCategory(string categoryId, int page, int limit)
     {
-        string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, categoryId);
+        string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, CategoryIDCast(categoryId));
         var baseUrl = $"{categoryUrl}&limit={limit}&page={page}";
         var document = GetWebPageDocument(baseUrl);
         var stories = RankViewListFormat.CrawlStoriesFromAPage(document);
@@ -123,7 +145,8 @@ public class TangThuVienCrawler : ICrawler
     public IEnumerable<Chapter> GetChaptersOfStory(string storyId)
     {
         var story = GetExactStory(storyId);
-        var id = GetWebPageDocument(story.GetUrl()).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
+        var storyUrl = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
+        var id = GetWebPageDocument(storyUrl).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
         var chapters = new List<Chapter>();
         var chaptersUrl = $"{DomainDocTruyen}/page/{id}?page=0&limit=100000&web=1";
         // watch it content, it not always return the same as browser render
@@ -150,14 +173,15 @@ public class TangThuVienCrawler : ICrawler
     public PagingRepresentative<Chapter> GetChaptersOfStory(string storyId, int page, int limit)
     {
         var story = GetExactStory(storyId);
-        var id = GetWebPageDocument(story.GetUrl()).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
+        var storyUrl = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
+        var id = GetWebPageDocument(storyUrl).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
         var chapters = new List<Chapter>();
         var chaptersUrl = $"{DomainDocTruyen}/page/{id}?page={page - 1}&limit={limit}&web=1";
         // watch it content, it not always return the same as browser render
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
         var aTags = document.QuerySelectorAll(chaptersSelector);
-        var count = 0;
+        var count = 1;
         foreach (var aTag in aTags)
         {
             var fontTag = aTag.QuerySelector("font > font");
@@ -178,17 +202,23 @@ public class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
     public ChapterContent GetChapterContent(string storyId, int index)
     {
-        return GetChapterContent($"{storyId}/chuong-{index}");
+        var chapters = GetChaptersOfStory(storyId);
+        var chapterId = chapters.ElementAt(index) ?? throw new Exception();
+        return GetChapterContent(chapterId.Id);
+        //return GetChapterContent($"{storyId}/chuong-{index}");
     }
 
-    // https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
-    // https://truyen.tangthuvien.vn/story/chapters?story_id=38020
+    // storyId + index => chapterId
+    // storyId: https://truyen.tangthuvien.vn/story/chapters?story_id=38020
+    // chapterId: https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
     public ChapterContent GetChapterContent(string chapterId)
     {
         var chapterUrl = ModelExtension.GetUrlFromID(ModelType.Chapter, chapterId);
         var document = GetWebPageDocument(chapterUrl);
+        var chapterName = document.QuerySelector("body > div.container.body-container > div.content > div > h2").GetDirectInnerTextDecoded();
         var contentSelector = "div.chapter-c > div.chapter-c-content > div.box-chap:not(.hidden)";
-        var content = document.QuerySelector(contentSelector).GetDirectInnerTextDecoded();
+        var node = document.QuerySelector(contentSelector);
+        var content = node.GetDirectInnerTextDecoded();
         int total;
         {
             var storyId = document.QuerySelector("body > div.box-report > form > input[name=story_id]").GetAttributeValue("value", null);
@@ -204,22 +234,23 @@ public class TangThuVienCrawler : ICrawler
         var nextChapIndex = Math.Min(total, current + 1);
         var prevChapId = $"{chapSplit}{prevChapIndex}";
         var nextChapId = $"{chapSplit}{nextChapIndex}";
-        return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId);
+        return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId, chapterName, chapterId);
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/dichdinh-cao-quyen-luc-suu-tam
     public StoryDetail GetStoryDetail(string storyId)
     {
         var story = GetExactStory(storyId);
-        var url = story.GetUrl();
+        var url = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
         var document = GetWebPageDocument(url);
         var authorATag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > p.tag > a.blue");
         var tuple = GetNameUrlFromATag(authorATag);
         var author = new Author(tuple.Item2, ModelExtension.GetIDFromUrl(ModelType.Author, tuple.Item1));
         var status = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > p.tag > span").GetDirectInnerTextDecoded();
         var categoryTag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > p.tag > a.red");
-        var categorySubUrl = categoryTag.GetAttributeValue("href", null);
-        var category = GetCategoryFromSubURL(categorySubUrl);
+        var id = categoryTag.GetAttributeValue("href", null).TakeLastParamURL();
+        var name = categoryTag.GetDirectInnerTextDecoded();
+        var category = new Category(name, id);
         var descriptionPTag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-content-wrap.cf > div.left-wrap.fl > div.book-info-detail > div.book-intro > p");
         var description = descriptionPTag.GetDirectInnerTextDecoded();
         return new StoryDetail(story, author, status, [category], description);
@@ -351,34 +382,16 @@ public class TangThuVienCrawler : ICrawler
         return new Story(name, id, imgUrl);
     }
 
-    // https://truyen.tangthuvien.vn/the-loai/huyen-huyen
-    // https://truyen.tangthuvien.vn/tong-hop?ctg=2
-    private Category GetCategoryFromSubURL(string subUrl)
-    {
-        var doc = GetWebPageDocument(subUrl);
-        var name = doc.QuerySelector("head > title").GetDirectInnerTextDecoded();
-        var urlRaw = doc.QuerySelector("#update-tab > a").GetAttributeValue("href", null);
-        int startIndex = urlRaw.IndexOf("ctg=");
-        string ctgSubstring = urlRaw.Substring(startIndex);
-        int endIndex = ctgSubstring.IndexOf('&');
-        if (endIndex == -1)
-        {
-            endIndex = ctgSubstring.Length;
-        }
-        string ctgValue = ctgSubstring.Substring(0, endIndex);
-        return new Category(name, "?" + ctgValue);
-    }
+    // Extra functions for later uses
+    // Extra functions for later uses
+    // Extra functions for later uses
 
-    private Category GetExactCategory(string id)
-    {
-        var doc = GetWebPageDocument(ModelExtension.GetUrlFromID(ModelType.Category, id));
-        var name = doc.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.rank-header > div > div > div > div > p:nth - child(1) > a.act").GetDirectInnerTextDecoded();
-        return new Category(name, id);
-    }
-
-    // Extra functions for later uses
-    // Extra functions for later uses
-    // Extra functions for later uses
+    //private Category GetExactCategory(string id)
+    //{
+    //    var doc = GetWebPageDocument(ModelExtension.GetUrlFromID(ModelType.Category, id));
+    //    var name = doc.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.rank-header > div > div > div > div > p:nth - child(1) > a.act").GetDirectInnerTextDecoded();
+    //    return new Category(name, id);
+    //}
 
     // note: search engine của trang này không được ổn định
     public IEnumerable<Author> GetAuthorsBySearchName(string name)
@@ -449,4 +462,7 @@ public class TangThuVienCrawler : ICrawler
             return doc.QuerySelector(liAbleNextPageSelector) == null;
         }
     }
+
+    [GeneratedRegex(@"ctg=\d+")]
+    private static partial Regex GetCTG();
 }

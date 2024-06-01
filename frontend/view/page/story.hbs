@@ -1,28 +1,28 @@
-<div class="container border-rounded bg-color-202020 h-100vh my-4 p-4">
-    <div class="row fw-bold">
+<div class="container rounded main-container min-vh-100 my-4 p-4">
+    <div class="row fw-bold mb-2">
         <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
-            <ol class="breadcrumb text-color-cccccc">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item" aria-current="page">{{name}}</li>
             </ol>
         </nav>
     </div>
-    <div class="row mt-2">
+    <div class="row">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-xxl-3 col-xl-4 col-md-12 col-sm-12 col-12">
+                <div class="col-xxl-2 col-xl-3 col-md-12 col-sm-12 col-12 mb-4">
                     <div class="text-center">
-                        <img class="border-white" id="story-image" {{#if imageUrl}} src="{{imageUrl}}" {{else}}
-                            src="/assets/naimage.jpg" {{/if}} alt="{{name}}" />
+                        <img id="story-image" {{#if imageUrl}} src="{{imageUrl}}" {{else}} src="/assets/naimage.jpg"
+                            {{/if}} alt="{{name}}" />
                     </div>
                     <div class="mt-3 text-center">
-                        <button type="button" class="btn btn-outline-light w-16dot875 fs-5 border-rectangle">
+                        <button type="button" class="btn fs-5" id="ebook-btn">
                             XUẤT EBOOK
                         </button>
                     </div>
                 </div>
-                <div class="col-xxl-9 col-xl-8 col-md-12 col-sm-12 col-12 mt-0 px-0" id="story-info">
+                <div class="col-xxl-9 col-xl-8 col-md-12 col-sm-12 col-12 mt-0 ps-3 pe-0 mb-3" id="story-info">
                     <div class="fw-bold fs-3 pb-2">{{name}}</div>
                     <div class="container-fluid px-0">
                         <div class="row py-2">
@@ -30,10 +30,9 @@
                                 <i class="fa-solid fa-user"></i>
                                 Tác giả
                             </div>
-                            <div class="col-md-9 cursor-pointer"
-                                onclick="directTo('/author/{{author.name}}{{author.id}}')">
+                            <a class="col-md-9 d-block" {{#if author}}href="/author/{{curServer}}/{{author.name}}?id={{encodeUrl author.id}}{{/if}}">
                                 {{#if author}}{{author.name}}{{else}}n/a{{/if}}
-                            </div>
+                            </a>
                         </div>
                         <div class="row py-2">
                             <div class="col-md-3 fw-bold">
@@ -51,90 +50,84 @@
                             </div>
                             <div class="col-md-12 mt-2">
                                 {{#each categories}}
-                                <button type="button" class="category-tag border-rounded py-1 px-2 me-2"
-                                    onclick="directTo('/category/{{name}}{{id}}')">
-                                    {{name}}
-                                </button>
+                                <a type="button" class="category-tag rounded py-1 px-2 me-2"
+                                    href="/category/{{../curServer}}/{{this.name}}?id={{encodeUrl this.id}}">
+                                    {{this.name}}
+                                </a>
                                 {{else}}
                                 n/a
                                 {{/each}}
                             </div>
                         </div>
-                        <div class="row py-2">
-                            <div class="col-md-12 fw-bold">
-                                <i class="fa-solid fa-circle-info"></i>
-                                Giới thiệu
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container-fluid px-0 pb-2">
-                        <div class="row">
-                            <div class="col-md-11">
-                                {{#if description}}{{{description}}}{{else}}n/a{{/if}}
-                            </div>
-                        </div>
                     </div>
                     <div class="container-fluid px-0 py-2">
                         {{#isDefined firstIndex}}
-                        <button type="button" class="rounded me-2 p-2 bg-color-a9cf54"
-                            onclick="directTo('/story/{{encodeUrl id}}/{{firstIndex}}/{{serverIndex}}')">
+                        <a type="button" class="rounded me-2 p-2 start-chapter-btn"
+                            href="/story/{{curServer}}/{{encodeUrl id}}/{{firstIndex}}">
                             <i class="fa-solid fa-book-open"></i>
                             Đọc từ đầu
-                        </button>
+                        </a>
                         {{/isDefined}}
-                        {{#isDefined lastIndex}}
-                        <button type="button" class="rounded mx-2 p-2 bg-color-8c3c4f"
-                            onclick="directTo('/story/{{encodeUrl id}}/{{lastIndex}}/{{serverIndex}}')">
-                            <i class="fa-solid fa-book-open"></i>
-                            Đọc mới nhất
-                        </button>
-                        {{/isDefined}}
-                        <button type="button" class="rounded mx-2 p-2 bg-color-2090ce">
+                        {{#isDefined conIndex}}
+                        <a type="button" class="rounded mx-2 p-2 con-chapter-btn"
+                            href="/story/{{curServer}}/{{encodeUrl id}}/{{conIndex}}">
                             <i class="fa-solid fa-location-arrow"></i>
                             Đọc tiếp
-                        </button>
+                        </a>
+                        {{/isDefined}}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row mt-5" id="chapters-list">
+    <div class="row mb-2">
+        <div class="col-md-12 fw-bold">
+            <i class="fa-solid fa-circle-info pe-1"></i>
+            Giới thiệu
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-12 px-3">
+            {{#if description}}{{{description}}}{{else}}n/a{{/if}}
+        </div>
+    </div>
+    <div class="row mb-2">
         <div class="fw-bold">
             <i class="fa-solid fa-database pe-1"></i>
             Danh sách chương
         </div>
     </div>
-    <div class="row border-white rounded mx-0 mt-2 my-4 py-3 ps-5">
+    <div class="row rounded mb-2 py-3 mx-0 ps-5" id="chapters-list">
         <div id="flex-chapters-container">
             {{#each chapters}}
-            <div class="cursor-pointer d-flex" onclick="directTo('/story/{{encodeUrl belong.id}}/{{index}}/{{../serverIndex}}')"
-                title="{{name}}">{{limitText name 45}}</div>
+            <a class="truncate chapterName" href="/story/{{../curServer}}/{{encodeUrl ../id}}/{{this.index}}/" title="{{this.name}}">
+                {{this.name}}</a>
             {{/each}}
         </div>
-        <div class="row mt-4 mb-2">
+        <div class="row mt-3 mb-1">
             <ul class="pagination d-flex align-items-center justify-content-center">
                 <li></li>
                 {{#ifNotEqual curPage 1}}
-                <li class="page-item mx-2"><a class="page-link" href="/story/{{encodeUrl id}}#chapters-list"><i
+                <li class="page-item mx-2"><a class="page-link" href="/story/{{curServer}}/{{encodeUrl id}}#chapters-list"><i
                             class="fa-solid fa-backward-step"></i></a></li>
                 <li class="page-item mx-2"><a class="page-link"
-                        href="/story/{{encodeUrl id}}&page={{plus curPage -1}}#chapters-list"><i
+                        href="/story/{{curServer}}/{{encodeUrl id}}?page={{plus curPage -1}}#chapters-list"><i
                             class="fa-solid fa-chevron-left"></i></a></li>
                 {{/ifNotEqual}}
 
                 {{#genPagination curPage totalPages}}
                 <li class="page-item mx-2">
                     <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
-                        href="/story/{{encodeUrl ../id}}?page={{this}}#chapters-list">{{this}}</a>
+                        href="/story/{{../curServer}}/{{encodeUrl ../id}}?page={{this}}#chapters-list">{{this}}</a>
                 </li>
                 {{/genPagination}}
 
                 {{#ifNotEqual curPage totalPages}}
                 <li class="page-item mx-2"><a class="page-link"
-                        href="/story/{{encodeUrl id}}?page={{plus curPage 1}}#chapters-list"><i
+                        href="/story/{{curServer}}/{{encodeUrl id}}?page={{plus curPage 1}}#chapters-list"><i
                             class="fa-solid fa-chevron-right"></i></a></li>
                 <li class="page-item mx-2"><a class="page-link"
-                        href="/story/{{encodeUrl id}}?page={{totalPages}}#chapters-list"><i
+                        href="/story/{{curServer}}/{{encodeUrl id}}?page={{totalPages}}#chapters-list"><i
                             class="fa-solid fa-forward-step"></i></a></li>
                 {{/ifNotEqual}}
                 <li></li>

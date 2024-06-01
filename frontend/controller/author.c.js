@@ -1,5 +1,6 @@
 const { ErrorDisplay } = require('../middleware/error');
-const { BE_HOST,HOST,PORT } = require('../global/env');
+const { BE_HOST, HOST, PORT } = require('../global/env');
+
 const view = 'author';
 const render = {
     layout: 'main',
@@ -7,29 +8,32 @@ const render = {
     styles: null,
     header: 'header',
     footer: 'footer',
-    host : `https://${HOST}:${PORT}`,
+    host: `https://${HOST}:${PORT}`,
 };
 const perPage = 24;
-const serverIndex = 0;
 
 module.exports = {
     async render(req, res, next) {
         try {
-            const authorId = encodeURIComponent(`?author=${req.query.author}`);
+            const curServer = req.params.serverIndex;
+            const authorId = decodeURIComponent(req.query.id);
             const authorName = req.params.authorName;
             const curPage = parseInt(req.query.page) || 1;
 
-            const response = await fetch(`${BE_HOST}/api/search/${serverIndex}/tacgia/${authorId}?page=${curPage}&limit=${perPage}`);
+            const response = await fetch(`${BE_HOST}/api/search/${curServer}/tacgia/${encodeURIComponent(authorId)}?page=${curPage}&limit=${perPage}`);
             const resBody = await response.json();
-            const totalPages = resBody.totalPages ?  resBody.totalPages : 1;
+            const totalPages = resBody.totalPages ? resBody.totalPages : 1;
 
-            render.serverIndex = req.session.serverIndex
             render.stories = resBody.data;
             render.authorName = authorName;
-            render.authorId = req.query.author;
+            render.authorId = authorId;
             render.curPage = curPage;
             render.totalPages = totalPages;
-            render.title = `Tác giả ${authorName}`;
+            render.curServer = curServer;
+
+            render.serverIndex = req.session.serverIndex;
+            render.isDark = req.session.isDark;
+            render.title = `Tác giả ${authorName} | StoryLand`;
 
             return res.render(view, render, null);
         }

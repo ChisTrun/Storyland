@@ -1,7 +1,7 @@
 const view = 'error';
 const render = {
     layout: 'plain',
-    title: 'Error Page',
+    title: 'Error Page | StoryLand',
 };
 
 class ErrorDisplay {

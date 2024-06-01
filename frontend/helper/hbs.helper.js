@@ -1,18 +1,17 @@
 module.exports = {
     encodeUrl: function (str) {
-        if (str.indexOf('/') >= 0) {
-            return encodeURIComponent(str);
-        }
-        return str;
+        const htmlEntities = {
+            '&quot;': '"',
+            '&amp;': '&',
+            '&lt;': '<',
+            '&gt;': '>',
+            '&#39;': "'",
+        };
+        str = str.replace(/&quot;|&amp;|&lt;|&gt;|&#39;/g, (match) => htmlEntities[match]);
+        return encodeURIComponent(str);
     },
     isDefined: function (value, block) {
         return value !== undefined ? block.fn(this) : block.inverse(this);
-    },
-    getLength: function (list) {
-        return list ? list.length : 0;
-    },
-    toLoud: function (text) {
-        return text.toUpperCase();
     },
     limitText: function (text, maxLength) {
         if (text.length <= maxLength) {
@@ -20,6 +19,9 @@ module.exports = {
         } else {
             return text.substring(0, maxLength) + '...';
         }
+    },
+    toLoud: function (text) {
+        return text.toUpperCase();
     },
     include: function (elem, list) {
         if (list.indexOf(elem) > -1) {
@@ -38,13 +40,13 @@ module.exports = {
         return sum;
     },
     ifEqual: function (a, b, block) {
-        if (a == b) {
+        if (a === b) {
             return block.fn(this);
         }
         return block.inverse(this);
     },
     ifNotEqual: function (a, b, block) {
-        if (a != b) {
+        if (a !== b) {
             return block.fn(this);
         }
         return block.inverse(this);
@@ -56,7 +58,6 @@ module.exports = {
         const pagination = [];
         const startPage = Math.max(1, curPage - 2);
         const endPage = Math.min(totalPages, startPage + 4);
-
         for (let i = startPage; i <= endPage; i++) {
             pagination.push(block.fn(i));
         }

@@ -1,57 +1,149 @@
-<div class="container border-rounded bg-color-202020 my-4 p-4">
+<div class="container rounded main-container my-4 p-4">
     <div class="row fw-bold">
         <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
-            <ol class="breadcrumb text-color-cccccc">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
-                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}">{{storyName}}</a></li>
-                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                &nbsp;<li class="mx-2">/</li>&nbsp;
+                <li class="breadcrumb-item"><a href="/story/{{curServer}}/{{encodeUrl storyId}}">{{storyName}}</a></li>
+                &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>
         </nav>
     </div>
     <div class="row">
         <div class="text-center">
-            <a href="/story/{{encodeUrl storyId}}" class="text-color-669900 fw-bold fs-3">{{toLoud storyName}}</a>
+            <a href="/story/{{curServer}}/{{encodeUrl storyId}}" class="chapter-title fw-bold fs-3">{{toLoud
+                storyName}}</a>
         </div>
         <div class="text-center mt-1">
-            <div class="text-color-cccccc">{{chapterName}}</div>
+            <div>{{chapterName}}</div>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-3">
-            <select class="form-select w-16dot875" id="source-menu" aria-label="Default select example">
+            <select class="form-select" id="source-menu" aria-label="Default select example">
                 {{#each serverArr}}
-                    <option value="{{index}}"{{#ifEqual index ../curServer}}selected {{else}}  onclick="directTo('/story/{{encodeUrl ../storyId}}/{{../index}}/{{index}}')" {{/ifEqual}}>{{name}}</option>
+                <option value="{{index}}" {{#ifEqual index ../curServer}}selected {{else}}
+                    onclick="directTo('/story/{{index}}/{{encodeUrl ../storyId}}/{{../index}}')" {{/ifEqual}}>{{name}}
+                </option>
                 {{/each}}
-                
+
             </select>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-4">
-            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index -1}}/{{curServer}}')">
+            <a type="button"
+                class="text-center next-pre-button pre-chapter-btn {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
+                href="/story/{{curServer}}/{{encodeUrl storyId}}/{{plus index -1}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
-            </button>
-            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index 1}}/{{curServer}}')">
+            </a>
+            <a type="button"
+                class="text-center next-pre-button next-chapter-btn {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
+                href="/story/{{curServer}}/{{encodeUrl storyId}}/{{plus index 1}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
-            </button>
+            </a>
         </div>
     </div>
 </div>
 
 <div class="container mt-3">
-    <div class="row text-white">
-        <div class="col-lg-1 col-md-2 col-sm-3">
-            <button class="option-button">
+    <div class="row">
+        <div class="col-lg-1 col-md-2 col-sm-3 p-relative">
+            <button class="option-button" onclick="togglePanel('#chapters-list-panel'); setChapterPanel({{index}});">
                 <i class="fa-solid fa-list fs-5"></i>
             </button>
-            <button class="option-button">
+            <button class="option-button" onclick="togglePanel('#text-format-panel')">
                 <i class="fa-solid fa-font fs-5"></i>
             </button>
+            <div id="chapters-list-panel" style="display: none">
+                {{#each chaptersList}}
+                    <a class="chapter-item truncate {{#ifEqual ../index index}}active-chapter{{/ifEqual}}" id="chapter-index-{{index}}" title="{{name}}" href="/story/{{../curServer}}/{{encodeUrl ../storyId}}/{{index}}">{{name}}</a>
+                {{/each}}
+            </div>
+            <div id="text-format-panel" style="display: none">
+                <div class="button-container">
+                    <span class="text-container">Font chữ</span>
+                    <div class="d-inline-block" style="width: 26rem">
+                        <div class="d-flex justify-content-between">
+                            <button class="text-format-button active"
+                                onclick="changeFont('Times New Roman', this)">Times</button>
+                            <button class="text-format-button" onclick="changeFont('Arial', this)">Arial</button>
+                            <button class="text-format-button" onclick="changeFont('Courier New', this)">Courier
+                                New</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-container mt-2">
+                    <span class="text-container">Màu chữ</span>
+                    <div class="d-inline-block" style="width: 26rem">
+                        <div class="d-flex justify-content-between">
+                            <button class="color-text-format-button" style="background-color: #fefefe"
+                                onclick="changeColor('#fefefe', this)"></button>
+                            <button class="color-text-format-button" style="background-color: #202020"
+                                onclick="changeColor('#202020', this)"></button>
+                            <button class="color-text-format-button" style="background-color: #669900"
+                                onclick="changeColor('#669900', this)"></button>
+                            <button class="color-text-format-button" style="background-color: #691770"
+                                onclick="changeColor('#691770', this)"></button>
+                            <button class="color-text-format-button" style="background-color: #b8ffb8"
+                                onclick="changeColor('#b8ffb8', this)"></button>
+                            <button class="color-text-format-button" style="background-color: #a5e8ff"
+                                onclick="changeColor('#a5e8ff', this)"></button>
+                            <button class="color-text-format-button" style="background-color: #007058"
+                                onclick="changeColor('#007058', this)"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-container mt-2">
+                    <span class="text-container">Cỡ chữ</span>
+                    <div class="d-inline-block" style="width: 26rem">
+                        <div class="d-flex justify-content-between">
+                            <button class="text-format-button" onclick="changeFontSize(-1)"><i
+                                    class="fa-solid fa-minus"></i></button>
+                            <span class="text-container text-center d-inline-block fw-bold fs-5"><span
+                                    id="font-size-display"></span></span>
+                            <button class="text-format-button" onclick="changeFontSize(1)"><i
+                                    class="fa-solid fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-container mt-2">
+                    <span class="text-container">Theme</span>
+                    <div class="d-inline-block" style="width: 26rem">
+                        <div class="d-flex justify-content-between">
+                            <button class="background-color-button" style="background-color: #202020"
+                                onclick="changeBackgroundColor('#202020', this)"></button>
+                            <button class="background-color-button" style="background-color: #ffffff"
+                                onclick="changeBackgroundColor('#ffffff', this)"></button>
+                            <button class="background-color-button" style="background-color: #4913dd"
+                                onclick="changeBackgroundColor('#4913dd', this)"></button>
+                            <button class="background-color-button" style="background-color: peru"
+                                onclick="changeBackgroundColor('peru', this)"></button>
+                            <button class="background-color-button" style="background-color: #00ff22"
+                                onclick="changeBackgroundColor('#00ff22', this)"></button>
+                            <button class="background-color-button" style="background-color: #0280aa"
+                                onclick="changeBackgroundColor('#0280aa', this)"></button>
+                            <button class="background-color-button" style="background-color: #ffb9c5"
+                                onclick="changeBackgroundColor('#ffb9c5', this)"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-container mt-2">
+                    <span class="text-container">Cách dòng</span>
+                    <div class="d-inline-block" style="width: 26rem">
+                        <div class="d-flex justify-content-between">
+                            <button class="text-format-button" onclick="changeLineHeight(-1)"><i
+                                    class="fa-solid fa-minus"></i></button>
+                            <span class="text-container text-center d-inline-block fw-bold fs-5"><span
+                                    id="row-spacing-display"></span></span>
+                            <button class="text-format-button" onclick="changeLineHeight(1)"><i
+                                    class="fa-solid fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-10 col-md-8 col-sm-6 bg-color-202020 rounded">
-            <div class="fs-3 px-5 py-5 read-font">
+        <div class="col-lg-10 col-md-8 col-sm-6 main-container rounded">
+            <div class="px-5 py-5 reading-font">
                 {{{content}}}
             </div>
         </div>
@@ -63,28 +155,28 @@
     </div>
 </div>
 
-<div class="container border-rounded bg-color-202020 my-4 px-4">
+<div class="container rounded main-container my-4 px-4">
     <div class="row">
         <div class="d-flex align-items-center justify-content-center my-4">
-            <button type="button" class="next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index -1}}')">
+            <a type="button" class="text-center next-pre-button {{#ifEqual minIndex index}}d-none{{/ifEqual}}"
+                href="/story/{{curServer}}/{{encodeUrl storyId}}/{{plus index -1}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
-            </button>
-            <button type="button" class="next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
-                onclick="directTo('/story/{{encodeUrl storyId}}/{{plus index 1}}')">
+            </a>
+            <a type="button" class="text-center next-pre-button {{#ifEqual maxIndex index}}d-none{{/ifEqual}}"
+                href="/story/{{curServer}}/{{encodeUrl storyId}}/{{plus index 1}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
-            </button>
+            </a>
         </div>
     </div>
     <div class="row fw-bold mb-2">
         <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
-            <ol class="breadcrumb text-color-cccccc">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
-                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}">{{storyName}}</a></li>
-                &ThinSpace;<li class="mx-2">/</li>&ThinSpace;
+                &nbsp;<li class="mx-2">/</li>&nbsp;
+                <li class="breadcrumb-item"><a href="/story/{{curServer}}/{{encodeUrl storyId}}">{{storyName}}</a></li>
+                &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
             </ol>
         </nav>

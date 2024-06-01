@@ -1,8 +1,8 @@
-<div class="container h-100vh">
+<div class="container min-vh-100">
     <div class="row">
-        <div class="col-md-12 fs-5 mt-4 mb-2 text-color-56ccf2 fw-bold">
+        <div class="col-md-12 fs-5 mt-4 mb-2 notify-text fw-bold">
             <i class="fa-solid fa-flag pe-1"></i>
-            Truyện thể loại: <span class="text-white">{{categoryName}}</span>
+            Truyện thể loại: <span>{{categoryName}}</span>
         </div>
     </div>
 
@@ -12,25 +12,27 @@
         <ul class="pagination d-flex align-items-center justify-content-center">
             <li></li>
             {{#ifNotEqual curPage 1}}
-            <li class="page-item mx-2"><a class="page-link" href="/category/{{categoryName}}?ctg={{categoryId}}&page=1"><i
+            <li class="page-item mx-2"><a class="page-link"
+                    href="/category/{{curServer}}/{{categoryName}}?id={{categoryId}}&page=1"><i
                         class="fa-solid fa-backward-step"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
-                    href="/category/{{categoryName}}?ctg={{categoryId}}&page={{plus curPage -1}}"><i
+                    href="/category/{{curServer}}/{{categoryName}}?id={{categoryId}}&page={{plus curPage -1}}"><i
                         class="fa-solid fa-chevron-left"></i></a></li>
             {{/ifNotEqual}}
 
             {{#genPagination curPage totalPages}}
             <li class="page-item mx-2">
                 <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
-                    href="/category/{{../categoryName}}?ctg={{../categoryId}}&page={{this}}">{{this}}</a>
+                    href="/category/{{../curServer}}/{{../categoryName}}?id={{../categoryId}}&page={{this}}">{{this}}</a>
             </li>
             {{/genPagination}}
 
             {{#ifNotEqual curPage totalPages}}
             <li class="page-item mx-2"><a class="page-link"
-                    href="/category/{{categoryName}}?ctg={{categoryId}}&page={{plus curPage 1}}"><i
+                    href="/category/{{curServer}}/{{categoryName}}?id={{categoryId}}&page={{plus curPage 1}}"><i
                         class="fa-solid fa-chevron-right"></i></a></li>
-            <li class="page-item mx-2"><a class="page-link" href="/category/{{categoryName}}?ctg={{categoryId}}&page={{totalPages}}"><i
+            <li class="page-item mx-2"><a class="page-link"
+                    href="/category/{{curServer}}/{{categoryName}}?id={{categoryId}}&page={{totalPages}}"><i
                         class="fa-solid fa-forward-step"></i></a></li>
             {{/ifNotEqual}}
             <li></li>

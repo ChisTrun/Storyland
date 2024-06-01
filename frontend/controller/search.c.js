@@ -1,5 +1,6 @@
 const { ErrorDisplay } = require('../middleware/error');
-const { BE_HOST,HOST,PORT } = require('../global/env');
+const { BE_HOST, HOST, PORT } = require('../global/env');
+
 const view = 'search';
 const render = {
     layout: 'main',
@@ -7,9 +8,10 @@ const render = {
     styles: null,
     header: 'header',
     footer: 'footer',
-    host : `https://${HOST}:${PORT}`,
+    host: `https://${HOST}:${PORT}`,
 };
 const perPage = 24;
+const serverIndex = 0;
 
 
 module.exports = {
@@ -17,17 +19,19 @@ module.exports = {
         try {
             const keyword = req.query.keyword || '';
             const curPage = parseInt(req.query.page) || 1;
-
-            const response = await fetch(`${BE_HOST}/api/search/${req.session.serverIndex}/truyen/${keyword}?page=${curPage}&limit=${perPage}`);
+            
+            const response = await fetch(`${BE_HOST}/api/search/${serverIndex}/truyen/${encodeURIComponent(keyword)}?page=${curPage}&limit=${perPage}`);
             const resBody = await response.json();
-            const totalPages = resBody.totalPages ?  resBody.totalPages : 1;
+            const totalPages = resBody.totalPages ? resBody.totalPages : 1;
 
-            render.serverIndex = req.session.serverIndex
             render.stories = resBody.data;
             render.keyword = keyword;
             render.curPage = curPage;
             render.totalPages = totalPages;
-            render.title = "Kết quả tìm kiếm";
+
+            render.serverIndex = serverIndex;
+            render.isDark = req.session.isDark;
+            render.title = "Kết quả tìm kiếm | StoryLand";
 
             return res.render(view, render, null);
         }
