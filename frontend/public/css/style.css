@@ -549,7 +549,7 @@ footer .web-logo {
   display: block;
   border: 1px solid var(--nonary-color);
   width: 13rem;
-  text-align: center;
+  text-align: left;
   padding: 0.2rem 0.7rem;
   margin: 0.6rem;
 }
