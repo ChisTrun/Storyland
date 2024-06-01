@@ -205,12 +205,14 @@ public partial class TangThuVienCrawler : ICrawler
         return GetChapterContent($"{storyId}/chuong-{index}");
     }
 
-    // https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
-    // https://truyen.tangthuvien.vn/story/chapters?story_id=38020
+    // storyId + index => chapterId
+    // storyId: https://truyen.tangthuvien.vn/story/chapters?story_id=38020
+    // chapterId: https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
     public ChapterContent GetChapterContent(string chapterId)
     {
         var chapterUrl = ModelExtension.GetUrlFromID(ModelType.Chapter, chapterId);
         var document = GetWebPageDocument(chapterUrl);
+        var chapterName = document.QuerySelector("body > div.container.body-container > div.content > div > h2").GetDirectInnerTextDecoded();
         var contentSelector = "div.chapter-c > div.chapter-c-content > div.box-chap:not(.hidden)";
         var node = document.QuerySelector(contentSelector);
         var content = node.GetDirectInnerTextDecoded();
@@ -229,7 +231,7 @@ public partial class TangThuVienCrawler : ICrawler
         var nextChapIndex = Math.Min(total, current + 1);
         var prevChapId = $"{chapSplit}{prevChapIndex}";
         var nextChapId = $"{chapSplit}{nextChapIndex}";
-        return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId);
+        return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId, chapterName, chapterId);
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/dichdinh-cao-quyen-luc-suu-tam

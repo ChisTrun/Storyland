@@ -73,7 +73,7 @@ public class XHTMLContentGenerator
     private XHTMLDocument GenerateChapter(ChapterContent chapter)
     {
         var layout = GenerateLayout();
-        var intro = new ChapterXHTML(chapter.Chapter?.Name ?? "", chapter.Content);
+        var intro = new ChapterXHTML(chapter.ChapterName, chapter.Content);
         return intro.SetContent(layout).GetXHTML();
     }
 
