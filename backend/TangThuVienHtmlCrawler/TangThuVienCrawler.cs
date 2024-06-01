@@ -202,7 +202,10 @@ public partial class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
     public ChapterContent GetChapterContent(string storyId, int index)
     {
-        return GetChapterContent($"{storyId}/chuong-{index}");
+        var chapters = GetChaptersOfStory(storyId);
+        var chapterId = chapters.ElementAt(index) ?? throw new Exception();
+        return GetChapterContent(chapterId.Id);
+        //return GetChapterContent($"{storyId}/chuong-{index}");
     }
 
     // storyId + index => chapterId

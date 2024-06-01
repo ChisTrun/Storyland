@@ -537,4 +537,9 @@ public class TruyenFullCommand : ICrawler
         var tuple = GetNameUrlFromATag(authorATag);
         return new StoryTF(new Story(name, id, imgUrl), tuple.Item2);
     }
+
+    public ChapterContent GetChapterContent(string chapterId)
+    {
+        throw new NotImplementedException();
+    }
 }

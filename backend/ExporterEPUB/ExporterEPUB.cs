@@ -3,7 +3,7 @@ using PluginBase.Models;
 
 namespace ExporterEPUB;
 
-public class EPUBExport : IExport
+public class EPUBExport : IExporter
 {
     public byte[] ExportStory(StoryDetail story, List<ChapterContent> chapters)
     {
