@@ -104,7 +104,7 @@ footer .web-logo {
 .footer-links {
   display: flex;
   flex-direction: column;
-  width: 12.5rem;
+  width: 13rem;
 }
 
 .footer-links p {
@@ -144,6 +144,7 @@ footer .web-logo {
 
 .start-chapter-btn {
   display: inline-block;
+  color: white;
   background-color: var(--senary-color);
 }
 
@@ -154,6 +155,7 @@ footer .web-logo {
 
 .con-chapter-btn {
   display: inline-block;
+  color: white;
   background-color: var(--septenary-color);
 }
 
@@ -192,10 +194,11 @@ footer .web-logo {
 
 .reading-font {
   font-family: "Times New Roman", Times, serif;
+  min-height: 75vh;
   font-size: 28px;
 }
 
-.page-item .active {
+.page-item .page-active {
   background-color: var(--octonary-color);
   border: 1px solid var(--text-color);
   color: var(--text-color);
@@ -254,7 +257,7 @@ footer .web-logo {
 
 .story-card-image {
   display: inline-block;
-  height: auto;
+  height: 17.5rem;
   width: 100%;
   overflow: hidden;
   border: 1px solid white;
@@ -308,10 +311,6 @@ footer .web-logo {
   color: #669900;
 }
 
-#chapters-list {
-  border: 1px solid var(--text-color);
-}
-
 .d-block {
   display: block;
 }
@@ -347,26 +346,37 @@ footer .web-logo {
   font-weight: 500;
 }
 
-#flex-chapters-container {
-  display: flex;
-  height: 60.5rem;
-  flex-flow: column wrap;
+#chapters-container {
+  border: 1px solid var(--text-color);
+  min-height: 50vh;
+  max-height: 70vh;
+  white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-overflow: ellipsis;
   background: none;
 }
 
-#flex-chapters-container > a {
-  display: block;
-  width: 40% !important;
-  margin: 0.2rem 2rem 0.2rem 1rem;
+#chapters-container > a {
+  display: inline-block;
+  border-bottom: 1px solid var(--nonary-color);
+  width: 95%;
+  padding: 0;
+  margin: 0.25rem 2rem;
   line-height: 2rem;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
 }
 
-#flex-chapters-container > a:hover,
-#flex-chapters-container > a:active {
-  transition: 0.1s ease;
-  color: var(--octonary-color);
+#chapters-container > a:hover,
+#chapters-container > a:active {
+  transition: 0.1s ease!important;
+  color: var(--octonary-color)!important;
+}
+
+#chapters-container > a:visited {
+  color: var(--septenary-color);
+  opacity: 30%;
 }
 
 #home-bg {

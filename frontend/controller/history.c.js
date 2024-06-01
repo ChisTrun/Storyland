@@ -4,7 +4,7 @@ const { BE_HOST, HOST, PORT } = require('../global/env');
 const view = 'history';
 const render = {
     layout: 'main',
-    scripts: null,
+    scripts: ['/js/history.js'],
     styles: null,
     header: 'header',
     footer: 'footer',
@@ -26,8 +26,9 @@ module.exports = {
     },
     delete(req, res, next) {
         const storyId = decodeURIComponent(req.body.storyId);
-        const server = req.body.server;
-        delete req.session.history[`${storyId}-server-${server}`];
-        return res.json({success: true});
+        const storyServer = req.body.storyServer;
+        delete req.session.history[`${storyId}-server-${storyServer}`];
+        
+        return res.json({isSuccess: true});
     },
 };

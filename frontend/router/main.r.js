@@ -14,7 +14,6 @@ const { router: categoryRouter } = require('./category.r');
 const { router: historyRouter } = require('./history.r');
 const { router: extensionRouter } = require('./extension.r');
 
-
 router.use("/", startRouter);
 router.use('/home', homeRouter);
 router.use('/story', storyRouter);
@@ -23,7 +22,6 @@ router.use('/author', authorRouter);
 router.use('/category', categoryRouter);
 router.use('/extension', extensionRouter);
 router.use('/history', historyRouter);
-
 
 // >>>> =============================================
 // Error

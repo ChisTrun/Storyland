@@ -13,26 +13,26 @@
             <li></li>
             {{#ifNotEqual curPage 1}}
             <li class="page-item mx-2"><a class="page-link"
-                    href="/category/{{curServer}}/{{categoryName}}?id={{categoryId}}&page=1"><i
+                    href="/category/{{categoryName}}?id={{encodeUrl categoryId}}&page=1"><i
                         class="fa-solid fa-backward-step"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
-                    href="/category/{{curServer}}/{{categoryName}}?id={{categoryId}}&page={{plus curPage -1}}"><i
+                    href="/category/{{categoryName}}?id={{encodeUrl categoryId}}&page={{plus curPage -1}}"><i
                         class="fa-solid fa-chevron-left"></i></a></li>
             {{/ifNotEqual}}
 
             {{#genPagination curPage totalPages}}
             <li class="page-item mx-2">
-                <a class="page-link {{#ifEqual this ../curPage}}active{{/ifEqual}}"
-                    href="/category/{{../curServer}}/{{../categoryName}}?id={{../categoryId}}&page={{this}}">{{this}}</a>
+                <a class="page-link {{#ifEqual this ../curPage}}page-active{{/ifEqual}}"
+                    href="/category/{{../categoryName}}?id={{encodeUrl ../categoryId}}&page={{this}}">{{this}}</a>
             </li>
             {{/genPagination}}
 
             {{#ifNotEqual curPage totalPages}}
             <li class="page-item mx-2"><a class="page-link"
-                    href="/category/{{curServer}}/{{categoryName}}?id={{categoryId}}&page={{plus curPage 1}}"><i
+                    href="/category/{{categoryName}}?id={{encodeUrl categoryId}}&page={{plus curPage 1}}"><i
                         class="fa-solid fa-chevron-right"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
-                    href="/category/{{curServer}}/{{categoryName}}?id={{categoryId}}&page={{totalPages}}"><i
+                    href="/category/{{categoryName}}?id={{encodeUrl categoryId}}&page={{totalPages}}"><i
                         class="fa-solid fa-forward-step"></i></a></li>
             {{/ifNotEqual}}
             <li></li>

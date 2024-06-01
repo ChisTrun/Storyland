@@ -40,7 +40,7 @@ module.exports = {
         return sum;
     },
     ifEqual: function (a, b, block) {
-        if (a === b) {
+        if (a == b) {
             return block.fn(this);
         }
         return block.inverse(this);

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const controller = require('../controller/history.c');
 
-router.get('/all', controller.render);
-router.post('/del', controller.delete);
+router.get('/', controller.render);
+router.post('/delete', controller.delete);
 
 module.exports = { router };

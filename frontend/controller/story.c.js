@@ -4,26 +4,24 @@ const { BE_HOST, HOST, PORT } = require('../global/env');
 const view = 'story';
 const render = {
     layout: 'main',
-    scripts: null,
+    scripts: ['/js/story.js'],
     styles: null,
     header: 'header',
     footer: 'footer',
     host: `https://${HOST}:${PORT}`,
 };
-const perPage = 50;
 
 module.exports = {
     async render(req, res, next) {
         try {
-            const curServer = req.params.serverIndex;
+            const storyServer = req.params.storyServer;
             const storyId = decodeURIComponent(req.params.storyId);
-            const curPage = parseInt(req.query.page) || 1;
+            const serverIndex = req.session.serverIndex;
 
-            const storyResponse = await fetch(`${BE_HOST}/api/story/${curServer}/${encodeURIComponent(storyId)}`);
+            const storyResponse = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`);
             const storyResBody = await storyResponse.json();
-            const chapListResponse = await fetch(`${BE_HOST}/api/story/${curServer}/${encodeURIComponent(storyId)}/chapters?page=${curPage}&limit=${perPage}`);
-            const chapListResBody = await chapListResponse.json();
-            const totalPages = chapListResBody.totalPages ? chapListResBody.totalPages : 1;
+            const serverResponse = await fetch(`${BE_HOST}/api/server`);
+            const serverResBody = await serverResponse.json();
 
             let desc = storyResBody.description.replace(/\r\n\r\n/g, '<br>')
                 .replace(/\r\n/g, '<br>')
@@ -33,18 +31,17 @@ module.exports = {
             Object.assign(render, {
                 ...storyResBody
             });
-            render.chapters = chapListResBody.data;
-            render.curPage = curPage;
-            render.totalPages = totalPages;
-            render.firstIndex = chapListResBody.data.length != 0 ? 1 : undefined;
-            render.curServer = curServer;
+            render.storyServer = storyServer;
+            render.storyId = storyId;
+            render.storyFirstIndex = 0;
+            render.serverArr = serverResBody;
 
-            if (req.session.history[`${storyId}-server-${curServer}`]) {
-                const story = req.session.history[`${storyId}-server-${curServer}`];
-                render.conIndex = story.index;
+            if (req.session.history[`${storyId}-server-${storyServer}`]) {
+                const story = req.session.history[`${storyId}-server-${storyServer}`];
+                render.storyConIndex = story.chapterIndex;
             }
 
-            render.serverIndex = req.session.serverIndex;
+            render.serverIndex = serverIndex;
             render.isDark = req.session.isDark;
             render.title = `${storyResBody.name} | StoryLand`;
 
