@@ -9,6 +9,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System;
 using System.Xml.Linq;
+using System.Reflection.Metadata;
 
 namespace TruyenFullPlugin;
 
@@ -151,9 +152,12 @@ public class TruyenFullCommand : ICrawler
         var text = "";
         var pre = "";
         var next = "";
+        var chapterName = "";
+        var chapterID = "";
         try
         {
-            var path = $"{Domain}/{storyId}chuong-{chapterIndex}";
+            chapterID = $"{storyId}chuong-{chapterIndex}";
+            var path = $"{Domain}{chapterID}";
             var document = GetWebPageDocument(path);
             var mainContent = document.QuerySelector("#chapter-c");
 
@@ -165,6 +169,9 @@ public class TruyenFullCommand : ICrawler
             //    document = GetWebPageDocument(path);
             //    mainContent = document.QuerySelector("#chapter-c");
             //}
+
+            var chapterNameTag = document.QuerySelector("#chapter-big-container .chapter-title");
+            chapterName = chapterNameTag.InnerText;
 
             mainContent.SelectNodes("//div[contains(@class, 'ads')]")?.ToList().ForEach(n => n.Remove());
             text = mainContent.InnerHtml;
@@ -190,7 +197,7 @@ public class TruyenFullCommand : ICrawler
             }
         }
         catch { }
-        return new ChapterContent(text, next, pre);
+        return new ChapterContent(text, next, pre, chapterName, chapterID, chapterIndex);
     }
 
     //==========================================
@@ -542,11 +549,15 @@ public class TruyenFullCommand : ICrawler
         return new Tuple<int, List<Chapter>>(totalPage, listOfChapter);
     }
 
-    private Story GetExactStory(string id) //update
+    public Story GetExactStory(string id) //update
     {
         var doc = GetWebPageDocument(ModelExtension.GetUrlFromID(ModelType.Story, id));
         var name = doc.QuerySelector(".col-info-desc h3.title").GetDirectInnerTextDecoded();
         var imgUrl = doc.QuerySelector(".books > .book > img").GetAttributeValue("src", null);
-        return new Story(name, id, imgUrl);
+        var authorATag = doc.QuerySelectorAll(".col-info-desc .info div ")[0];
+        authorATag = authorATag.QuerySelector("a");
+        var tuple = GetNameUrlFromATag(authorATag);
+
+        return new Story(name, id, imgUrl, tuple.Item2);
     }
 }

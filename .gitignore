@@ -212,3 +212,4 @@ $RECYCLE.BIN/
 frontend/node_modules
 /backend/ConsoleDraft/ConsoleDraft.csproj
 /backend/ConsoleDraft/Program.cs
+/backend/TestPDF/**
