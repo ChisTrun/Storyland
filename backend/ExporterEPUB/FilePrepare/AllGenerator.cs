@@ -36,6 +36,7 @@ public class AllGenerator
         var xHTMLContent = new XHTMLContentGenerator(_story.Name, _story.Author.Name, _story.Description, string.Join(", ", _story.Categories.Select(x => x.Name)), _story.Status, _chapterContents, _imagePath);
         var contentStructure = xHTMLContent.CreateDocumentStructure();
         WriteToFile(contentStructure.Cover, _structure.ABS_F_COVER);
+        WriteToFile(contentStructure.Origin, _structure.ABS_F_ORIGIN);
         WriteToFile(contentStructure.Intro, _structure.ABS_F_INTRO);
         var chapterLocal = new List<ChapterLocal>();
         int index = 0;

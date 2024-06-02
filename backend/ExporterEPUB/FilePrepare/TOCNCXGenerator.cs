@@ -52,7 +52,7 @@ namespace ExporterEPUB.FilePrepare
             });
             var navMap = new XHTMLElement("navMap");
             {
-                XHTMLElement NavPointGen(string id, int playOrder, ChapterLocal chapter) => new("navPoint", new()
+                XHTMLElement NavPointGen(string id, int playOrder, string name, string path) => new("navPoint", new()
                 {
                     {"id", id },
                     {"playOrder", playOrder.ToString() }
@@ -60,14 +60,16 @@ namespace ExporterEPUB.FilePrepare
                 {
                     new XHTMLElement("navLabel", null, new()
                     {
-                        new XHTMLElement("text", null, null, chapter.Name)
+                        new XHTMLElement("text", null, null, name)
                     }),
-                    new XHTMLElementInline("content", new(){{"src", GetChapterRelPath(chapter.Path)}})
+                    new XHTMLElementInline("content", new(){{"src", GetChapterRelPath(path)}})
                 });
-                int id = 1;
+                navMap.AddChild(NavPointGen(FolderStructure.ORIGIN, 1, "Origin", FolderStructure.ORIGIN));
+                navMap.AddChild(NavPointGen(FolderStructure.INTRO, 2, "Introduction", FolderStructure.INTRO));
+                int id = 3;
                 foreach (var chapter in _chapters)
                 {
-                    navMap.AddChild(NavPointGen($"nav{id}", id, chapter));
+                    navMap.AddChild(NavPointGen($"nav{id}", id, chapter.Name, chapter.Path));
                     id += 1;
                 }
             }
@@ -77,7 +79,6 @@ namespace ExporterEPUB.FilePrepare
                 xml, ncx
             });
             return doc;
-            //File.WriteAllText(EPUBStructure.ToAbsolute( EPUBStructure.f_TOC_NCX), doc.ToString());
         }
     }
 }

@@ -11,8 +11,6 @@ namespace ExporterEPUB.XHTMLBuilder.Content
         private readonly string _storyStatus;
         private readonly string _storyImagePath;
 
-        public static readonly string LOGO_PATH = Path.Join("..", "Resources", "logo.png").InverseSlash();
-
         public IntroXHTML(string storyTitle, string authorName, string storyDescription, string storyCategories, string storyStatus, string storyImagePath)
         {
             _storyTitle = storyTitle;
@@ -25,17 +23,6 @@ namespace ExporterEPUB.XHTMLBuilder.Content
 
         public LayoutXHTML SetContent(LayoutXHTML layout)
         {
-            var company = new XHTMLElement("div");
-            {
-                var logo = new XHTMLElementInline("img", new Dictionary<string, string>()
-                {
-                    {"alt", "StoryLand" },
-                    {"src",  LOGO_PATH }
-                });
-                var source = new XHTMLElement("h2", null, null, "www.storyland.gov");
-                company.AddChild(logo);
-                company.AddChild(source);
-            }
             var story = new XHTMLElement("div");
             {
                 var cover = new XHTMLElementInline("img", new Dictionary<string, string>() { { "alt", "Cover" }, { "src", _storyImagePath } });
@@ -51,7 +38,6 @@ namespace ExporterEPUB.XHTMLBuilder.Content
                 story.AddChild(status);
                 story.AddChild(description);
             }
-            layout.Body.AddChild(company);
             layout.Body.AddChild(story);
             return layout;
         }

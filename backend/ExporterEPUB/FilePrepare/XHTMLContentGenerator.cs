@@ -22,13 +22,15 @@ public class XHTMLContentGenerator
 
     public class ContentStructure
     {
-        public ContentStructure(XHTMLDocument cover, XHTMLDocument intro, List<ChapterDocument> chapters)
+        public ContentStructure(XHTMLDocument cover, XHTMLDocument origin, XHTMLDocument intro, List<ChapterDocument> chapters)
         {
             Cover = cover;
+            Origin = origin;
             Intro = intro;
             Chapters = chapters;
         }
         public XHTMLDocument Cover { get; }
+        public XHTMLDocument Origin { get; }
         public XHTMLDocument Intro { get; }
         public List<ChapterDocument> Chapters { get; }
     }
@@ -56,6 +58,13 @@ public class XHTMLContentGenerator
 
     private LayoutXHTML GenerateLayout() => new LayoutXHTML(_storyName, CSS_PATH);
 
+    private XHTMLDocument GenerateCover()
+    {
+        var layout = GenerateLayout();
+        var intro = new CoverXHTML(_imagePath);
+        return intro.SetContent(layout).GetXHTML();
+    }
+
     private XHTMLDocument GenerateIntro()
     {
         var layout = GenerateLayout();
@@ -63,10 +72,10 @@ public class XHTMLContentGenerator
         return intro.SetContent(layout).GetXHTML();
     }
 
-    private XHTMLDocument GenerateCover()
+    private XHTMLDocument GenerateOrigin()
     {
         var layout = GenerateLayout();
-        var intro = new CoverXHTML(_imagePath);
+        var intro = new OriginXHTML();
         return intro.SetContent(layout).GetXHTML();
     }
 
@@ -80,12 +89,13 @@ public class XHTMLContentGenerator
     public ContentStructure CreateDocumentStructure()
     {
         var coverDoc = GenerateCover();
+        var originDoc = GenerateOrigin();
         var introDoc = GenerateIntro();
         var chapterDocs = new List<ChapterDocument>();
         foreach (var chapter in _chapters)
         {
             chapterDocs.Add(new ChapterDocument(GenerateChapter(chapter), chapter.ChapterName));
         }
-        return new ContentStructure(coverDoc, introDoc, chapterDocs);
+        return new ContentStructure(coverDoc, originDoc, introDoc, chapterDocs);
     }
 }
