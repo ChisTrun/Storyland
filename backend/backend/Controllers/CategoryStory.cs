@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PluginBase.Models;
 using backend.Handler;
+using backend.DLLScanner.Concrete;
 
 namespace backend.Controllers
 {
@@ -14,12 +15,12 @@ namespace backend.Controllers
         /// <param name="serverIndex">Index of the server to check.</param>
         [ProducesResponseType(typeof(Category[]), 200)]
         [HttpGet]
-        [Route("{serverIndex}/")] 
+        [Route("{serverIndex}/")]
         public IActionResult GetAllCategories(int serverIndex)
         {
             bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
             if (!isValid) return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetCategories());
+            return Ok(ScannerController.Instance.sourceScanner.Commands[serverIndex].GetCategories());
         }
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace backend.Controllers
         [ProducesResponseType(typeof(PluginBase.Models.Story[]), 200)]
         [HttpGet]
         [Route("{serverIndex}/{categoryId}/all")]
-        public IActionResult GetAllStoriesOfCategory(int serverIndex,string categoryId)
+        public IActionResult GetAllStoriesOfCategory(int serverIndex, string categoryId)
         {
             bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
             if (!isValid) return BadRequest("Invalid server index.");

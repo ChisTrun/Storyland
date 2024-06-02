@@ -5,6 +5,9 @@ namespace ExporterEPUB;
 
 public class EPUBExport : IExporter
 {
+    public string Ext { get; } = "epub";
+
+
     public byte[] ExportStory(StoryDetail story, List<ChapterContent> chapters)
     {
         byte[] byteStream;

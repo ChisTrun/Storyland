@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using backend.DLLScanner;
 using PluginBase.Models;
+using backend.DLLScanner.Concrete;
 
 
 namespace backend.Controllers

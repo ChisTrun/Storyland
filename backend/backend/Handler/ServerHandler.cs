@@ -1,4 +1,4 @@
-﻿using backend.DLLScanner;
+﻿using backend.DLLScanner.Concrete;
 using System.Collections.Generic;
 
 namespace backend.Handler

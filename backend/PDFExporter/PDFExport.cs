@@ -16,6 +16,9 @@ namespace PDFExporter
     {
         private const string destDir = "../../../tmp/pdf/";
 
+        public string Ext { get; } = "pdf";
+
+
         public byte[] ExportStory(StoryDetail storyDetail, List<ChapterContent> chapterContents)
         {
             var dest = $"{destDir}story.pdf";

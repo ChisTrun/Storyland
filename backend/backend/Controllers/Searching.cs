@@ -1,7 +1,7 @@
-﻿using backend.DLLScanner;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PluginBase.Models;
 using backend.Handler;
+using backend.DLLScanner.Concrete;
 
 
 namespace backend.Controllers

@@ -1,4 +1,4 @@
-﻿using backend.DLLScanner;
+﻿using backend.DLLScanner.Concrete;
 using Microsoft.AspNetCore.Mvc;
 using PluginBase.Models;
 

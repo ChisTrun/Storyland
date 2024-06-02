@@ -1,13 +1,15 @@
-﻿using PluginBase.Contract;
+﻿using backend.DLLScanner.Contract;
+using backend.DLLScanner.Utilis;
+using PluginBase.Contract;
 using System.Reflection;
-
-namespace backend.DLLScanner
+namespace backend.DLLScanner.Concrete
 {
-    public class StorySourceScanner
+    public class StorySourceScanner : IScanner<ICrawler>
     {
         private readonly string _exePath;
         private readonly string _folder;
         private FileInfo[] _pluginPaths;
+        private string _pluginsFolder = "./plugins/storySource/";
 
         private readonly object _commandsLock = new();
         public List<ICrawler> Commands { get; private set; }
@@ -39,20 +41,19 @@ namespace backend.DLLScanner
         {
             while (true)
             {
-                string pluginsFolder = "./plugins";
-                if (!Directory.Exists(pluginsFolder))
+                if (!Directory.Exists(_pluginsFolder))
                 {
-                    Directory.CreateDirectory(pluginsFolder);
+                    Directory.CreateDirectory(_pluginsFolder);
                 }
-                FileInfo[] scanAgain = new DirectoryInfo(_folder).GetFiles("./plugins/*.dll");
-                FileInfo[] newPlugins = scanAgain.Where(x => !_pluginPaths.Any(p => p.FullName == x.FullName)).ToArray();
+                var scanAgain = new DirectoryInfo(_folder).GetFiles($"{_pluginsFolder}*.dll");
+                var newPlugins = scanAgain.Where(x => !_pluginPaths.Any(p => p.FullName == x.FullName)).ToArray();
                 if (newPlugins.Length != 0)
                 {
                     _pluginPaths = scanAgain.ToArray();
                     var newCommands = newPlugins.SelectMany(pluginPath =>
                         {
                             string pluginPathString = pluginPath.FullName;
-                            Assembly pluginAssembly = LoadPlugin(pluginPathString);
+                            var pluginAssembly = PluginLoader.LoadPlugin(pluginPathString);
                             return CreateCommands(pluginAssembly);
                         }).ToList();
                     lock (_commandsLock)
@@ -64,17 +65,11 @@ namespace backend.DLLScanner
             }
         }
 
-        static Assembly LoadPlugin(string absolutePath)
-        {
-            PluginLoadContext loadContext = new PluginLoadContext(absolutePath);
-            return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(absolutePath)));
-        }
-
         static IEnumerable<ICrawler> CreateCommands(Assembly assembly)
         {
             int count = 0;
             var t1 = typeof(ICrawler).FullName;
-            foreach (Type type in assembly.GetTypes())
+            foreach (var type in assembly.GetTypes())
             {
                 if (typeof(ICrawler).IsAssignableFrom(type))
                 {

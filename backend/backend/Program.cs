@@ -8,7 +8,7 @@ namespace backend
     {
         public static void Main(string[] args)
         {
-            StorySourceScanner.Instance.StartScanThread();
+            ScannerController.Instance.StartToScan();
             
             var builder = WebApplication.CreateBuilder(args);
 
