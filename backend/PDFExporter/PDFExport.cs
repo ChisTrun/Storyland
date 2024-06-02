@@ -83,7 +83,10 @@ namespace PDFExporter
             for (int i = 0; i < chapterContents.Count; i++)
             {
                 AddChapterContent(chapterContents[i], ref document);
-                document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+                if (i != chapterContents.Count - 1)
+                {
+                    document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+                }
             }
             document.Close();
         }

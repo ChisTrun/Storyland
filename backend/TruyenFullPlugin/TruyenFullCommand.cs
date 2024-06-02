@@ -145,51 +145,21 @@ public class TruyenFullCommand : ICrawler
         var pre = "";
         var next = "";
         var chapterName = "";
-        var chapterID = "";
-        try
-        {
-            chapterID = $"{storyId}/chuong-{chapterIndex}";
-            var path = $"{Domain}/{chapterID}";
-            var document = GetWebPageDocument(path);
-            var mainContent = document.QuerySelector("#chapter-c");
+        var chapterID = $"{storyId}/chuong-{chapterIndex}";
+        var path = $"{Domain}/{chapterID}";
 
-            //storyId co the la "cuc-pham-o-re.29119/" hoac "con-duong-ba-chu-f24.20355/" 
-            //if (mainContent == null)
-            //{
-            //    storySubId = storyId.Substring(0, storyId.LastIndexOf('-'));
-            //    path = $"{Domain}/{storySubId}/chuong-{chapterIndex}.html";
-            //    document = GetWebPageDocument(path);
-            //    mainContent = document.QuerySelector("#chapter-c");
-            //}
+        return GetChapterContentWithURL(ref text, ref pre, ref next, ref chapterName, chapterID, path, chapterIndex);
+    }
 
-            var chapterNameTag = document.QuerySelector("#chapter-big-container .chapter-title");
-            chapterName = chapterNameTag.InnerText;
 
-            mainContent.SelectNodes("//div[contains(@class, 'ads')]")?.ToList().ForEach(n => n.Remove());
-            text = mainContent.InnerHtml;
-            text = text.Replace("<br>", "\n");
-            text = Regex.Replace(text, @"<.*?>", string.Empty);
-            next = document.QuerySelector("#next_chap").GetAttributeValue("href", null);
-            if (next.Contains(Domain))
-            {
-                next = next.Replace(Domain, "");
-            }
-            else
-            {
-                next = "";
-            }
-            pre = document.QuerySelector("#prev_chap").GetAttributeValue("href", null);
-            if (pre.Contains(Domain))
-            {
-                pre = pre.Replace(Domain, "");
-            }
-            else
-            {
-                pre = "";
-            }
-        }
-        catch { }
-        return new ChapterContent(text, next, pre, chapterName, chapterID, chapterIndex);
+    public ChapterContent GetChapterContent(string chapterID)
+    {
+        var text = "";
+        var pre = "";
+        var next = "";
+        var chapterName = "";
+        var path = $"{Domain}/{chapterID}";
+        return GetChapterContentWithURL(ref text, ref pre, ref next, ref chapterName, chapterID, path);
     }
 
     //==========================================
@@ -230,7 +200,6 @@ public class TruyenFullCommand : ICrawler
         var tuple = GetNameUrlFromATag(authorATag);
         var author = new Author(tuple.Item2, ModelExtension.GetIDFromUrl(ModelType.Author, tuple.Item1));
 
-        var t = document.QuerySelectorAll(".col-info-desc  .info  div");
         var statusSpan = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[3];
         var tmp = statusSpan.QuerySelector("span");
         var status = tmp.GetDirectInnerTextDecoded();
@@ -254,13 +223,6 @@ public class TruyenFullCommand : ICrawler
         throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="systemLimit"></param>
-    /// <param name="page"></param>
-    /// <param name="limit"></param>
-    /// <returns>Tuple of systemPageStart and systemOffsetStart</returns>
     private Tuple<int, int> CalculatePageAndLimit(int systemLimit, int page, int limit) //updated
     {
         var offsetStart = (page - 1) * limit;
@@ -376,7 +338,6 @@ public class TruyenFullCommand : ICrawler
         }
         return listOfStories;
     }
-
 
     private List<StoryTF> GetAllStoriesWithOffsetAndLimit(string sourceURL, int firstOffset, int limit) //updated
     {
@@ -538,8 +499,40 @@ public class TruyenFullCommand : ICrawler
         return new StoryTF(new Story(name, id, imgUrl), tuple.Item2);
     }
 
-    public ChapterContent GetChapterContent(string chapterId)
+    private ChapterContent GetChapterContentWithURL(ref string text, ref string pre, ref string next, ref string chapterName, string chapterID, string url, int? chapterIndex = null)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var document = GetWebPageDocument(url);
+            var mainContent = document.QuerySelector("#chapter-c");
+
+            var chapterNameTag = document.QuerySelector("#chapter-big-container .chapter-title");
+            chapterName = chapterNameTag.InnerText;
+
+            mainContent.SelectNodes("//div[contains(@class, 'ads')]")?.ToList().ForEach(n => n.Remove());
+            text = mainContent.InnerHtml;
+            text = text.Replace("<br>", "\n");
+            text = Regex.Replace(text, @"<.*?>", string.Empty);
+            next = document.QuerySelector("#next_chap").GetAttributeValue("href", null);
+            if (next.Contains(Domain))
+            {
+                next = next.Replace(Domain, "");
+            }
+            else
+            {
+                next = "";
+            }
+            pre = document.QuerySelector("#prev_chap").GetAttributeValue("href", null);
+            if (pre.Contains(Domain))
+            {
+                pre = pre.Replace(Domain, "");
+            }
+            else
+            {
+                pre = "";
+            }
+        }
+        catch { }
+        return new ChapterContent(text, next, pre, chapterName, chapterID, chapterIndex);
     }
 }
