@@ -66,21 +66,6 @@ namespace backend.DLLScanner
 
         static Assembly LoadPlugin(string absolutePath)
         {
-            //            
-            // Navigate up to the solution root
-            //#pragma warning disable CS8604 // Possible null reference argument.
-            //            string root = Path.GetFullPath(Path.Combine(
-            //                Path.GetDirectoryName(
-            //                    Path.GetDirectoryName(
-            //                        Path.GetDirectoryName(
-            //                            Path.GetDirectoryName(
-            //                                Path.GetDirectoryName(typeof(Program).Assembly.Location)))))));
-            //#pragma warning restore CS8604 // Possible null reference argument.
-
-            //            string pluginLocation = Path.GetFullPath(Path.Combine(root, absolutePath.Replace('\\', Path.DirectorySeparatorChar)));
-            //            PluginLoadContext loadContext = new PluginLoadContext(pluginLocation);
-            //            return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
-
             PluginLoadContext loadContext = new PluginLoadContext(absolutePath);
             return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(absolutePath)));
         }

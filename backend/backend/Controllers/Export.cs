@@ -1,44 +1,44 @@
 ﻿using backend.DLLScanner;
 using ExporterEPUB;
 using Microsoft.AspNetCore.Mvc;
+using PluginBase.Contract;
 using PluginBase.Models;
-using System.Net.Mime;
-
+using PDFExporter;
+using backend.DLLScanner;
+using System.IO;
 namespace backend.Controllers
 {
-    [Route("api/export/test")]
+    [Route("api/export")]
     public class Export : Controller
     {
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="type" example="pdf"></param>
+        /// <param name="storyID" example ="hop-dong-ba-nam-yeu-duong/"></param>
+        /// <returns></returns>
+        [ProducesResponseType(typeof(Category[]), 200)]
         [HttpGet]
-        public IActionResult Test()
+        [Route("{type}/{storyID}/")]
+        public async Task<IActionResult> GetAllCategories(string type, string storyID)
         {
-            var command = StorySourceScanner.Instance.Commands[0];
-            var chapterContents = new List<ChapterContent>();
-            var s1 = "thi-ra-ho-moi-la-nhan-vat-chinh";
-            var s2 = "nga-de-duy-the-gioi-duy-nhat-chan-than";
-            var s = s2;
-            var storyDetail = command.GetStoryDetail(s);
-            var chapters = command.GetChaptersOfStory(s);
-            List<Task<ChapterContent>> tasks = new();
+
+
+
+            StoryDetail storyDetail = StorySourceScanner.Instance.Commands[1].GetStoryDetail(storyID);
+            List<Chapter> chapters = StorySourceScanner.Instance.Commands[1].GetChaptersOfStory(storyID).ToList();
+            List<ChapterContent> chapterContents = new List<ChapterContent>();
+
             foreach (var chapter in chapters)
             {
-                tasks.Add(Task.Run(() =>
-                {
-                    //var temp = new TangThuVienCrawler();
-                    var temp = command;
-                    var content = temp.GetChapterContent(chapter.Id);
-                    content.ChapterName = chapter.Name;
-                    content.ChapterID = chapter.Id;
-                    content.ChapterIndex = chapter.Index;
-                    return content;
-                }));
+                var chapterContent = StorySourceScanner.Instance.Commands[1].GetChapterContent(storyID, chapter.Index + 1);
+                chapterContents.Add(chapterContent);
             }
-            var res = Task.WhenAll(tasks).Result;
 
-            // Export
-            var epub = new EPUBExport();
-            var stream = epub.ExportStory(storyDetail, res.ToList());
-            return File(stream, MediaTypeNames.Multipart.ByteRanges, "test.epub");
+            IExporter exporter = new PDFExport();
+            byte[] bytes = await Task.Run(() => exporter.ExportStory(storyDetail, chapterContents));
+
+            return File(bytes, "application/octet-stream", "story.pdf");
         }
     }
 }

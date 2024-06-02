@@ -148,8 +148,8 @@ public class TruyenFullCommand : ICrawler
         var chapterID = "";
         try
         {
-            chapterID = $"{storyId}chuong-{chapterIndex}";
-            var path = $"{Domain}{chapterID}";
+            chapterID = $"{storyId}/chuong-{chapterIndex}";
+            var path = $"{Domain}/{chapterID}";
             var document = GetWebPageDocument(path);
             var mainContent = document.QuerySelector("#chapter-c");
 
@@ -231,7 +231,7 @@ public class TruyenFullCommand : ICrawler
         var author = new Author(tuple.Item2, ModelExtension.GetIDFromUrl(ModelType.Author, tuple.Item1));
 
         var t = document.QuerySelectorAll(".col-info-desc  .info  div");
-        var statusSpan = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[2];
+        var statusSpan = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[3];
         var tmp = statusSpan.QuerySelector("span");
         var status = tmp.GetDirectInnerTextDecoded();
         var categoryTags = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[1].QuerySelectorAll("a");
