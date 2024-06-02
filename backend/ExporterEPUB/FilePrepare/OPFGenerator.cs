@@ -22,6 +22,7 @@ public class OPFGenerator
     private readonly string _authorName;
     private readonly string _imagePath;
     private readonly string _coverDir;
+    private readonly string _originDir;
     private readonly string _introDir;
     private readonly List<string> _chapterDirs;
 
@@ -32,6 +33,7 @@ public class OPFGenerator
         _authorName = authorName;
         _imagePath = Path.Combine("Images", Path.GetFileName(imagePath)).InverseSlash();
         _coverDir = Path.Combine("Chapters", Path.GetFileName(FolderStructure.COVER)).InverseSlash();
+        _originDir = Path.Combine("Chapters", Path.GetFileName(FolderStructure.ORIGIN)).InverseSlash();
         _introDir = Path.Combine("Chapters", Path.GetFileName(FolderStructure.INTRO)).InverseSlash();
         _chapterDirs = chapterDirs.Select(GetChapterRelPath).ToList();
         BookIdentifier = Guid.NewGuid().ToString();
@@ -113,6 +115,7 @@ public class OPFGenerator
             ItemGen(LOGO_PNG_PATH, "logo.png", "image/png"),
             ItemGen(_imagePath, "cover", "image/jpeg"),
             ItemGen(_coverDir, Path.GetFileName(_coverDir), "application/xhtml+xml"),
+            ItemGen(_originDir, Path.GetFileName(_originDir), "application/xhtml+xml"),
             ItemGen(_introDir, Path.GetFileName(_introDir), "application/xhtml+xml")
         });
         foreach (var chapterDir in _chapterDirs)
@@ -125,6 +128,7 @@ public class OPFGenerator
         }, new()
         {
             new XHTMLElementInline("itemref", new() {{ "idref", Path.GetFileName(_coverDir) } }),
+            new XHTMLElementInline("itemref", new() {{ "idref", Path.GetFileName(_originDir) } }),
             new XHTMLElementInline("itemref", new() {{ "idref", Path.GetFileName(_introDir) } }),
         });
         foreach (var chapterDir in _chapterDirs)
@@ -152,6 +156,5 @@ public class OPFGenerator
             xml, package
         });
         return doc;
-        //File.WriteAllText(EPUBStructure.F_CONTENT_OPF, doc.ToString());
     }
 }

@@ -11,8 +11,6 @@ namespace ExporterEPUB.XHTMLBuilder.Content
         private readonly string _storyStatus;
         private readonly string _storyImagePath;
 
-        public static readonly string LOGO_PATH = Path.Join("..", "Resources", "logo.png").InverseSlash();
-
         public IntroXHTML(string storyTitle, string authorName, string storyDescription, string storyCategories, string storyStatus, string storyImagePath)
         {
             _storyTitle = storyTitle;
@@ -25,34 +23,82 @@ namespace ExporterEPUB.XHTMLBuilder.Content
 
         public LayoutXHTML SetContent(LayoutXHTML layout)
         {
-            var company = new XHTMLElement("div");
+            layout.Head.AddChild(new XHTMLElement("style", null, null, """
+                .container {
+                    margin: 0 auto;
+                    padding: 2%;
+                }
+
+                .container-col {
+                    margin-bottom: 1em;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                }
+
+                .column {
+                    padding: 0 2%;
+                }
+
+                .column-left {
+                    flex: 0.8;
+                }
+
+                .column-left img {
+                    display: block;
+                    margin-top: 1em;
+                    margin-left: auto;
+                    margin-bottom: auto;
+                    margin-right: auto;
+                    width: 90%;
+                    max-height: 80vh;
+                }
+
+                .column-right {
+                    flex: 1.2;
+                }
+
+                p,
+                h1 {
+                    margin-top: 0.5em;
+                    margin-bottom: 0.5em;
+                    text-indent: unset;
+                    line-height: 1.5em;
+                    text-align: start;
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+
+                h1 {
+                    margin-top: 0.2em;
+                    margin-bottom: 1.5em;
+                }
+                """));
+
+            XHTMLElement PTagDetailGen(string title, string value)
             {
-                var logo = new XHTMLElementInline("img", new Dictionary<string, string>()
+                return new XHTMLElement("p", null, new()
                 {
-                    {"alt", "StoryLand" },
-                    {"src",  LOGO_PATH }
-                });
-                var source = new XHTMLElement("h2", null, null, "www.storyland.gov");
-                company.AddChild(logo);
-                company.AddChild(source);
+                    new XHTMLElement("b", null, null, title)
+                }, value);
             }
-            var story = new XHTMLElement("div");
+            var bodyContent = new XHTMLElement("div", new() { { "class", "container" } }, new()
             {
-                var cover = new XHTMLElementInline("img", new Dictionary<string, string>() { { "alt", "Cover" }, { "src", _storyImagePath } });
-                var title = new XHTMLElement("h1", text: _storyTitle);
-                var author = new XHTMLElement("p", text: _authorName);
-                var categories = new XHTMLElement("p", text: _storyCategories);
-                var status = new XHTMLElement("p", text: _storyStatus);
-                var description = new XHTMLElement("p", text: _storyDescription);
-                story.AddChild(cover);
-                story.AddChild(title);
-                story.AddChild(author);
-                story.AddChild(categories);
-                story.AddChild(status);
-                story.AddChild(description);
-            }
-            layout.Body.AddChild(company);
-            layout.Body.AddChild(story);
+                new XHTMLElement("div", new (){{"class","container-col"} }, new(){
+                    new XHTMLElement("div", new(){{"class", "column column-left" } }, new()
+                    {
+                        new XHTMLElementInline("img", new(){ { "alt", "Cover" }, { "src", _storyImagePath } })
+                    }),
+                new XHTMLElement ("div", new(){{"class", "column column-right" } }, new()
+                    {
+                        new XHTMLElement("h1", text: _storyTitle),
+                        PTagDetailGen("Author: ", _authorName),
+                        PTagDetailGen("Categories: ", _storyCategories),
+                        PTagDetailGen("Status: ", _storyStatus),
+                    }),
+                }),
+                PTagDetailGen("Description: ", _storyDescription)
+            });
+            layout.Body.AddChild(bodyContent);
             return layout;
         }
     }
