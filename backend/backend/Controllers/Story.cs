@@ -1,9 +1,6 @@
 ﻿using backend.DLLScanner;
 using Microsoft.AspNetCore.Mvc;
 using PluginBase.Models;
-using backend.Handler;
-
-
 
 namespace backend.Controllers
 {
