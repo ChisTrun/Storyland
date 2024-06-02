@@ -84,7 +84,7 @@ public class XHTMLContentGenerator
         var chapterDocs = new List<ChapterDocument>();
         foreach (var chapter in _chapters)
         {
-            chapterDocs.Add(new ChapterDocument(GenerateChapter(chapter), chapter.Chapter?.Name ?? ""));
+            chapterDocs.Add(new ChapterDocument(GenerateChapter(chapter), chapter.ChapterName));
         }
         return new ContentStructure(coverDoc, introDoc, chapterDocs);
     }

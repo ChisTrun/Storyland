@@ -1,10 +1,8 @@
 ﻿using backend.DLLScanner;
 using ExporterEPUB;
 using Microsoft.AspNetCore.Mvc;
-using PluginBase.Contract;
 using PluginBase.Models;
 using System.Net.Mime;
-using TangThuVien;
 
 namespace backend.Controllers
 {
@@ -26,9 +24,12 @@ namespace backend.Controllers
             {
                 tasks.Add(Task.Run(() =>
                 {
-                    var temp = new TangThuVienCrawler();
+                    //var temp = new TangThuVienCrawler();
+                    var temp = command;
                     var content = temp.GetChapterContent(chapter.Id);
-                    content.Chapter = chapter;
+                    content.ChapterName = chapter.Name;
+                    content.ChapterID = chapter.Id;
+                    content.ChapterIndex = chapter.Index;
                     return content;
                 }));
             }

@@ -60,6 +60,4 @@ public interface ICrawler
     /// <param name="storyName">Ten truyen</param>
     /// <returns></returns>
     public StoryDetail GetStoryDetail(string storyId);
-
-    public 
 }
