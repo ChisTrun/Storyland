@@ -30,13 +30,13 @@ class Program
         var GetChaptersOfStoryPass = true;
         var GetChapterContentPass = true;
         var GetStoryDetailPass = true;
-        //GetCategoriesPass = false;
+        GetCategoriesPass = false;
         //GetStoriesOfCategoryPass = false;
-        //GetStoriesBySearchNamePass = false;
-        //GetStoriesOfAuthorPass = false;
-        //GetChaptersOfStoryPass = false;
-        //GetChapterContentPass = false;
-        //GetStoryDetailPass = false;
+        GetStoriesBySearchNamePass = false;
+        GetStoriesOfAuthorPass = false;
+        GetChaptersOfStoryPass = false;
+        GetChapterContentPass = false;
+        GetStoryDetailPass = false;
 
         if (GetCategoriesPass == false)
         {
@@ -65,6 +65,8 @@ class Program
             {
                 Console.WriteLine(story.Name);
                 Console.WriteLine(story.Id);
+                Console.WriteLine(story.ImageUrl);
+                Console.WriteLine(story.AuthorName);
             }
         }
 

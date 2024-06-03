@@ -7,7 +7,7 @@
         public Category[] Categories { get; }
         public string Description { get; }
 
-        public StoryDetail(string name, string id, string? imageUrl, Author author, string status, Category[] categories, string description) : base(name, id, imageUrl)
+        public StoryDetail(string name, string id, string? imageUrl, string? authorName, Author author, string status, Category[] categories, string description) : base(name, id, imageUrl, authorName)
         {
             Author = author;
             Status = status;
@@ -15,7 +15,7 @@
             Description = description;
         }
 
-        public StoryDetail(Story story, Author author, string status, Category[] categories, string description) : this(story.Name, story.Id, story.ImageUrl, author, status, categories, description)
+        public StoryDetail(Story story, Author author, string status, Category[] categories, string description) : this(story.Name, story.Id, story.ImageUrl, story.AuthorName, author, status, categories, description)
         {
         }
     }

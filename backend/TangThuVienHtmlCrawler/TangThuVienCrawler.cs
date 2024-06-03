@@ -218,7 +218,7 @@ public partial class TangThuVienCrawler : ICrawler
         var chapterId = ModelExtension.GetIDFromUrl(ModelType.Chapter, chapterUrl);
         var chapterDoc = GetWebPageDocument(chapterUrl);
         GetNameContentStoryOfChapter(chapterDoc, out string chapterName, out string content, out Story story);
-        PrevNextChapId(chaptersDoc, chapterUrl, currentChapterIndex, out string prevChapId, out string nextChapId);
+        PrevNextChapId(chaptersDoc, currentChapterIndex, out string? prevChapId, out string? nextChapId);
         return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId, chapterName, chapterId, currentChapterIndex - 1, story);
     }
 
@@ -235,7 +235,7 @@ public partial class TangThuVienCrawler : ICrawler
         var docChaptersWithActive = GetWebPageDocument(ttvChapterUrl);
         var currentChapterIndex = docChaptersWithActive.QuerySelector(@"li.active").GetAttributeValue("title", -1);
         GetNameContentStoryOfChapter(chapterDoc, out string chapterName, out string content, out var story);
-        PrevNextChapId(docChaptersWithActive, chapterUrl, currentChapterIndex, out string prevChapId, out string nextChapId);
+        PrevNextChapId(docChaptersWithActive, currentChapterIndex, out string? prevChapId, out string? nextChapId);
         return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId, chapterName, chapterId, currentChapterIndex - 1, story);
     }
 
@@ -256,6 +256,39 @@ public partial class TangThuVienCrawler : ICrawler
         var descriptionPTag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-content-wrap.cf > div.left-wrap.fl > div.book-info-detail > div.book-intro > p");
         var description = descriptionPTag.GetDirectInnerTextDecoded();
         return new StoryDetail(story, author, status, [category], description);
+    }
+
+    // note: search engine cua trang nay khong duoc on dinh
+    public IEnumerable<Author> GetAuthorsBySearchName(string authorName)
+    {
+        var authors = new List<Author>();
+        var domainTimKiemWithKey = $"{DomainTimKiem}?term={WebUtility.UrlEncode(authorName)}";
+        Task.Run(async () =>
+        {
+            using var client = new HttpClient();
+            try
+            {
+                var response = await client.GetAsync(domainTimKiemWithKey);
+                response.EnsureSuccessStatusCode();
+                string jsonData = await response.Content.ReadAsStringAsync();
+                var jsonTypeList = new[] { new { id = 0, name = "", url = "", type = "", story_type = 0 } };
+                var resArray = JsonConvert.DeserializeAnonymousType(jsonData, jsonTypeList) ?? throw new Exception("Null response");
+                foreach (var res in resArray)
+                {
+                    if (res.type == "author")
+                    {
+                        var url = $"{DomainTacGia}?author={res.id}";
+                        authors.Add(new Author(res.name, ModelExtension.GetIDFromUrl(ModelType.Author, url)));
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP request error: {ex.Message}");
+                throw;
+            }
+        }).Wait();
+        return authors;
     }
 
     // ================= End Interface ====================
@@ -297,16 +330,6 @@ public partial class TangThuVienCrawler : ICrawler
 
     private static PagingRepresentative<T> GetRepresentativesFromATagsFromAllPagesFixedPageSize<T>(Func<HtmlDocument, IEnumerable<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible, int page, int limit) where T : Representative
     {
-        // Tại vì khi tìm kiếm nó có lẫn lộn truyện của ngontinh.tangthuvien.vn nên không xài cách này nữa
-        // Trong trường hợp chuyển trang sang ngontinh.tangthuvien.vn có lỗi
-        //var allRecords = GetRepresentativesFromATagsFromAllPages<T>(crawlRepresentativesFromAPage, createURLFromPage, nextPageAvailible);
-        //var totalRecord = allRecords.Count();
-        //var totalPage = (totalRecord / limit) + (totalRecord % limit == 0 ? 0 : 1);
-        //var offsetStart = (page - 1) * limit;
-        //var offsetEnd = Math.Min((page * limit) - 1, totalRecord - 1);
-        //var pageResults = allRecords.Skip(offsetStart).Take(offsetEnd - offsetStart + 1);
-        //return new PagingRepresentative(page, limit, totalPage, pageResults);
-
         int systemLimit;
         int totalPage;
         int totalRecord;
@@ -369,43 +392,48 @@ public partial class TangThuVienCrawler : ICrawler
     // sub-methods
     // sub-methods
 
-    private Tuple<string, string> GetNameUrlFromATag(HtmlNode aTag)
+    private static Tuple<string, string> GetNameUrlFromATag(HtmlNode aTag)
     {
         var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
         var name = aTag.GetDirectInnerTextDecoded();
         return Tuple.Create(url, name);
     }
 
-    private Story GetStory(string id)
+    // https://truyen.tangthuvien.vn/doc-truyen/thi-ra-ho-moi-la-nhan-vat-chinh
+    // differ from the CrawlStoriesFromAPage
+    private static Story GetStory(string id)
     {
         var doc = GetWebPageDocument(ModelExtension.GetUrlFromID(ModelType.Story, id));
         var name = doc.QuerySelector("head > title").GetDirectInnerTextDecoded();
         var imgUrl = doc.QuerySelector("#bookImg > img").GetAttributeValue("src", null);
-        return new Story(name, id, imgUrl);
+        var authorName = doc.QuerySelector(@"body > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > p.tag > a.blue").GetDirectInnerTextDecoded();
+        return new Story(name, id, imgUrl, authorName);
     }
 
-    private string GetTTVStoryId(string storyId)
+    private static string GetTTVStoryId(string storyId)
     {
         var storyUrl = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
         var id = GetWebPageDocument(storyUrl).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
         return id;
     }
 
-    private static void PrevNextChapId(HtmlDocument docChapters, string chapterUrl, int currentChapterIndex, out string prevChapId, out string nextChapId)
+    private static void PrevNextChapId(HtmlDocument docChapters, int currentChapterIndex, out string? prevChapId, out string? nextChapId)
     {
         var total = docChapters.QuerySelector(@"ul:last-child > li:last-child").GetAttributeValue("title", -1);
-        string prevChapUrl;
-        string nextChapUrl;
+        prevChapId = null;
+        nextChapId = null;
         var prevChapterIndex = currentChapterIndex - 1;
-        prevChapUrl = prevChapterIndex < 1
-            ? chapterUrl
-            : docChapters.QuerySelector($"a.link-chap-{prevChapterIndex}").GetAttributeValue("href", null);
+        if (prevChapterIndex >= 1)
+        {
+            var prevChapUrl = docChapters.QuerySelector($"a.link-chap-{prevChapterIndex}").GetAttributeValue("href", null).Trim();
+            prevChapId = ModelExtension.GetIDFromUrl(ModelType.Chapter, prevChapUrl).Trim();
+        }
         var nextChapterIndex = currentChapterIndex + 1;
-        nextChapUrl = prevChapterIndex > total
-            ? chapterUrl
-            : docChapters.QuerySelector($"a.link-chap-{nextChapterIndex}").GetAttributeValue("href", null);
-        prevChapId = ModelExtension.GetIDFromUrl(ModelType.Chapter, prevChapUrl).Trim();
-        nextChapId = ModelExtension.GetIDFromUrl(ModelType.Chapter, nextChapUrl).Trim();
+        if (nextChapterIndex <= total)
+        {
+            var nextChapUrl = docChapters.QuerySelector($"a.link-chap-{nextChapterIndex}").GetAttributeValue("href", null).Trim();
+            nextChapId = ModelExtension.GetIDFromUrl(ModelType.Chapter, nextChapUrl).Trim();
+        }
     }
 
     private void GetNameContentStoryOfChapter(HtmlDocument chapterDoc, out string chapterName, out string content, out Story story)
@@ -421,54 +449,24 @@ public partial class TangThuVienCrawler : ICrawler
     // Extra functions for later uses
     // Extra functions for later uses
 
-    //private Category GetExactCategory(string id)
-    //{
-    //    var doc = GetWebPageDocument(ModelExtension.GetUrlFromID(ModelType.Category, id));
-    //    var name = doc.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.rank-header > div > div > div > div > p:nth - child(1) > a.act").GetDirectInnerTextDecoded();
-    //    return new Category(name, id);
-    //}
-
-    // note: search engine của trang này không được ổn định
-    public IEnumerable<Author> GetAuthorsBySearchName(string name)
+    private Category GetExactCategory(string id)
     {
-        var authors = new List<Author>();
-        var domainTimKiemWithKey = $"{DomainTimKiem}?term={WebUtility.UrlEncode(name)}";
-        Task.Run(async () =>
-        {
-            using var client = new HttpClient();
-            try
-            {
-                var response = await client.GetAsync(domainTimKiemWithKey);
-                response.EnsureSuccessStatusCode();
-                string jsonData = await response.Content.ReadAsStringAsync();
-                var jsonTypeList = new[] { new { id = 0, name = "", url = "", type = "", story_type = 0 } };
-                var resArray = JsonConvert.DeserializeAnonymousType(jsonData, jsonTypeList) ?? throw new Exception("Null response");
-                foreach (var res in resArray)
-                {
-                    // story_type == 1 leads to ngontinh.tangthuvien
-                    if (res.type == "author")
-                    {
-                        var url = $"{DomainTacGia}?author={res.id}";
-                        authors.Add(new Author(res.name, ModelExtension.GetIDFromUrl(ModelType.Author, url)));
-                    }
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"HTTP request error: {ex.Message}");
-                throw;
-            }
-        }).Wait();
-        return authors;
+        var doc = GetWebPageDocument(ModelExtension.GetUrlFromID(ModelType.Category, id));
+        var name = doc.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.rank-header > div > div > div > div > p:nth - child(1) > a.act").GetDirectInnerTextDecoded();
+        return new Category(name, id);
     }
 
+    // Pages that structure like this:
+    // https://truyen.tangthuvien.vn/tong-hop?ctg=1&limit=10000
     internal static class RankViewListFormat
     {
+        // https://truyen.tangthuvien.vn/tong-hop?ctg=1&limit=10
         public static IEnumerable<Story> CrawlStoriesFromAPage(HtmlDocument doc)
         {
             var lisSelector = "#rank-view-list > div > ul > li";
             var aTagSelector = "div.book-mid-info > h4 > a";
             var imageSelector = "div.book-img-box > a > img";
+            var authorNameSelector = @"div.book-mid-info > p.author > a.name";
             var liTags = doc.QuerySelectorAll(lisSelector);
             var stories = new List<Story>();
             foreach (var li in liTags)
@@ -486,7 +484,8 @@ public partial class TangThuVienCrawler : ICrawler
                 }
                 var name = aTag.GetDirectInnerTextDecoded();
                 var imageUrl = image.GetAttributeValue("src", null);
-                stories.Add(new Story(name, ModelExtension.GetIDFromUrl(ModelType.Story, url), imageUrl));
+                var authorName = li.QuerySelector(authorNameSelector).GetDirectInnerTextDecoded();
+                stories.Add(new Story(name, ModelExtension.GetIDFromUrl(ModelType.Story, url), imageUrl, authorName));
             }
             return stories;
         }

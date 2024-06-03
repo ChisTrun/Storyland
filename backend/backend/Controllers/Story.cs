@@ -10,7 +10,7 @@ namespace backend.Controllers
         /// <summary>
         /// Get detail of a Story.
         /// </summary>
-        /// <param name="serverIndex">Index of the server to check.</param>
+        /// <param name="serverIndex" example="0">Index of the server.</param>
         /// <param name="storyId" example="bat-lo-thanh-sac/">Story's identity of each page, usally the last section of URL.</param>
         [ProducesResponseType(typeof(StoryDetail), 200)]
         [HttpGet]
@@ -27,8 +27,8 @@ namespace backend.Controllers
         /// <summary>
         /// Get all chapters of a Story.
         /// </summary>
-        /// <param name="serverIndex">Index of the server to check.</param>
-        /// <param name="storyId" example="bat-lo-thanh-sac/">Story's identity of each page, usally the last section of URL.</param>
+        /// <param name="serverIndex" example="0">Index of the server.</param>
+        /// <param name="storyId" example="bat-lo-thanh-sac">Story's identity of each page, usally the last section of URL.</param>
         [ProducesResponseType(typeof(Chapter[]), 200)]
         [HttpGet]
         [Route("{serverIndex}/{storyId}/chapters/all")]
