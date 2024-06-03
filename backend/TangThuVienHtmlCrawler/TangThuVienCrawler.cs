@@ -259,6 +259,7 @@ public partial class TangThuVienCrawler : ICrawler
     }
 
     // note: search engine cua trang nay khong duoc on dinh
+    // chi search duoc toi da 5 tac gia co ten gan giong
     public IEnumerable<Author> GetAuthorsBySearchName(string authorName)
     {
         var authors = new List<Author>();
@@ -289,6 +290,19 @@ public partial class TangThuVienCrawler : ICrawler
             }
         }).Wait();
         return authors;
+    }
+
+    public PagingRepresentative<Author> GetAuthorsBySearchName(string authorName, int page, int limit)
+    {
+        var authors = GetAuthorsBySearchName(authorName).ToList();
+        var offset = (page - 1) * limit;
+        var totalPage = authors.Count / limit;
+        var authorsRes = new List<Author>();
+        for (int i = offset; i < authors.Count && i + offset < limit; ++i)
+        {
+            authorsRes.Add(authors[i]);
+        }
+        return new PagingRepresentative<Author>(page, limit, totalPage, authorsRes);
     }
 
     // ================= End Interface ====================

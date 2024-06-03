@@ -66,4 +66,5 @@ public interface ICrawler
     /// <param name="authorName"></param>
     /// <returns></returns>
     public IEnumerable<Author> GetAuthorsBySearchName(string authorName);
+    public PagingRepresentative<Author> GetAuthorsBySearchName(string authorName, int page, int limit);
 }

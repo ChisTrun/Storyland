@@ -76,21 +76,5 @@ namespace backend.Controllers
                 return BadRequest("Invalid server index.");
             return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetChapterContent(storyId, chapterIndex));
         }
-
-        /// <summary>
-        /// Get Chapter content from a Story via chapterID
-        /// </summary>
-        /// <param name="serverIndex">Index of the server to check.</param>
-        /// <param name="chapterId" example="trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480">Chapter's identity of each page, usally the last section of URL.</param>
-        [ProducesResponseType(typeof(ChapterContent), 200)]
-        [HttpGet]
-        [Route("{serverIndex}/story/chapter/id")]
-        public IActionResult GetChapterContent(int serverIndex, [FromQuery(Name = "chapterid")] string chapterId)
-        {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid)
-                return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetChapterContent(chapterId));
-        }
     }
 }

@@ -367,7 +367,7 @@ public class TruyenFullCommand : ICrawler
                 }
                 var author = row.QuerySelector(".author").InnerText;
 
-                listOfStories.Add(new StoryTF(new Story(name, url, img), author));
+                listOfStories.Add(new StoryTF(new Story(name, url, img, "//todo"), author));
                 needRemain--;
             }
             catch (Exception)
@@ -535,10 +535,20 @@ public class TruyenFullCommand : ICrawler
         var authorATag = doc.QuerySelectorAll(".col-info-desc .info div ")[0];
         authorATag = authorATag.QuerySelector("a");
         var tuple = GetNameUrlFromATag(authorATag);
-        return new StoryTF(new Story(name, id, imgUrl), tuple.Item2);
+        return new StoryTF(new Story(name, id, imgUrl, "//todo"), tuple.Item2);
     }
 
     public ChapterContent GetChapterContent(string chapterId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<Author> GetAuthorsBySearchName(string authorName)
+    {
+        throw new NotImplementedException();
+    }
+
+    public PagingRepresentative<Author> GetAuthorsBySearchName(string authorName, int page, int limit)
     {
         throw new NotImplementedException();
     }
