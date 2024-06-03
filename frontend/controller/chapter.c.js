@@ -20,8 +20,16 @@ module.exports = {
             const serverIndex = req.session.serverIndex;
 
             const chapterInfoResponse = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}/chapters?page=${chapterIndex+1}&limit=1`);
-            const chapterInfoResBody = await chapterInfoResponse.json();            
+            if (!chapterInfoResponse.ok) {
+                const errorMessage = await chapterInfoResponse.text();
+                throw Error(errorMessage);
+            }
+            const chapterInfoResBody = await chapterInfoResponse.json();   
             const serverResponse = await fetch(`${BE_HOST}/api/server`);
+            if (!serverResponse.ok) {
+                const errorMessage = await serverResponse.text();
+                throw Error(errorMessage);
+            }         
             const serverResBody = await serverResponse.json();
 
             render.chapterIndex = chapterIndex;
@@ -48,7 +56,7 @@ module.exports = {
 
             return res.render(view, render, null);
         } catch (error) {
-            next(new ErrorDisplay("Đọc truyện thất bại", 503, error.message));
+            next(new ErrorDisplay("Xem nội dung chương truyện thất bại!", 500, error.message));
         }
     },
     async getAll(req, res, next) {
@@ -57,12 +65,16 @@ module.exports = {
             const storyId = decodeURIComponent(req.params.storyId);
             
             const response = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}/chapters/all`);
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw Error(errorMessage);
+            }         
             const resBody = await response.json();
 
             return res.json(resBody);
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error.message);
             return res.json([]);
         }
     },
@@ -73,6 +85,10 @@ module.exports = {
             const storyId = decodeURIComponent(req.params.storyId);
 
             const response = await fetch(`${BE_HOST}/api/story/${chapterServer}/${encodeURIComponent(storyId)}/chapter?index=${index}`);
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw Error(errorMessage);
+            }   
             const resBody = await response.json();
 
             const content = `${resBody.content.replace(/\r\n/g, '<br>')
@@ -82,8 +98,8 @@ module.exports = {
             return res.json({'content': content});
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error.message);
             return res.json({'content': '<div class=`text-center`>Nguồn truyện không khả thi!</div>'});
         }
-    }
+    },
 };

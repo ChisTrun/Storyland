@@ -19,8 +19,16 @@ module.exports = {
             const serverIndex = req.session.serverIndex;
 
             const storyResponse = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`);
+            if (!storyResponse.ok) {
+                const errorMessage = await storyResponse.text();
+                throw Error(errorMessage);
+            }
             const storyResBody = await storyResponse.json();
             const serverResponse = await fetch(`${BE_HOST}/api/server`);
+            if (!serverResponse.ok) {
+                const errorMessage = await serverResponse.text();
+                throw Error(errorMessage);
+            }
             const serverResBody = await serverResponse.json();
 
             let desc = storyResBody.description.replace(/\r\n\r\n/g, '<br>')
@@ -48,7 +56,7 @@ module.exports = {
             return res.render(view, render, null);
         }
         catch (error) {
-            next(new ErrorDisplay("Xem thông tin truyện thất bại", 503, error.message));
+            next(new ErrorDisplay("Xem thông tin truyện thất bại!", 500, error.message));
         }
     },
 };

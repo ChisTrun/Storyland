@@ -16,10 +16,16 @@ namespace backend.Controllers
         [Route("{serverIndex}/")]
         public IActionResult GetAllCategories(int serverIndex)
         {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid)
-                return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetCategories());
+            try
+            {
+                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                if (!isValid) return BadRequest("Invalid server index.");
+                return Ok(ScannerController.Instance.sourceScanner.Commands[serverIndex].GetCategories());
+            } 
+            catch (Exception e) 
+            {
+                return StatusCode(500, $"Fail to get all categories: {e.Message}.");
+            }
         }
 
         /// <summary>
@@ -33,10 +39,16 @@ namespace backend.Controllers
         [Route("{serverIndex}/{categoryId}/all")]
         public IActionResult GetAllStoriesOfCategory(int serverIndex, string categoryId)
         {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid)
-                return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesOfCategory(categoryId));
+            try
+            {
+                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                if (!isValid) return BadRequest("Invalid server index.");
+                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesOfCategory(categoryId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories of the category with id {categoryId}: {e.Message}.");
+            }
         }
 
         /// <summary>
@@ -51,10 +63,16 @@ namespace backend.Controllers
         [Route("{serverIndex}/{categoryId}")]
         public IActionResult GetAllStoriesOfCategory(int serverIndex, string categoryId, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
         {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid)
-                return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesOfCategory(categoryId, page, limit));
+            try 
+            {
+                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                if (!isValid) return BadRequest("Invalid server index.");
+                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesOfCategory(categoryId, page, limit));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories at page {page} of the category with id {categoryId}: {e.Message}.");
+            }
         }
     }
 }

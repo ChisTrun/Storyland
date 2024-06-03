@@ -20,11 +20,18 @@ module.exports = {
             const curPage = parseInt(req.query.page) || 1;
             
             const response = await fetch(`${BE_HOST}/api/search/${serverIndex}/truyen/${encodeURIComponent(keyword)}?page=${curPage}&limit=${perPage}`);
-            const resBody = await response.json();
-            const totalPages = resBody.totalPages ? resBody.totalPages : 1;
-            if (curPage > totalPages) {
-                res.redirect('back');
+            let resBody = {};
+            if (!response.ok) {
+                resBody.data = [];
+                resBody.totalPages = 0;
+                const errorMessage = await response.text();
+                console.error(`HTTP error! status: ${response.status}, message: ${errorMessage}`);
             }
+            else {
+                resBody = await response.json();
+            }
+            const totalPages = resBody.totalPages ? resBody.totalPages : 1;
+            curPage <= totalPages || res.redirect('back');
 
             render.stories = resBody.data;
             render.keyword = keyword;
@@ -38,7 +45,7 @@ module.exports = {
             return res.render(view, render, null);
         }
         catch (error) {
-            next(new ErrorDisplay("Tìm kiếm thất bại", 503, error.message));
+            next(new ErrorDisplay("Tìm kiếm từ khoá thất bại!", 500, error.message));
         }
     },
 };
