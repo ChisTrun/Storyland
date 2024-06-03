@@ -1,12 +1,23 @@
 <div class="container min-vh-100">
     <div class="row">
-        <div class="col-md-12 fs-5 mt-4 mb-2 notify-text fw-bold">
+        <div class="col-md-12 fs-5 mt-4 mb-2 notify-text fw-bold d-flex align-items-center">
             <i class="fa-solid fa-flag pe-1"></i>
-            Kết quả tìm kiếm với từ khoá: <span>{{keyword}}</span>
+            Kết quả tìm kiếm với từ khoá: 
+            <span class="ms-2 flex-grow-1">{{keyword}}</span> 
+            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn:
+                {{#each serverArr}}
+                {{#ifEqual ../serverIndex index}}
+                {{name}}
+                {{/ifEqual}}
+                {{else}}
+                n/a
+                {{/each}}
+                ]
+            </span>
         </div>
     </div>
 
-    {{> storiesList}}
+    {{> storiesList server=serverIndex }}
 
     <div class="row mt-3 mb-4">
         <ul class="pagination d-flex align-items-center justify-content-center">

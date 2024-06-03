@@ -67,9 +67,13 @@ const getCategory = async () => {
 };
 getCategory();
 
-$('.category-dropdown').on('click', function () {
-    $(this).children('i').toggleClass('fa-rotate-270');
+const toggleCtgDropdown = () => {
+    $('.category-dropdown').children('i').toggleClass('fa-rotate-270');
     $('.dropdown-content').toggleClass('d-none');
+}
+
+$('.category-dropdown').on('click', function () {
+    toggleCtgDropdown();
 });
 
 $('.web-mode').on('click', async function () {
@@ -103,3 +107,9 @@ $("#up-btn").on("click", () => {
         scrollTop: 0
     }, 800), !1;
 });
+
+$('body').on('click', function (event) {
+    if ($('.dropdown-content').is(':visible') && !$(event.target).closest('.dropdown-content').length && !$(event.target).closest('.category-dropdown').length) {
+        toggleCtgDropdown();
+    }
+})

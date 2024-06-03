@@ -63,7 +63,8 @@ namespace backend.Controllers
         [HttpGet]
         [Route("{serverIndex}/truyen/{storyName}/all")]
         public IActionResult SearchByStoryName(int serverIndex, string storyName)
-        {try 
+        {
+            try 
             {
                 bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
                 if (!isValid) return BadRequest("Invalid server index.");
@@ -98,7 +99,6 @@ namespace backend.Controllers
             {
                 return StatusCode(500, $"Fail to get stories at page {page} by searching with keyword {storyName}: {e.Message}.");
             }
-            
         }
     }
 }

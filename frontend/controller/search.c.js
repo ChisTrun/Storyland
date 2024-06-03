@@ -1,5 +1,6 @@
 const { ErrorDisplay } = require('../middleware/error');
 const { BE_HOST, HOST, PORT } = require('../global/env');
+const { getServerArr } = require('../utils/utils');
 
 const view = 'search';
 const render = {
@@ -30,6 +31,7 @@ module.exports = {
             else {
                 resBody = await response.json();
             }
+            const serverArr = await getServerArr();
             const totalPages = resBody.totalPages ? resBody.totalPages : 1;
             curPage <= totalPages || res.redirect('back');
 
@@ -37,6 +39,7 @@ module.exports = {
             render.keyword = keyword;
             render.curPage = curPage;
             render.totalPages = totalPages;
+            render.serverArr = serverArr;
 
             render.serverIndex = serverIndex;
             render.isDark = req.session.isDark;

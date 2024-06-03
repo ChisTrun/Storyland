@@ -15,6 +15,15 @@ function togglePanel(id) {
     }
 }
 
+$('body').on('click', function (event) {
+    if ($('#chapters-list-panel').is(':visible') && !$(event.target).closest('.option-button').length && !$(event.target).closest('#chapters-list-panel').length) {
+        $('#chapters-list-panel').css('display', "none");
+    }
+    if ($('#text-format-panel').is(':visible') && !$(event.target).closest('#text-format-panel').length && !$(event.target).closest('.option-button').length) {
+        $('#text-format-panel').css('display', "none");
+    }
+})
+
 function changeFont(font, button) {
     $('.text-format-button').removeClass('active');
     content.css("font-family", font);
@@ -90,7 +99,6 @@ const getContent = async (chapterServer) => {
         }
     });
 };
-getContent(storyServer);
 
 const getChapters = async () => {
     const container = $('#chapters-list-panel');

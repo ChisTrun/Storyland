@@ -3,6 +3,6 @@ const router = express.Router();
 
 const controller = require('../controller/author.c');
 
-router.get('/:authorName', controller.render);
+router.get('/:authorName/s:storyServer', controller.render);
 
 module.exports = { router };

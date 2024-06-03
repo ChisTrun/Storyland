@@ -7,12 +7,12 @@ function deleteHistory(storyId, storyServer) {
             "storyServer": storyServer
         },
         success: function (data) {
-            if (data.success) {
+            if (data.isSuccess) {
                 location.reload();
             }
         },
         error: function(xhr, status, error) {
-            console.log('Error stories history: ', error);
+            console.error('Error stories history: ', error);
         }
     });
 };

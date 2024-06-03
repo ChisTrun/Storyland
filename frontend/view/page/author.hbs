@@ -1,18 +1,30 @@
 <div class="container min-vh-100">
     <div class="row">
-        <div class="col-md-12 fs-5 mt-4 mb-2 notify-text fw-bold">
+        <div class="col-md-12 fs-5 mt-4 mb-2 notify-text fw-bold d-flex align-items-center">
             <i class="fa-solid fa-flag pe-1"></i>
-            Tác giả: <span>{{authorName}}</span>
+            Tác giả: 
+            <span class="ms-2 flex-grow-1">{{authorName}}</span> 
+            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn:
+                {{#each serverArr}}
+                {{#ifEqual ../storyServer index}}
+                {{name}}
+                {{/ifEqual}}
+                {{else}}
+                n/a
+                {{/each}}
+                ]
+            </span>
         </div>
     </div>
 
-    {{> storiesList}}
+    {{> storiesList server=storyServer }}
 
     <div class="row mt-3 mb-4">
         <ul class="pagination d-flex align-items-center justify-content-center">
             <li></li>
             {{#ifNotEqual curPage 1}}
-            <li class="page-item mx-2"><a class="page-link" href="/author/{{authorName}}?id={{encodeUrl authorId}}&page=1"><i
+            <li class="page-item mx-2"><a class="page-link"
+                    href="/author/{{authorName}}?id={{encodeUrl authorId}}&page=1"><i
                         class="fa-solid fa-backward-step"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
                     href="/author/{{authorName}}?id={{encodeUrl authorId}}&page={{plus curPage -1}}"><i

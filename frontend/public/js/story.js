@@ -14,7 +14,7 @@ const getChapters = async () => {
         },
         error: function (xhr, status, error) {
             chaptersContainer.empty();
-            console.log('Error getting all chapters of the story: ', error);
+            console.error('Error getting all chapters of the story: ', error);
         }
     });
 };

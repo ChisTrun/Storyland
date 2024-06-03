@@ -31,7 +31,7 @@
                                 Tác giả
                             </div>
                             <a class="col-md-9 d-block" {{#if
-                                author}}href="/author/{{author.name}}?id={{encodeUrl author.id}}{{/if}}">
+                                author}}href="/author/{{author.name}}/s{{storyServer}}?id={{encodeUrl author.id}}{{/if}}">
                                 {{#if author}}{{author.name}}{{else}}n/a{{/if}}
                             </a>
                         </div>
@@ -84,9 +84,9 @@
                             Đọc từ đầu
                         </a>
                         {{/isDefined}}
-                        {{#isDefined conIndex}}
+                        {{#isDefined storyConIndex}}
                         <a type="button" class="rounded mx-2 p-2 con-chapter-btn"
-                            href="/story/{{encodeUrl id}}/s{{storyServer}}/chapter/{{conIndex}}">
+                            href="/story/{{encodeUrl id}}/s{{storyServer}}/chapter/{{storyConIndex}}">
                             <i class="fa-solid fa-location-arrow"></i>
                             Đọc tiếp
                         </a>
