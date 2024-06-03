@@ -348,7 +348,6 @@ footer .web-logo {
 
 #chapters-container {
   border: 1px solid var(--text-color);
-  min-height: 50vh;
   max-height: 70vh;
   white-space: nowrap;
   overflow-x: hidden;
@@ -361,6 +360,7 @@ footer .web-logo {
   display: inline-block;
   border-bottom: 1px solid var(--nonary-color);
   width: 95%;
+  height: fit-content;
   padding: 0;
   margin: 0.25rem 2rem;
   line-height: 2rem;

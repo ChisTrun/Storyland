@@ -21,11 +21,13 @@ module.exports = {
             const curPage = parseInt(req.query.page) || 1;
 
             const response = await fetch(`${BE_HOST}/api/category/${serverIndex}/${encodeURIComponent(categoryId)}?page=${curPage}&limit=${perPage}`);
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw Error(errorMessage);
+            }
             const resBody = await response.json();
             const totalPages = resBody.totalPages ? resBody.totalPages : 1;
-            if (curPage > totalPages) {
-                return res.redirect('back');
-            }
+            curPage <= totalPages || res.redirect('back');
             
             render.stories = resBody.data;
             render.categoryName = categoryName;
@@ -40,19 +42,23 @@ module.exports = {
             return res.render(view, render, null);
         }
         catch (error) {
-            next(new ErrorDisplay("Tìm kiếm thể loại thất bại", 503, error.message));
+            next(new ErrorDisplay("Tìm kiếm thể loại thất bại!", 500, error.message));
         }
     },
     async getAll(req, res, next) {
         try {
             const serverIndex = req.session.serverIndex;
             const response = await fetch(`${BE_HOST}/api/category/${serverIndex}`);
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw Error(errorMessage);
+            }
             const resBody = await response.json();
 
             return res.json(resBody);
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error.message);
             return res.json([]);
         }
     },

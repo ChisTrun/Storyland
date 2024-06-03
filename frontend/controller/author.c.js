@@ -21,11 +21,14 @@ module.exports = {
             const curPage = parseInt(req.query.page) || 1;
 
             const response = await fetch(`${BE_HOST}/api/search/${serverIndex}/tacgia/${encodeURIComponent(authorId)}?page=${curPage}&limit=${perPage}`);
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw Error(errorMessage);
+            }
             const resBody = await response.json();
             const totalPages = resBody.totalPages ? resBody.totalPages : 1;
-            if (curPage > totalPages) {
-                return res.redirect('back');
-            }
+            curPage <= totalPages || res.redirect('back');
+            
 
             render.stories = resBody.data;
             render.authorName = authorName;
@@ -40,7 +43,7 @@ module.exports = {
             return res.render(view, render, null);
         }
         catch (error) {
-            next(new ErrorDisplay("Tìm kiếm tác giả thất bại", 503, error.message));
+            next(new ErrorDisplay("Tìm kiếm tác giả thất bại!", 500, error.message));
         }
     },
 };
