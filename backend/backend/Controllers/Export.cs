@@ -27,20 +27,27 @@ namespace backend.Controllers
         [Route("{serverIndex}/{type}/{storyID}/")]
         public async Task<IActionResult> GetAllCategories(int serverIndex, int type, string storyID)
         {
-
-            StoryDetail storyDetail = StorySourceScanner.Instance.Commands[serverIndex].GetStoryDetail(storyID);
-            List<Chapter> chapters = StorySourceScanner.Instance.Commands[serverIndex].GetChaptersOfStory(storyID).ToList();
-            List<ChapterContent> chapterContents = new List<ChapterContent>();
-
-            foreach (var chapter in chapters)
+            try
             {
-                var chapterContent = StorySourceScanner.Instance.Commands[serverIndex].GetChapterContent(storyID, chapter.Index + 1);
-                chapterContents.Add(chapterContent);
+                StoryDetail storyDetail = StorySourceScanner.Instance.Commands[serverIndex].GetStoryDetail(storyID);
+                List<Chapter> chapters = StorySourceScanner.Instance.Commands[serverIndex].GetChaptersOfStory(storyID).ToList();
+                List<ChapterContent> chapterContents = new List<ChapterContent>();
+
+                foreach (var chapter in chapters)
+                {
+                    var chapterContent = StorySourceScanner.Instance.Commands[serverIndex].GetChapterContent(storyID, chapter.Index + 1);
+                    chapterContents.Add(chapterContent);
+                }
+
+                byte[] bytes = await Task.Run(() => ScannerController.Instance.exporterScanner.Commands[type].ExportStory(storyDetail, chapterContents));
+
+                return File(bytes, "application/octet-stream", $"story.{ScannerController.Instance.exporterScanner.Commands[type].Ext}");
             }
-
-            byte[] bytes = await Task.Run(() => ScannerController.Instance.exporterScanner.Commands[type].ExportStory(storyDetail, chapterContents));
-
-            return File(bytes, "application/octet-stream", $"story.{ScannerController.Instance.exporterScanner.Commands[type].Ext}");
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get download link: {e.Message}.");
+            }
+            
         }
     }
 }

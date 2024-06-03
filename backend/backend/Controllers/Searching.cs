@@ -19,9 +19,16 @@ namespace backend.Controllers
         [Route("{serverIndex}/tacgia/{authorId}/all")]
         public IActionResult SearchByAuthor(int serverIndex,string authorId)
         {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid) return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesOfAuthor(authorId));
+            try
+            {
+                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                if (!isValid) return BadRequest("Invalid server index.");
+                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesOfAuthor(authorId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories of the author with id {authorId}: {e.Message}.");
+            }
         }
 
         /// <summary>
@@ -36,9 +43,16 @@ namespace backend.Controllers
         [Route("{serverIndex}/tacgia/{authorId}")]
         public IActionResult SearchByAuthor(int serverIndex, string authorId, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
         {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid) return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesOfAuthor(authorId, page, limit));
+            try
+            {
+                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                if (!isValid) return BadRequest("Invalid server index.");
+                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesOfAuthor(authorId, page, limit));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories at page {page} of the author with id  {authorId}: {e.Message}.");
+            }
         }
 
         /// <summary>
@@ -50,10 +64,17 @@ namespace backend.Controllers
         [HttpGet]
         [Route("{serverIndex}/truyen/{storyName}/all")]
         public IActionResult SearchByStoryName(int serverIndex, string storyName)
-        {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid) return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesBySearchName(storyName));
+        {try 
+            {
+                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                if (!isValid) return BadRequest("Invalid server index.");
+                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesBySearchName(storyName));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories by searching with keyword {storyName}: {e.Message}.");
+            }
+            
         }
 
         /// <summary>
@@ -68,9 +89,17 @@ namespace backend.Controllers
         [Route("{serverIndex}/truyen/{storyName}")]
         public IActionResult SearchByStoryName(int serverIndex, string storyName, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
         {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid) return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesBySearchName(storyName, page, limit));
+            try
+            {
+                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                if (!isValid) return BadRequest("Invalid server index.");
+                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetStoriesBySearchName(storyName, page, limit));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories at page {page} by searching with keyword {storyName}: {e.Message}.");
+            }
+            
         }
     }
 }
