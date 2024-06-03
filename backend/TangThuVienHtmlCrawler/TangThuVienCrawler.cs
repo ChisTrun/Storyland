@@ -16,15 +16,20 @@ public partial class TangThuVienCrawler : ICrawler
     protected static HtmlDocument GetWebPageDocument(string sourceURL)
     {
         sourceURL = HttpUtility.UrlDecode(sourceURL);
-
         var web = new HtmlWeb();
         web.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
         var document = web.Load(sourceURL);
+        var count = 0;
         while (true)
         {
             var title = document.QuerySelector("title");
             if (title != null && title.GetDirectInnerTextDecoded() == "Site Maintenance")
             {
+                if (count > 10)
+                {
+                    throw new Exception("Bad request");
+                }
+                count++;
                 document = web.Load(sourceURL);
             }
             else
@@ -144,11 +149,10 @@ public partial class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/doc-truyen/page/38020?page=0&limit=100000&web=1
     public IEnumerable<Chapter> GetChaptersOfStory(string storyId)
     {
-        var story = GetExactStory(storyId);
-        var storyUrl = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
-        var id = GetWebPageDocument(storyUrl).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
+        var story = GetStory(storyId);
+        var ttvStoryId = GetTTVStoryId(storyId);
         var chapters = new List<Chapter>();
-        var chaptersUrl = $"{DomainDocTruyen}/page/{id}?page=0&limit=100000&web=1";
+        var chaptersUrl = $"{DomainDocTruyen}/page/{ttvStoryId}?page=0&limit=100000&web=1";
         // watch it content, it not always return the same as browser render
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
@@ -172,16 +176,15 @@ public partial class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/story/chapters?story_id=6270
     public PagingRepresentative<Chapter> GetChaptersOfStory(string storyId, int page, int limit)
     {
-        var story = GetExactStory(storyId);
-        var storyUrl = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
-        var id = GetWebPageDocument(storyUrl).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
+        var story = GetStory(storyId);
+        var ttvStoryId = GetTTVStoryId(storyId);
         var chapters = new List<Chapter>();
-        var chaptersUrl = $"{DomainDocTruyen}/page/{id}?page={page - 1}&limit={limit}&web=1";
+        var chaptersUrl = $"{DomainDocTruyen}/page/{ttvStoryId}?page={page - 1}&limit={limit}&web=1";
         // watch it content, it not always return the same as browser render
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
         var aTags = document.QuerySelectorAll(chaptersSelector);
-        var count = 1;
+        var count = 0;
         foreach (var aTag in aTags)
         {
             var fontTag = aTag.QuerySelector("font > font");
@@ -193,7 +196,7 @@ public partial class TangThuVienCrawler : ICrawler
                 count++;
             }
         }
-        var documentTotal = GetWebPageDocument($"https://truyen.tangthuvien.vn/story/chapters?story_id={id}");
+        var documentTotal = GetWebPageDocument($"https://truyen.tangthuvien.vn/story/chapters?story_id={ttvStoryId}");
         var totalRecord = documentTotal.QuerySelectorAll("ul > li").Count;
         var totalPage = (totalRecord / limit) + (totalRecord % limit == 0 ? 0 : 1);
         return new PagingRepresentative<Chapter>(page, limit, totalPage, chapters);
@@ -202,45 +205,44 @@ public partial class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
     public ChapterContent GetChapterContent(string storyId, int index)
     {
-        var chapters = GetChaptersOfStory(storyId);
-        var chapterId = chapters.ElementAt(index) ?? throw new Exception();
-        return GetChapterContent(chapterId.Id);
-        //return GetChapterContent($"{storyId}/chuong-{index}");
+        var currentChapterIndex = index + 1;
+        var ttvStoryId = GetTTVStoryId(storyId);
+        var chaptersUrl = $"https://truyen.tangthuvien.vn/story/chapters?story_id={ttvStoryId}";
+        var chaptersDoc = GetWebPageDocument(chaptersUrl);
+        var total = chaptersDoc.QuerySelector(@"ul:last-child > li:last-child").GetAttributeValue("title", -1);
+        if (currentChapterIndex < 1 || currentChapterIndex > total)
+        {
+            throw new Exception();
+        }
+        var chapterUrl = chaptersDoc.QuerySelector($"a.link-chap-{currentChapterIndex}").GetAttributeValue("href", null);
+        var chapterId = ModelExtension.GetIDFromUrl(ModelType.Chapter, chapterUrl);
+        var chapterDoc = GetWebPageDocument(chapterUrl);
+        GetNameContentStoryOfChapter(chapterDoc, out string chapterName, out string content, out Story story);
+        PrevNextChapId(chaptersDoc, chapterUrl, currentChapterIndex, out string prevChapId, out string nextChapId);
+        return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId, chapterName, chapterId, currentChapterIndex - 1, story);
     }
 
-    // storyId + index => chapterId
-    // storyId: https://truyen.tangthuvien.vn/story/chapters?story_id=38020
+    // storyId + index => chapterId (90% accurate)
+    // storyURL: https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat
     // chapterId: https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
+    // other storyId: https://truyen.tangthuvien.vn/story/chapters?story_id=38020
     public ChapterContent GetChapterContent(string chapterId)
     {
         var chapterUrl = ModelExtension.GetUrlFromID(ModelType.Chapter, chapterId);
-        var document = GetWebPageDocument(chapterUrl);
-        var chapterName = document.QuerySelector("body > div.container.body-container > div.content > div > h2").GetDirectInnerTextDecoded();
-        var contentSelector = "div.chapter-c > div.chapter-c-content > div.box-chap:not(.hidden)";
-        var node = document.QuerySelector(contentSelector);
-        var content = node.GetDirectInnerTextDecoded();
-        int total;
-        {
-            var storyId = document.QuerySelector("body > div.box-report > form > input[name=story_id]").GetAttributeValue("value", null);
-            var chaptersUrl = $"https://truyen.tangthuvien.vn/story/chapters?story_id={storyId}";
-            var documentChapters = GetWebPageDocument(chaptersUrl);
-            total = int.Parse(documentChapters.QuerySelector("ul > li:last-child").GetAttributeValue("title", null) ?? throw new Exception());
-        }
-        var splitIndex = chapterId.LastIndexOf('-');
-        var chapSplit = chapterId.Substring(0, splitIndex + 1);
-        var indexSplit = chapterId.Substring(splitIndex + 1);
-        var current = int.Parse(indexSplit);
-        var prevChapIndex = Math.Max(1, current - 1);
-        var nextChapIndex = Math.Min(total, current + 1);
-        var prevChapId = $"{chapSplit}{prevChapIndex}";
-        var nextChapId = $"{chapSplit}{nextChapIndex}";
-        return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId, chapterName, chapterId);
+        var chapterDoc = GetWebPageDocument(chapterUrl);
+        var script = chapterDoc.QuerySelector(@"body > div.container.body-container > div.content > div > script").InnerHtml;
+        var ttvChapterUrl = Regex.Match(script, @"https:\/\/truyen\.tangthuvien\.vn\/story\/chapters\?story_id=37297&chapter_id=\d+").Value;
+        var docChaptersWithActive = GetWebPageDocument(ttvChapterUrl);
+        var currentChapterIndex = docChaptersWithActive.QuerySelector(@"li.active").GetAttributeValue("title", -1);
+        GetNameContentStoryOfChapter(chapterDoc, out string chapterName, out string content, out var story);
+        PrevNextChapId(docChaptersWithActive, chapterUrl, currentChapterIndex, out string prevChapId, out string nextChapId);
+        return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId, chapterName, chapterId, currentChapterIndex - 1, story);
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/dichdinh-cao-quyen-luc-suu-tam
     public StoryDetail GetStoryDetail(string storyId)
     {
-        var story = GetExactStory(storyId);
+        var story = GetStory(storyId);
         var url = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
         var document = GetWebPageDocument(url);
         var authorATag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > p.tag > a.blue");
@@ -374,12 +376,45 @@ public partial class TangThuVienCrawler : ICrawler
         return Tuple.Create(url, name);
     }
 
-    private Story GetExactStory(string id)
+    private Story GetStory(string id)
     {
         var doc = GetWebPageDocument(ModelExtension.GetUrlFromID(ModelType.Story, id));
         var name = doc.QuerySelector("head > title").GetDirectInnerTextDecoded();
         var imgUrl = doc.QuerySelector("#bookImg > img").GetAttributeValue("src", null);
         return new Story(name, id, imgUrl);
+    }
+
+    private string GetTTVStoryId(string storyId)
+    {
+        var storyUrl = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
+        var id = GetWebPageDocument(storyUrl).QuerySelector("#story_id_hidden").GetAttributeValue("value", null) ?? throw new Exception();
+        return id;
+    }
+
+    private static void PrevNextChapId(HtmlDocument docChapters, string chapterUrl, int currentChapterIndex, out string prevChapId, out string nextChapId)
+    {
+        var total = docChapters.QuerySelector(@"ul:last-child > li:last-child").GetAttributeValue("title", -1);
+        string prevChapUrl;
+        string nextChapUrl;
+        var prevChapterIndex = currentChapterIndex - 1;
+        prevChapUrl = prevChapterIndex < 1
+            ? chapterUrl
+            : docChapters.QuerySelector($"a.link-chap-{prevChapterIndex}").GetAttributeValue("href", null);
+        var nextChapterIndex = currentChapterIndex + 1;
+        nextChapUrl = prevChapterIndex > total
+            ? chapterUrl
+            : docChapters.QuerySelector($"a.link-chap-{nextChapterIndex}").GetAttributeValue("href", null);
+        prevChapId = ModelExtension.GetIDFromUrl(ModelType.Chapter, prevChapUrl).Trim();
+        nextChapId = ModelExtension.GetIDFromUrl(ModelType.Chapter, nextChapUrl).Trim();
+    }
+
+    private void GetNameContentStoryOfChapter(HtmlDocument chapterDoc, out string chapterName, out string content, out Story story)
+    {
+        chapterName = chapterDoc.QuerySelector(@"body > div.container.body-container > div.content > div > h2").GetDirectInnerTextDecoded();
+        content = chapterDoc.QuerySelector(@"div.chapter-c > div.chapter-c-content > div.box-chap:not(.hidden)").GetDirectInnerTextDecoded();
+        var storyUrl = chapterDoc.QuerySelector(@"body > div.container.body-container > div.content > div > h1 > a").GetAttributeValue("href", null);
+        var storyId = ModelExtension.GetIDFromUrl(ModelType.Story, storyUrl);
+        story = GetStory(storyId);
     }
 
     // Extra functions for later uses

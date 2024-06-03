@@ -36,7 +36,7 @@ class Program
         //GetStoriesOfAuthorPass = false;
         //GetChaptersOfStoryPass = false;
         //GetChapterContentPass = false;
-        GetStoryDetailPass = false;
+        //GetStoryDetailPass = false;
 
         if (GetCategoriesPass == false)
         {
@@ -93,6 +93,8 @@ class Program
             //Console.WriteLine("Chương 1 : Vai Phụ Đúng Là Bản Thân Tôi" == "Chương 1 : Vai Phụ Đúng Là Bản Thân Tôi");
             var content1 = crawler.GetChapterContent("thi-ra-ho-moi-la-nhan-vat-chinh", 1);
             var content2 = crawler.GetChapterContent("thi-ra-ho-moi-la-nhan-vat-chinh", 2);
+            var content3 = crawler.GetChapterContent("nhat-tich-dac-dao/260875-chuong-1");
+            var content4 = crawler.GetChapterContent("nhat-tich-dac-dao", 0);
             Console.WriteLine(content1.Content);
             Console.WriteLine(content1.PrevChapID);
             Console.WriteLine(content1.NextChapID);

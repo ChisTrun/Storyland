@@ -65,11 +65,11 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="serverIndex">Index of the server to check.</param>
         /// <param name="storyId" example="bat-lo-thanh-sac">Story's identity of each page, usally the last section of URL.</param>
-        /// <param name="chapterIndex" example="1">Index of chapter (starts from 1).</param>
+        /// <param name="chapterIndex" example="1">Index of chapter (starts from 0).</param>
         [ProducesResponseType(typeof(ChapterContent), 200)]
         [HttpGet]
-        [Route("{serverIndex}/{storyId}/chapter")]
-        public IActionResult GetChapterContent(int serverIndex, string storyId, [FromQuery(Name = "index")] int chapterIndex)
+        [Route("{serverIndex}/story/chapter")]
+        public IActionResult GetChapterContent(int serverIndex, [FromQuery(Name = "storyid")] string storyId, [FromQuery(Name = "index")] int chapterIndex)
         {
             bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
             if (!isValid)
@@ -84,8 +84,8 @@ namespace backend.Controllers
         /// <param name="chapterId" example="trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480">Chapter's identity of each page, usally the last section of URL.</param>
         [ProducesResponseType(typeof(ChapterContent), 200)]
         [HttpGet]
-        [Route("{serverIndex}/chapter/{chapterId}")]
-        public IActionResult GetChapterContent(int serverIndex, string chapterId)
+        [Route("{serverIndex}/story/chapter/id")]
+        public IActionResult GetChapterContent(int serverIndex, [FromQuery(Name = "chapterid")] string chapterId)
         {
             bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
             if (!isValid)
