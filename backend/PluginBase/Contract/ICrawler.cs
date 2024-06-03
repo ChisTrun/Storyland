@@ -49,10 +49,9 @@ public interface ICrawler
     /// Lay noi dung cua mot chuong cua mot truyen
     /// </summary>
     /// <param name="storyId">Id cua truyen</param>
-    /// <param name="chapterIndex">Index (so thu tu) trong danh sach chuong. (bat dau tu 1)</param>
+    /// <param name="chapterIndex">Index (so thu tu) trong danh sach chuong. (bat dau tu 0)</param>
     /// <returns>Noi dung cua trang truyen</returns>
     public ChapterContent GetChapterContent(string storyId, int chapterIndex);
-    public ChapterContent GetChapterContent(string chapterId);
 
     /// <summary>
     /// Lay mo ta chi tiet cua mot truyen
@@ -60,4 +59,12 @@ public interface ICrawler
     /// <param name="storyName">Ten truyen</param>
     /// <returns></returns>
     public StoryDetail GetStoryDetail(string storyId);
+
+    /// <summary>
+    /// Tim kiem tac gia theo ten
+    /// </summary>
+    /// <param name="authorName"></param>
+    /// <returns></returns>
+    public IEnumerable<Author> GetAuthorsBySearchName(string authorName);
+    public PagingRepresentative<Author> GetAuthorsBySearchName(string authorName, int page, int limit);
 }

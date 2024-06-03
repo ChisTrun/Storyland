@@ -31,7 +31,6 @@ namespace backend.Controllers
             StoryDetail storyDetail = StorySourceScanner.Instance.Commands[serverIndex].GetStoryDetail(storyID);
             List<Chapter> chapters = StorySourceScanner.Instance.Commands[serverIndex].GetChaptersOfStory(storyID).ToList();
             List<ChapterContent> chapterContents = new List<ChapterContent>();
-
             foreach (var chapter in chapters)
             {
                 var chapterContent = StorySourceScanner.Instance.Commands[serverIndex].GetChapterContent(storyID, chapter.Index + 1);
