@@ -1,7 +1,7 @@
 const getChapters = async () => {
     const chaptersContainer = $('#chapters-container');
     $.ajax({
-        url: `/story/${storyId}/s${storyServer}/chapters`,
+        url: `/story/${encodeURIComponent(storyId)}/s${storyServer}/chapters`,
         method: 'GET',
         success: function (data) {
             chaptersContainer.empty();

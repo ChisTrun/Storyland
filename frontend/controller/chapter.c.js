@@ -114,7 +114,7 @@ module.exports = {
         }
         catch (error) {
             console.error(error.message);
-            return res.json({ 'content': '<div class=`text-center`>Nguồn truyện không khả thi!</div>' });
+            return res.status(400).send("Bad Request");
         }
     },
 };

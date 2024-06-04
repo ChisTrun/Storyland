@@ -132,7 +132,7 @@ public class TruyenFullCommand : ICrawler
 
     public ChapterContent GetChapterContent(string storyId, int chapterIndex)
     {
-        chapterIndex++;
+        ++chapterIndex;
         var text = "";
         var pre = "";
         var next = "";
