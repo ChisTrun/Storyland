@@ -33,7 +33,7 @@ namespace backend.Controllers
         /// 
         /// </summary>
         /// <param name="serverIndex" example="0">Index of the server.</param>
-        /// <param name="categoryId" example="tien-hiep/"></param>
+        /// <param name="categoryId" example="tien-hiep"></param>
         /// <returns></returns>
         [ProducesResponseType(typeof(PluginBase.Models.Story[]), 200)]
         [HttpGet]

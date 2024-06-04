@@ -18,11 +18,10 @@ public class TruyenFullCommand : ICrawler
     public static string Domain => "https://truyenfull.vn/";
     public static string DomainTheLoai => $"{Domain}the-loai/";
     public static string DomainTimKiem => "https://truyenfull.vn/tim-kiem/?tukhoa=";
-    //public static string DomainKetQuaTimKiem => $"{Domain}/ket-qua-tim-kiem";
     public static string DomainDocTruyen => $"{Domain}doc-truyen/";
     public static string DomainTacGia => $"{Domain}tac-gia/";
 
-    public IEnumerable<Category> GetCategories() //updated
+    public IEnumerable<Category> GetCategories()
     {
         var document = GetWebPageDocument(Domain);
 
@@ -93,16 +92,7 @@ public class TruyenFullCommand : ICrawler
 
     public IEnumerable<Story> GetStoriesOfAuthor(string authorId)
     {
-        var storySearched = GetStoryWithPageAndLimit(ModelType.Story, $"{DomainTimKiem}{WebUtility.UrlEncode(authorId)}", -1, -1).Item2;
-        var searchNameNorm = StringProblem.ConvertVietnameseToNormalizationForm(authorId);
-        List<Story> res = storySearched.Where(story =>
-        {
-            var authorNameNorm = StringProblem.ConvertVietnameseToNormalizationForm(story.AuthorName!);
-            authorNameNorm = Regex.Replace(authorNameNorm, @"[^A-Za-z\d\s]", "");
-            var boolres = authorNameNorm.Contains(searchNameNorm);
-            return boolres;
-        }
-        ).Select(x => x.Story).ToList();
+        var res = GetStoryWithPageAndLimit(ModelType.Story, $"{DomainTacGia}{WebUtility.UrlEncode(authorId)}", -1, -1).Item2.Select(story => story.Story);
 
         return res;
     }
@@ -142,13 +132,13 @@ public class TruyenFullCommand : ICrawler
 
     public ChapterContent GetChapterContent(string storyId, int chapterIndex)
     {
+        chapterIndex++;
         var text = "";
         var pre = "";
         var next = "";
         var chapterName = "";
         var chapterID = $"{storyId}/chuong-{chapterIndex}";
         var path = $"{Domain}/{chapterID}";
-
         return GetChapterContentWithURL(ref text, ref pre, ref next, ref chapterName, chapterID, path, chapterIndex);
     }
 
@@ -179,14 +169,6 @@ public class TruyenFullCommand : ICrawler
     {
         var doc = GetWebPageDocument(subUrl);
         var name = doc.QuerySelector(".list.list-truyen .title-list h2 ").GetDirectInnerTextDecoded();
-        //var urlRaw = doc.QuerySelector("#update-tab > a").GetAttributeValue("href", null);
-        //int startIndex = urlRaw.IndexOf("ctg=");
-        //string ctgSubstring = urlRaw.Substring(startIndex);
-        //int endIndex = ctgSubstring.IndexOf('&');
-        //if (endIndex == -1)
-        //{
-        //    endIndex = ctgSubstring.Length;
-        //}
         string ctgValue = subUrl.Replace(Domain, "");
         return new Category(name, ctgValue);
     }
@@ -196,26 +178,46 @@ public class TruyenFullCommand : ICrawler
         var story = GetExactStory(storyName);
         var url = story.Story.GetUrl();
         var document = GetWebPageDocument(url);
-        var authorATag = document.QuerySelectorAll(".col-info-desc .info div ")[0];
-        authorATag = authorATag.QuerySelector("a");
-        var tuple = GetNameUrlFromATag(authorATag);
-        var author = new Author(tuple.Item2, ModelExtension.GetIDFromUrl(ModelType.Author, tuple.Item1));
 
-        var statusSpan = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[3];
-        var tmp = statusSpan.QuerySelector("span");
-        var status = tmp.GetDirectInnerTextDecoded();
-        var categoryTags = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[1].QuerySelectorAll("a");
+        Author author = new();
+        TryCatch.Try(() =>
+        {
+            var authorATag = document.QuerySelector(".col-info-desc .info").FirstChild.QuerySelector("a");
+            var tupleAuthor = GetNameUrlFromATag(authorATag);
+            author.Name = tupleAuthor.Item2;
+            author.Id = ModelExtension.GetIDFromUrl(ModelType.Author, tupleAuthor.Item1);
+        });
+
+        string status = "";
+        TryCatch.Try(() =>
+        {
+            var statusSpan = document.QuerySelector(".col-info-desc .info").ChildNodes[2];
+            var tmp = statusSpan.QuerySelector("span");
+            status = tmp.GetDirectInnerTextDecoded();
+        });
 
         var categories = new List<Category>();
-        foreach (var categoryTag in categoryTags)
+        TryCatch.Try(() =>
         {
-            var categorySubUrl = categoryTag.GetAttributeValue("href", null);
-            var category = GetCategoryFromSubURL(categorySubUrl);
-            categories.Add(category);
-        }
+            var categoryTags = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[1].QuerySelectorAll("a");
 
-        var descriptionPTag = document.QuerySelector(".col-info-desc .desc-text");
-        var description = descriptionPTag.GetDirectInnerTextDecoded();
+            foreach (var categoryTag in categoryTags)
+            {
+                var categorySubUrl = categoryTag.GetAttributeValue("href", null);
+                var catName = categoryTag.InnerText;
+                var catID = ModelExtension.GetIDFromUrl(ModelType.Category, categorySubUrl);
+                categories.Add(new Category(catName, catID));
+            }
+        });
+
+
+        string description = "";
+        TryCatch.Try(() =>
+        {
+            var descriptionPTag = document.QuerySelector(".col-info-desc .desc-text");
+            description = descriptionPTag.GetDirectInnerTextDecoded();
+        });
+
         return new StoryDetail(story.Story, author, status, categories.ToArray(), description);
     }
 
@@ -539,11 +541,42 @@ public class TruyenFullCommand : ICrawler
 
     public IEnumerable<Author> GetAuthorsBySearchName(string authorName)
     {
-        throw new NotImplementedException();
+        var storySearched = GetStoryWithPageAndLimit(ModelType.Story, $"{DomainTimKiem}{WebUtility.UrlEncode(authorName)}", -1, -1).Item2;
+        var searchNameNorm = StringProblem.ConvertVietnameseToNormalizationForm(authorName);
+
+        List<Author> result = new List<Author>();
+        foreach (var story in storySearched)
+        {
+            var authorNameNorm = StringProblem.ConvertVietnameseToNormalizationForm(story.AuthorName!);
+            var authorID = authorNameNorm.Replace(" ", "-");
+            if (authorNameNorm.Contains(searchNameNorm) && !result.Any(author => author.Id.Equals(authorID)))
+            {
+                result.Add(new Author(story.AuthorName, authorID));
+            }
+        }
+
+        return result;
     }
 
     public PagingRepresentative<Author> GetAuthorsBySearchName(string authorName, int page, int limit)
     {
-        throw new NotImplementedException();
+        var storySearched = GetAuthorsBySearchName(authorName).ToList();
+        var storySeatchedCount = storySearched.Count();
+        var totalPage = (storySeatchedCount / limit) + (storySeatchedCount % limit == 0 ? 0 : 1);
+        if (page > totalPage)
+        {
+            return new PagingRepresentative<Author>(page, limit, totalPage, new List<Author>());
+        }
+
+        List<Author> res = new List<Author>();
+        try
+        {
+            res = storySearched.GetRange((page - 1) * limit, page != totalPage ? limit : (storySeatchedCount % limit == 0 ? limit : storySeatchedCount % limit));
+        }
+        catch (Exception ex)
+        {
+        }
+
+        return new PagingRepresentative<Author>(page, limit, totalPage, res);
     }
 }

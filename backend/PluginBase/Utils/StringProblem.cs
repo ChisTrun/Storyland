@@ -17,6 +17,8 @@ namespace PluginBase.Utils
             standardString = standardString.Replace("đ", "d");
             standardString = standardString.Replace("Đ", "D");
             standardString = standardString.ToLower();
+            standardString=standardString.Trim();
+            standardString = Regex.Replace(standardString   , @"[^A-Za-z\d\s]", " ").Replace("  ", " ");
 
             return standardString;
         }

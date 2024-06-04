@@ -18,13 +18,13 @@ namespace TruyenFullPlugin
             switch (type)
             {
                 case ModelType.Story:
-                    return Regex.Replace(url, TruyenFullCommand.Domain, "");
+                    return url.Replace(TruyenFullCommand.Domain, "").Replace("/", "");
                 case ModelType.Author:
-                    return Regex.Replace(url, TruyenFullCommand.DomainTacGia, "");
+                    return url.Replace(TruyenFullCommand.DomainTacGia, "").Replace("/", "");
                 case ModelType.Category:
-                    return Regex.Replace(url, TruyenFullCommand.DomainTheLoai, "");
+                    return url.Replace(TruyenFullCommand.DomainTheLoai, "").Replace("/", "");
                 case ModelType.Chapter:
-                    return Regex.Replace(url, TruyenFullCommand.Domain, "");
+                    return url.Replace(TruyenFullCommand.Domain, "").Replace("/", "");
                 default:
                     break;
             }
