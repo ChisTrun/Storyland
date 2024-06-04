@@ -41,7 +41,7 @@ namespace backend.Controllers
         /// <param name="limit" example="5">Records per page.</param>
         [ProducesResponseType(typeof(PagingRepresentative<PluginBase.Models.Author>), 200)]
         [HttpGet]
-        [Route("{serverIndex}/truyen/{storyName}")]
+        [Route("{serverIndex}/truyen/{authorName}")]
         public IActionResult SearchAuthorsByName(int serverIndex, string authorName, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
         {
             try
