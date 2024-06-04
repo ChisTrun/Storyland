@@ -85,6 +85,7 @@ public class TruyenFullCommand : ICrawler
         }
         catch (Exception ex)
         {
+            throw;
         }
 
         return new PagingRepresentative<Story>(page, limit, totalPage, res);
