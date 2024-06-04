@@ -49,12 +49,21 @@ namespace TruyenCvHtmlCrawler
             var web = new HtmlWeb { UserAgent = USER_AGENT };
             return web.Load(url);
         }
-        private Story GetExactStory(string id)
+        public Story GetExactStory(string id)
         {
             HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/{id}");
             string name = doc.QuerySelector("h3[itemprop=\"name\"]").InnerText;
             string imageUrl = doc.QuerySelector("meta[property=\"og:image\"]").GetAttributeValue("content", "");
-            return new Story(name, id, imageUrl);
+            string authorName = doc.QuerySelector("div[itemtype=\"https://schema.org/Person\"] > a").InnerText;
+            return new Story(name, id, imageUrl,authorName);
+        }
+
+        public Author GetAuthor(string storyId)
+        {
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/{storyId}");
+            string authorName = doc.QuerySelector("div[itemtype=\"https://schema.org/Person\"] > a").InnerText;
+            string authorId = doc.QuerySelector("div[itemtype=\"https://schema.org/Person\"] > a").GetAttributeValue("href","");
+            return new Author(authorName, _regex07.Match(authorId).Groups[1].Value);
         }
 
         private int GetTotalChap(string id)
@@ -128,17 +137,12 @@ namespace TruyenCvHtmlCrawler
 
         public ChapterContent GetChapterContent(string storyId, int chapterIndex)
         {
-            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/{storyId}/chuong-{chapterIndex}");
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/{storyId}/chuong-{chapterIndex + 1}");
+            string name = doc.QuerySelector("div[itemtype=\"http://www.schema.org/SiteNavigationElement\"] > h2").InnerText;
             string content = ExtractChapterContent(doc);
             string nextChapterUrl = doc.QuerySelector(".flex.justify-center.h-12").QuerySelectorAll("a")[1].GetAttributeValue("href", "");
             string prevChapterUrl = doc.QuerySelector(".flex.justify-center.h-12").QuerySelectorAll("a")[0].GetAttributeValue("href", "");
-            //Content = content;
-            //NextChapID = next;
-            //PrevChapID = pre;
-            //ChapterName = name;
-            //ChapterID = chapterID;
-            //ChapterIndex = chapterIndex;
-            return new ChapterContent(content, nextChapterUrl, prevChapterUrl);
+            return new ChapterContent(content, nextChapterUrl, prevChapterUrl,name,$"{storyId}/chuong-{chapterIndex + 1}");
         }
 
         public IEnumerable<Chapter> GetChaptersOfStory(string storyId)
@@ -194,7 +198,7 @@ namespace TruyenCvHtmlCrawler
                     count++;
                     if (count > limit || startIndex >= nodes.Count) break;
                     HtmlNode node = doc.QuerySelectorAll("#danh-sach-chuong > div")[1].QuerySelectorAll("ul li a")[startIndex];
-                    chapters.Add(new Chapter(node.InnerText, node.GetAttributeValue("href", ""), story, count + skippedElements - 1));
+                    chapters.Add(new Chapter(node.InnerText, node.GetAttributeValue("href", ""), story, count + skippedElements - 2));
                 }
                 startIndex = 0;
                 startPage += 1;
@@ -213,7 +217,6 @@ namespace TruyenCvHtmlCrawler
             var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex04.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
             for (int i = 1; i <= lastIndex; i++)
             {
-
                 var iCopy = i;
                 tasks.Add(Task.Run(() =>
                 {
@@ -221,10 +224,11 @@ namespace TruyenCvHtmlCrawler
                     HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={searchContent}&page={iCopy}");
                     foreach (var node in curPage.QuerySelectorAll("div[class=\"lg:col-span-9\"] > div ").Skip(1))
                     {
+                        var author = node.QuerySelector("span[itemprop=\"author\"]").InnerText;
                         var imageLink = $"{node.QuerySelector("img").GetAttributeValue("src", "")}";
                         var name = $"{node.QuerySelector("h3").InnerText}";
                         var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                        stories.Add(new Story(name, id, imageLink));
+                        stories.Add(new Story(name, id, imageLink,author));
                     }
                     return stories;
                 }));
@@ -258,10 +262,11 @@ namespace TruyenCvHtmlCrawler
                     count++;
                     if (count > limit || startIndex >= nodes.Count()) break;
                     HtmlNode node = nodes[startIndex];
+                    var author = node.QuerySelector("span[itemprop=\"author\"]").InnerText;
                     var imageLink = $"{node.QuerySelector("img").GetAttributeValue("src", "")}";
                     var name = $"{node.QuerySelector("h3").InnerText}";
                     var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                    stories.Add(new Story(name, id, imageLink));
+                    stories.Add(new Story(name, id, imageLink,author));
                 }
                 startIndex = 0;
                 startPage += 1;
@@ -286,9 +291,10 @@ namespace TruyenCvHtmlCrawler
                     foreach (var node in curPage.QuerySelectorAll("div[class=\"lg:col-span-9\"] > div ").Skip(1))
                     {
                         var imageLink = $"{node.QuerySelector("img").GetAttributeValue("src", "")}";
+                        var author = node.QuerySelector("span[itemprop=\"author\"]").InnerText;
                         var name = $"{node.QuerySelector("h3").InnerText}";
                         var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                        stories.Add(new Story(name, id, imageLink));
+                        stories.Add(new Story(name, id, imageLink, author));
                     }
                     return stories;
                 }));
@@ -321,10 +327,11 @@ namespace TruyenCvHtmlCrawler
                     count++;
                     if (count > limit || startIndex >= nodes.Count()) break;
                     HtmlNode node = nodes[startIndex];
+                    var author = node.QuerySelector("span[itemprop=\"author\"]").InnerText;
                     var imageLink = $"{node.QuerySelector("img").GetAttributeValue("src", "")}";
                     var name = $"{node.QuerySelector("h3").InnerText}";
                     var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                    stories.Add(new Story(name, id, imageLink));
+                    stories.Add(new Story(name, id, imageLink, author));
                 }
                 startIndex = 0;
                 startPage += 1;
@@ -348,10 +355,11 @@ namespace TruyenCvHtmlCrawler
                     HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/the-loai/{categoryId}/trang-{iCopy}");
                     foreach (var node in curPage.QuerySelectorAll("div[class=\"lg:col-span-9\"] > div ").Skip(1))
                     {
+                        var author = node.QuerySelector("span[itemprop=\"author\"]").InnerText;
                         var imageLink = $"{node.QuerySelector("img").GetAttributeValue("src", "")}";
                         var name = $"{node.QuerySelector("h3").InnerText}";
                         var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                        stories.Add(new Story(name, id, imageLink));
+                        stories.Add(new Story(name, id, imageLink, author));
                     }
                     return stories;
                 }));
@@ -384,10 +392,11 @@ namespace TruyenCvHtmlCrawler
                     count++;
                     if (count > limit || startIndex >= nodes.Count()) break;
                     HtmlNode node = nodes[startIndex];
+                    var author = node.QuerySelector("span[itemprop=\"author\"]").InnerText;
                     var imageLink = $"{node.QuerySelector("img").GetAttributeValue("src", "")}";
                     var name = $"{node.QuerySelector("h3").InnerText}";
                     var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                    stories.Add(new Story(name, id, imageLink));
+                    stories.Add(new Story(name, id, imageLink, author));
                 }
                 startIndex = 0;
                 startPage += 1;
@@ -397,8 +406,6 @@ namespace TruyenCvHtmlCrawler
 
         public StoryDetail GetStoryDetail(string storyId)
         {
-            //throw new NotImplementedException();
-            //https://truyencv.vn/thon-thien-long-vuong
             var story = GetExactStory(storyId);
             var doc = LoadHtmlDocument($"{HOME_URL}{storyId}");
             var dataNode = doc.QuerySelector(".text-base");
@@ -417,17 +424,75 @@ namespace TruyenCvHtmlCrawler
 
         public ChapterContent GetChapterContent(string chapterId)
         {
-            throw new NotImplementedException();
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/{chapterId}");
+            string name = doc.QuerySelector("div[itemtype=\"http://www.schema.org/SiteNavigationElement\"] > h2").InnerText;
+            string content = ExtractChapterContent(doc);
+            string nextChapterUrl = doc.QuerySelector(".flex.justify-center.h-12").QuerySelectorAll("a")[1].GetAttributeValue("href", "");
+            string prevChapterUrl = doc.QuerySelector(".flex.justify-center.h-12").QuerySelectorAll("a")[0].GetAttributeValue("href", "");
+            return new ChapterContent(content, nextChapterUrl, prevChapterUrl, name, chapterId);
         }
 
         public IEnumerable<Author> GetAuthorsBySearchName(string authorName)
         {
-            throw new NotImplementedException();
+            List<Task<List<Author>>> tasks = new List<Task<List<Author>>>();
+            List<Author> result = new List<Author>();
+            var searchContent = WebUtility.UrlDecode(authorName);
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={searchContent}");
+            var pagingBtn = doc.QuerySelectorAll("div[class=\"lg:col-span-9\"] > ul > li > a");
+            var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex04.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
+            for (int i = 1; i <= lastIndex; i++)
+            {
+                var iCopy = i;
+                tasks.Add(Task.Run(() =>
+                {
+                    List<Author> authors = new List<Author>();
+                    HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={searchContent}&page={iCopy}");
+                    foreach (var node in curPage.QuerySelectorAll("div[class=\"lg:col-span-9\"] > div ").Skip(1))
+                    {
+                        var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                        var authorData = GetAuthor(id);
+                        authors.Add(authorData);
+                    }
+                    return authors;
+                }));
+            }
+            Task.WaitAll(tasks.ToArray());
+            foreach (var task in tasks)
+            {
+                result.AddRange(task.Result);
+            }
+            return result;
         }
 
         public PagingRepresentative<Author> GetAuthorsBySearchName(string authorName, int page, int limit)
         {
-            throw new NotImplementedException();
+            var searchContent = WebUtility.UrlDecode(authorName);
+            int skippedElements = limit * (page - 1);
+            int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_SEARCH_SIZE);
+            int startIndex = skippedElements % DEFAULT_SEARCH_SIZE;
+            int totalStory = GetTotalStorySearch(searchContent);
+            int totalPage = (int)Math.Ceiling((double)totalStory / limit);
+            List<Author> authors = new List<Author>();
+            if (skippedElements > totalStory) return new PagingRepresentative<Author>(page, limit, totalPage, authors);
+            int count = 0;
+            while (count < limit)
+            {
+                HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={searchContent}&page={startPage + 1}");
+                var nodes = doc.QuerySelectorAll("div[class=\"lg:col-span-9\"] > div ").Skip(1).ToList();
+                if (startIndex >= nodes.Count()) break;
+                for (; startIndex < DEFAULT_SEARCH_SIZE; startIndex++)
+                {
+                    count++;
+                    if (count > limit || startIndex >= nodes.Count()) break;
+                    HtmlNode node = nodes[startIndex];
+                    var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                    var authorData = GetAuthor(id);
+                    authors.Add(authorData);
+                }
+                startIndex = 0;
+                startPage += 1;
+            }
+            return new PagingRepresentative<Author>(page, limit, totalPage, authors);
         }
     }
 }
