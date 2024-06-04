@@ -29,6 +29,7 @@
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="xcopy /y /d /i  &quot;$(OutDir)*.dll&quot; &quot;$(SolutionDir)backend\plugins\exporter\&quot;" />
+		<Exec Command="xcopy /s /y /d /i  &quot;$(OutDir)EPUBResource&quot; &quot;$(SolutionDir)backend\Resources\EPUBResource\&quot;" />
 	</Target>
 
 </Project>

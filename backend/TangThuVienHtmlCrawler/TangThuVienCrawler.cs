@@ -19,17 +19,17 @@ public partial class TangThuVienCrawler : ICrawler
         var web = new HtmlWeb();
         web.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
         var document = web.Load(sourceURL);
-        var count = 0;
+        //var count = 0;
         while (true)
         {
             var title = document.QuerySelector("title");
             if (title != null && title.GetDirectInnerTextDecoded() == "Site Maintenance")
             {
-                if (count > 10)
-                {
-                    throw new Exception("Bad request");
-                }
-                count++;
+                //if (count > 1000)
+                //{
+                //    throw new Exception("Bad request");
+                //}
+                //count++;
                 document = web.Load(sourceURL);
             }
             else
