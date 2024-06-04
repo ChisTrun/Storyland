@@ -27,7 +27,6 @@ namespace backend.Controllers
             {
                 return StatusCode(500, $"Fail to get servers: {e.Message}.");
             }
-            
         }
     }
 }

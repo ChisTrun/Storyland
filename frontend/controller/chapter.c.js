@@ -1,5 +1,6 @@
 const { ErrorDisplay } = require('../middleware/error');
 const { BE_HOST, HOST, PORT } = require('../global/env');
+const { getServerArr } = require('../utils/utils');
 
 const view = 'chapter';
 const render = {
@@ -19,34 +20,48 @@ module.exports = {
             const storyId = decodeURIComponent(req.params.storyId);
             const serverIndex = req.session.serverIndex;
 
-            const chapterInfoResponse = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}/chapters?page=${chapterIndex+1}&limit=1`);
-            if (!chapterInfoResponse.ok) {
-                const errorMessage = await chapterInfoResponse.text();
+            const chapterResponse = await fetch(`${BE_HOST}/api/story/${storyServer}/story/chapter?storyid=${encodeURIComponent(storyId)}&index=${chapterIndex}`);
+            if (!chapterResponse.ok) {
+                const errorMessage = await chapterResponse.text();
                 throw Error(errorMessage);
             }
-            const chapterInfoResBody = await chapterInfoResponse.json();   
-            const serverResponse = await fetch(`${BE_HOST}/api/server`);
-            if (!serverResponse.ok) {
-                const errorMessage = await serverResponse.text();
+            const chapterResBody = await chapterResponse.json();
+            const storyResponse = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`);
+            if (!storyResponse.ok) {
+                const errorMessage = await storyResponse.text();
                 throw Error(errorMessage);
-            }         
-            const serverResBody = await serverResponse.json();
+            }
+            const storyResBody = await storyResponse.json();
+            const serverArr = await getServerArr();
 
             render.chapterIndex = chapterIndex;
-            render.chapterName = chapterInfoResBody.data[0].name;
-            render.chapterMaxIndex = chapterInfoResBody.totalPages - 1;
-            render.chapterMinIndex = 0;
+            render.chapterName = chapterResBody.chapterName;
+            if (chapterResBody.nextChapID != undefined && chapterResBody.nextChapID != 0 && chapterResBody.nextChapID != null && chapterResBody.nextChapID != "") {
+                render.chapterNextIndex = chapterIndex + 1;
+            }
+            else {
+                render.chapterNextIndex = undefined;
+            }
+            if (chapterResBody.prevChapID != undefined && chapterResBody.prevChapID != 0 && chapterResBody.prevChapID != null && chapterResBody.prevChapID != "") {
+                render.chapterPrevIndex = chapterIndex - 1;
+            }
+            else {
+                render.chapterPrevIndex = undefined;
+            }
+            render.chapterContent = chapterResBody.content.replace(/\r\n/g, '<br>')
+                .replace(/\n/g, '<br>')
+                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');;
             render.storyServer = storyServer;
             render.storyId = storyId;
-            render.storyName = chapterInfoResBody.data[0].belong.name;
-            render.serverArr = serverResBody;
+            render.storyName = storyResBody.name;
+            render.serverArr = serverArr;
 
             req.session.history[`${storyId}-server-${storyServer}`] = {
                 chapterName: render.chapterName,
                 chapterIndex: render.chapterIndex,
                 storyId: render.storyId,
                 storyServer: render.storyServer,
-                storyImageUrl: chapterInfoResBody.data[0].belong.imageUrl,
+                storyImageUrl: storyResBody.imageUrl,
                 storyName: render.storyName,
             };
 
@@ -63,12 +78,12 @@ module.exports = {
         try {
             const storyServer = req.params.storyServer;
             const storyId = decodeURIComponent(req.params.storyId);
-            
+
             const response = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}/chapters/all`);
             if (!response.ok) {
                 const errorMessage = await response.text();
                 throw Error(errorMessage);
-            }         
+            }
             const resBody = await response.json();
 
             return res.json(resBody);
@@ -81,25 +96,25 @@ module.exports = {
     async getContent(req, res, next) {
         try {
             const chapterServer = req.body.chapterServer;
-            const index = req.params.index;
+            const chapterIndex = req.params.index;
             const storyId = decodeURIComponent(req.params.storyId);
 
-            const response = await fetch(`${BE_HOST}/api/story/${chapterServer}/${encodeURIComponent(storyId)}/chapter?index=${index}`);
+            const response = await fetch(`${BE_HOST}/api/story/${chapterServer}/story/chapter?storyid=${encodeURIComponent(storyId)}&index=${chapterIndex}`);
             if (!response.ok) {
                 const errorMessage = await response.text();
                 throw Error(errorMessage);
-            }   
+            }
             const resBody = await response.json();
 
-            const content = `${resBody.content.replace(/\r\n/g, '<br>')
+            const content = resBody.content.replace(/\r\n/g, '<br>')
                 .replace(/\n/g, '<br>')
-                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')}`;
+                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
 
-            return res.json({'content': content});
+            return res.json({ 'content': content });
         }
         catch (error) {
             console.error(error.message);
-            return res.json({'content': '<div class=`text-center`>Nguồn truyện không khả thi!</div>'});
+            return res.json({ 'content': '<div class=`text-center`>Nguồn truyện không khả thi!</div>' });
         }
     },
 };

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PluginBase.Models;
 using backend.DLLScanner.Concrete;
+using System.Security.Cryptography.X509Certificates;
 
 namespace backend.Controllers
 {
@@ -17,10 +18,18 @@ namespace backend.Controllers
         [Route("{serverIndex}/author/{authorName}/all")]
         public IActionResult SearchAuthorsByName(int serverIndex, string authorName)
         {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid)
-                return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetAuthorsBySearchName(authorName));
+            try
+            {
+                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                if (!isValid)
+                    return BadRequest("Invalid server index.");
+                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetAuthorsBySearchName(authorName));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories by searching with keyword {authorName}: {e.Message}.");
+            }
+            
         }
 
         /// <summary>
@@ -35,10 +44,17 @@ namespace backend.Controllers
         [Route("{serverIndex}/truyen/{storyName}")]
         public IActionResult SearchAuthorsByName(int serverIndex, string authorName, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
         {
-            bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
-            if (!isValid)
-                return BadRequest("Invalid server index.");
-            return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetAuthorsBySearchName(authorName, page, limit));
+            try
+            {
+                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                if (!isValid)
+                    return BadRequest("Invalid server index.");
+                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetAuthorsBySearchName(authorName, page, limit));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories at page {page} by searching with keyword {authorName}: {e.Message}.");
+            }
         }
     }
 }

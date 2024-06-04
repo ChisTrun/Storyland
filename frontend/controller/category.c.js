@@ -1,5 +1,6 @@
 const { ErrorDisplay } = require('../middleware/error');
 const { BE_HOST, HOST, PORT } = require('../global/env');
+const { getServerArr } = require('../utils/utils');
 
 const view = 'category';
 const render = {
@@ -20,12 +21,18 @@ module.exports = {
             const categoryName = req.params.categoryName;
             const curPage = parseInt(req.query.page) || 1;
 
+            let resBody = {};
             const response = await fetch(`${BE_HOST}/api/category/${serverIndex}/${encodeURIComponent(categoryId)}?page=${curPage}&limit=${perPage}`);
             if (!response.ok) {
+                resBody.data = [];
+                resBody.totalPages = 0;
                 const errorMessage = await response.text();
-                throw Error(errorMessage);
+                console.error(errorMessage)
             }
-            const resBody = await response.json();
+            else {
+                resBody = await response.json();
+            }
+            const serverArr = await getServerArr();
             const totalPages = resBody.totalPages ? resBody.totalPages : 1;
             curPage <= totalPages || res.redirect('back');
             
@@ -34,6 +41,7 @@ module.exports = {
             render.categoryId = categoryId;
             render.curPage = curPage;
             render.totalPages = totalPages;
+            render.serverArr = serverArr;
 
             render.serverIndex = req.session.serverIndex;
             render.isDark = req.session.isDark;
