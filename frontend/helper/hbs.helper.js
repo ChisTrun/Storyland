@@ -63,4 +63,7 @@ module.exports = {
         }
         return pagination.length == 1 ? '' : pagination.join(' ');
     },
+    json: function (context) {
+        return JSON.stringify(context);
+    },
 };

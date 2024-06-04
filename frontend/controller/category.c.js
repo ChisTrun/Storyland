@@ -33,8 +33,7 @@ module.exports = {
                 resBody = await response.json();
             }
             const serverArr = await getServerArr();
-            const totalPages = resBody.totalPages ? resBody.totalPages : 1;
-            curPage <= totalPages || res.redirect('back');
+            const totalPages = resBody.totalPages && resBody.totalPages > 0 ? resBody.totalPages : 1;
             
             render.stories = resBody.data;
             render.categoryName = categoryName;

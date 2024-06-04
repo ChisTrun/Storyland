@@ -84,6 +84,7 @@ public class TruyenFullCommand : ICrawler
         }
         catch (Exception ex)
         {
+            throw;
         }
 
         return new PagingRepresentative<Story>(page, limit, totalPage, res);
@@ -131,7 +132,7 @@ public class TruyenFullCommand : ICrawler
 
     public ChapterContent GetChapterContent(string storyId, int chapterIndex)
     {
-        chapterIndex++;
+        ++chapterIndex;
         var text = "";
         var pre = "";
         var next = "";

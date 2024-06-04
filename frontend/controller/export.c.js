@@ -9,11 +9,11 @@ module.exports = {
             const type = req.body.type;
 
             const backendUrl = `${BE_HOST}/api/export/${storyServer}/${type}/${encodeURIComponent(storyId)}`;
-            res.send(backendUrl);
+            return res.send(backendUrl);
         }
         catch (error) {
             console.error(error.message);
-            res.send("");
+            return res.send("");
         }
     },
     async getTypes(req, res, next) {
