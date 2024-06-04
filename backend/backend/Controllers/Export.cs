@@ -50,7 +50,7 @@ namespace backend.Controllers
                 // why async here?
                 byte[] bytes = await Task.Run(() => ScannerController.Instance.exporterScanner.Commands[type].ExportStory(storyDetail, chapterContents));
 
-                return File(bytes, "application/octet-stream", $"story.{ScannerController.Instance.exporterScanner.Commands[type].Ext}");
+                return File(bytes, "application/octet-stream", $"{storyID}.{ScannerController.Instance.exporterScanner.Commands[type].Ext}");
             }
             catch (Exception e)
             {
