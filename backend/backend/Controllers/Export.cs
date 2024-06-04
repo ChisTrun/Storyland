@@ -7,13 +7,25 @@ namespace backend.Controllers
     [Route("api/export")]
     public class Export : Controller
     {
-        ///// <summary>
-        /////     
-        ///// </summary>
-        ///// <param name="type" example="pdf"></param>
-        ///// <param name="storyID" example ="hop-dong-ba-nam-yeu-duong/"></param>
-        ///// <returns></returns>
-
+        /// <summary>
+        /// Get export types
+        /// </summary>
+        /// <param name="" example =""></param>
+        /// <returns></returns>
+        [ProducesResponseType(typeof(ExportType[]), 200)]
+        [HttpGet]
+        public IActionResult GetExportFormats()
+        {
+            try
+            {
+                var list = ExporterScanner.Instance.Commands.Select((com, index) => new ExportType(index, com.Ext));
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get export formats: {e.Message}.");
+            }
+        }
 
         /// <summary>
         /// 
@@ -47,7 +59,6 @@ namespace backend.Controllers
             {
                 return StatusCode(500, $"Fail to get download link: {e.Message}.");
             }
-            
         }
     }
 }

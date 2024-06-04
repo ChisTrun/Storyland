@@ -582,6 +582,17 @@ footer .web-logo {
   color: red!important;
 }
 
+.ebook-info > img {
+  width: 80%;
+  margin: 0 0.2rem;
+  aspect-ratio: 1 / 1.5;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.ebook-info > div {
+  width: 80%;
+}
+
 @media only screen and (max-width: 768px) {
   #header-link {
     display: none;
