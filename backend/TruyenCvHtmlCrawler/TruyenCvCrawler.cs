@@ -419,5 +419,15 @@ namespace TruyenCvHtmlCrawler
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<Author> GetAuthorsBySearchName(string authorName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PagingRepresentative<Author> GetAuthorsBySearchName(string authorName, int page, int limit)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
