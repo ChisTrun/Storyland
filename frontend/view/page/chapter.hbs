@@ -23,8 +23,10 @@
             <select class="form-select" id="source-menu" aria-label="Default select example"
                 onchange="getContent($(this).val())">
                 {{#each serverArr}}
-                <option value="{{index}}" {{#ifEqual ../storyServer index}} selected {{/ifEqual}}>{{name}}
+                {{#ifEqual index ../storyServer}}
+                <option value="{{index}}" selected>{{name}}
                 </option>
+                {{/ifEqual}}
                 {{/each}}
             </select>
         </div>
@@ -189,4 +191,6 @@
     const chapterIndex = "{{ chapterIndex }}";
     const storyId = "{{ storyId }}";
     const storyServer = "{{ storyServer }}";
+    const serverArr = {{{json serverArr}}};
+    let contents = {};
 </script>

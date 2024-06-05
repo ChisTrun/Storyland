@@ -81,9 +81,15 @@ function setChapterPanel(chapIndex) {
         container.scrollTop(targetElement.position().top + container.scrollTop());
     }
 }
- 
-const getContent = async (chapterServer) => {
-    content.html('<img src="/assets/loading.gif" class="load-img m-auto text-center"/>');
+
+contents[`${storyServer}`] = content.html();
+
+const setSource = async (chapterServer, chapterServerName) => {
+    $('#source-menu').append(`
+    <option id="temp${chapterServer}"> Đang load...
+    </option>
+    `);
+    const sourceTemp = $(`#temp${chapterServer}`);
     $.ajax({
         url: `/story/${encodeURIComponent(storyId)}/${chapterIndex}/content`,
         method: 'POST',
@@ -91,13 +97,32 @@ const getContent = async (chapterServer) => {
             'chapterServer': chapterServer
         },
         success: function (data) {
-            content.html(data.content);
+            sourceTemp.remove();
+            if (data.content != "") {
+                contents[`${chapterServer}`] = data.content;
+                $('#source-menu').append(`
+                <option value="${chapterServer}">${chapterServerName}
+                </option>
+                `);
+            }
         },
         error: function (xhr, status, error) {
-            content.html("<div class='text-center'>Nguồn truyện bị lỗi!</div>");
-            console.log('Error getting all chapters of the story: ', error);
+            sourceTemp.remove();
+            if (xhr.status === 400) {
+                console.log('Nguồn không khả thi:', xhr.responseText);
+            } else {
+                console.log('Nguồn không khả thi: ', status, error);
+            }
         }
     });
+}
+
+serverArr.map(e => {
+    if (e.index != storyServer) setSource(e.index, e.name);
+});
+
+const getContent = async (chapterServer) => {
+    content.html(contents[`${chapterServer}`]);
 };
 
 const getChapters = async () => {
