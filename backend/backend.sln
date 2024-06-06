@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDFExporter", "PDFExporter\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrumTruyenHtmlCrawler", "TrumTruyenHtmlCrawler\TrumTruyenHtmlCrawler.csproj", "{7D77ECD0-8968-47BE-B730-D1C492EC8182}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCrawler", "ConsoleDraft\TestCrawler.csproj", "{C8AED855-1EEF-4401-8077-7E914B03BD30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{7D77ECD0-8968-47BE-B730-D1C492EC8182}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D77ECD0-8968-47BE-B730-D1C492EC8182}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D77ECD0-8968-47BE-B730-D1C492EC8182}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8AED855-1EEF-4401-8077-7E914B03BD30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8AED855-1EEF-4401-8077-7E914B03BD30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8AED855-1EEF-4401-8077-7E914B03BD30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8AED855-1EEF-4401-8077-7E914B03BD30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
