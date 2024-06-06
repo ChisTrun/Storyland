@@ -56,7 +56,7 @@ public interface ICrawler
     /// <summary>
     /// Lay mo ta chi tiet cua mot truyen
     /// </summary>
-    /// <param name="storyName">Ten truyen</param>
+    /// <param name="storyId">Ten truyen</param>
     /// <returns></returns>
     public StoryDetail GetStoryDetail(string storyId);
 
