@@ -52,6 +52,9 @@ public partial class TangThuVienCrawler : ICrawler
     public static string DomainTacGia => $"{Domain}/tac-gia";
     public static string DomainTheLoai => $"{Domain}/the-loai";
 
+    private static string DomainStoryChapters(string ttvStoryId) => $"https://truyen.tangthuvien.vn/story/chapters?story_id={ttvStoryId}";
+    private static string DomainStoryChaptersPage(int page, int limit, string ttvStoryId) => $"{DomainDocTruyen}/page/{ttvStoryId}?page={page - 1}&limit={limit}&web=1";
+
     public string Name => "Tàng Thư Viện";
 
     public string Description => "";
@@ -152,7 +155,7 @@ public partial class TangThuVienCrawler : ICrawler
         var story = GetStory(storyId);
         var ttvStoryId = GetTTVStoryId(storyId);
         var chapters = new List<Chapter>();
-        var chaptersUrl = $"{DomainDocTruyen}/page/{ttvStoryId}?page=0&limit=100000&web=1";
+        var chaptersUrl = DomainStoryChaptersPage(0, 100000, ttvStoryId);
         // watch it content, it not always return the same as browser render
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
@@ -179,7 +182,7 @@ public partial class TangThuVienCrawler : ICrawler
         var story = GetStory(storyId);
         var ttvStoryId = GetTTVStoryId(storyId);
         var chapters = new List<Chapter>();
-        var chaptersUrl = $"{DomainDocTruyen}/page/{ttvStoryId}?page={page - 1}&limit={limit}&web=1";
+        string chaptersUrl = DomainStoryChaptersPage(page, limit, ttvStoryId);
         // watch it content, it not always return the same as browser render
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
@@ -207,7 +210,7 @@ public partial class TangThuVienCrawler : ICrawler
     {
         var currentChapterIndex = index + 1;
         var ttvStoryId = GetTTVStoryId(storyId);
-        var chaptersUrl = $"https://truyen.tangthuvien.vn/story/chapters?story_id={ttvStoryId}";
+        string chaptersUrl = DomainStoryChapters(ttvStoryId);
         var chaptersDoc = GetWebPageDocument(chaptersUrl);
         var total = chaptersDoc.QuerySelector(@"ul:last-child > li:last-child").GetAttributeValue("title", -1);
         if (currentChapterIndex < 1 || currentChapterIndex > total)
@@ -303,6 +306,20 @@ public partial class TangThuVienCrawler : ICrawler
             authorsRes.Add(authors[i]);
         }
         return new PagingRepresentative<Author>(page, limit, totalPage, authorsRes);
+    }
+
+    // https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-toi-cuong-kiem-than => 2922 != 2924
+    // https://truyen.tangthuvien.vn/story/chapters?story_id=123 <- check
+    // https://truyen.tangthuvien.vn/doc-truyen/so-menh-chi-hoan-tuc-menh-chi-hoan => 822 == 822
+    // https://truyen.tangthuvien.vn/story/chapters?story_id=36793 <- check
+    // faster than get all chapters
+    public int GetChaptersCount(string storyId)
+    {
+        var ttvId = GetTTVStoryId(storyId);
+        var ttvStoryUrl = DomainStoryChapters(ttvId);
+        var doc = GetWebPageDocument(ttvStoryUrl);
+        var largestTitle = doc.QuerySelectorAll(@"li[title]").Select(x => x.GetAttributeValue("title", -1)).Max();
+        return largestTitle;
     }
 
     // ================= End Interface ====================
@@ -513,9 +530,4 @@ public partial class TangThuVienCrawler : ICrawler
 
     [GeneratedRegex(@"ctg=\d+")]
     private static partial Regex GetCTG();
-
-    public int GetChaptersCount(string storyId)
-    {
-        throw new NotImplementedException();
-    }
 }
