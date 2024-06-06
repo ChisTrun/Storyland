@@ -39,10 +39,6 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Resources\" />
-	</ItemGroup>
-
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
