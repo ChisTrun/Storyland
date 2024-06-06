@@ -579,4 +579,9 @@ public class TruyenFullCommand : ICrawler
 
         return new PagingRepresentative<Author>(page, limit, totalPage, res);
     }
+
+    public int GetChaptersCount(string storyId)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -513,4 +513,9 @@ public partial class TangThuVienCrawler : ICrawler
 
     [GeneratedRegex(@"ctg=\d+")]
     private static partial Regex GetCTG();
+
+    public int GetChaptersCount(string storyId)
+    {
+        throw new NotImplementedException();
+    }
 }

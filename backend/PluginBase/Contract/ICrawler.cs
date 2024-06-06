@@ -67,4 +67,11 @@ public interface ICrawler
     /// <returns></returns>
     public IEnumerable<Author> GetAuthorsBySearchName(string authorName);
     public PagingRepresentative<Author> GetAuthorsBySearchName(string authorName, int page, int limit);
+
+    /// <summary>
+    /// Lay tong so truyen cua mot truyen
+    /// </summary>
+    /// <param name="storyId">ID cua mot truyen</param>
+    /// <returns></returns>
+    public int GetChaptersCount(string storyId);
 }

@@ -214,3 +214,5 @@ frontend/node_modules
 /backend/ConsoleDraft/Program.cs
 /backend/TestExporter/TestExporter.csproj
 /backend/TestPDF/**
+/backend/ConsoleDraft/TestCrawler.csproj
+/backend/ConsoleDraft/TestCrawler.csproj

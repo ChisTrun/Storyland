@@ -3,26 +3,11 @@ using HtmlAgilityPack.CssSelectors.NetCore;
 using Newtonsoft.Json.Linq;
 using PluginBase.Contract;
 using PluginBase.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Text.Encodings.Web;
-using Newtonsoft.Json;
-using System.Text.Json.Nodes;
-using System.Runtime.InteropServices.JavaScript;
 using System.Globalization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Xml.Linq;
 using System.Web;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System.Security.Cryptography.X509Certificates;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace TrumTruyenHtmlCrawler
 {
@@ -596,6 +581,11 @@ namespace TrumTruyenHtmlCrawler
                 startPage += 1;
             }
             return new PagingRepresentative<Author>(page, limit, totalPage, authors);
+        }
+
+        public int GetChaptersCount(string storyId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
