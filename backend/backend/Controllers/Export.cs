@@ -20,7 +20,7 @@ namespace backend.Controllers
         {
             try
             {
-                var list = ExporterScanner.Instance.Commands.Select((com, index) => new ExportType(index, com.Ext));
+                var list = ExporterScanner.Instance.Commands.Select(exporter => new ExportType(exporter.Key , exporter.Value.Ext));
                 return Ok(list);
             }
             catch (Exception e)
@@ -32,18 +32,18 @@ namespace backend.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="serverIndex" example ="1"></param>
+        /// <param name="serverID" example ="1"></param>
         /// <param name="type" example="1"></param>
         /// <param name="storyID" example ="hop-dong-ba-nam-yeu-duong"></param>
         /// <returns></returns>
         [ProducesResponseType(typeof(Category[]), 200)]
         [HttpGet]
-        [Route("{serverIndex}/{type}/{storyID}/")]
-        public async Task<IActionResult> GetAllCategories(int serverIndex, int type, string storyID)
+        [Route("{serverID}/{type}/{storyID}/")]
+        public async Task<IActionResult> GetAllCategories(string serverID, string type, string storyID)
         {
             try
             {
-                var command = StorySourceScanner.Instance.Commands[serverIndex];
+                var command = StorySourceScanner.Instance.Commands[serverID];
                 var storyDetail = command.GetStoryDetail(storyID);
                 var chapterContents = AsyncGetAllChapterContents(command, storyID);
 

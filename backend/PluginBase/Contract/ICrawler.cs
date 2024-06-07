@@ -48,8 +48,8 @@ public interface ICrawler
     /// <summary>
     /// Lay noi dung cua mot chuong cua mot truyen
     /// </summary>
-    /// <param name="storyId">Id cua truyen</param>
-    /// <param name="chapterIndex">Index (so thu tu) trong danh sach chuong. (bat dau tu 0)</param>
+    /// <param name="storyId">ID cua truyen</param>
+    /// <param name="chapterIndex">ID (so thu tu) trong danh sach chuong. (bat dau tu 0)</param>
     /// <returns>Noi dung cua trang truyen</returns>
     public ChapterContent GetChapterContent(string storyId, int chapterIndex);
 

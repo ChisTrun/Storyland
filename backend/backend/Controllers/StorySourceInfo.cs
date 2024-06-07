@@ -20,7 +20,7 @@ namespace backend.Controllers
         {
             try
             {
-                var list = StorySourceScanner.Instance.Commands.Select((com, index) => new Server(index, com.Name));
+                var list = StorySourceScanner.Instance.Commands.Select(source => new Server(source.Key, source.Value.Name));
                 return Ok(list);
             }
             catch (Exception e)

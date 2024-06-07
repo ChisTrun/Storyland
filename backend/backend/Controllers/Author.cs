@@ -11,19 +11,19 @@ namespace backend.Controllers
     {/// <summary>
      /// Get all Authors by search key.
      /// </summary>
-     /// <param name="serverIndex" example="0">Index of the server.</param>
+     /// <param name="serverID" example="0">ID of the server.</param>
      /// <param name="authorName" example="Đỉnh">Story name's searching keyword.</param>
         [ProducesResponseType(typeof(PluginBase.Models.Author[]), 200)]
         [HttpGet]
-        [Route("{serverIndex}/author/{authorName}/all")]
-        public IActionResult SearchAuthorsByName(int serverIndex, string authorName)
+        [Route("{serverID}/author/{authorName}/all")]
+        public IActionResult SearchAuthorsByName(string serverID, string authorName)
         {
             try
             {
-                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid)
                     return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetAuthorsBySearchName(authorName));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].GetAuthorsBySearchName(authorName));
             }
             catch (Exception e)
             {
@@ -35,21 +35,21 @@ namespace backend.Controllers
         /// <summary>
         /// Get stories by searching with paging.
         /// </summary>
-        /// <param name="serverIndex" example="0">Index of the server.</param>
+        /// <param name="serverID" example="0">ID of the server.</param>
         /// <param name="authorName" example="Đỉnh">Story name's searching keyword.</param>
         /// <param name="page" example="1">Current page (starts from 1).</param>
         /// <param name="limit" example="5">Records per page.</param>
         [ProducesResponseType(typeof(PagingRepresentative<PluginBase.Models.Author>), 200)]
         [HttpGet]
-        [Route("{serverIndex}/truyen/{authorName}")]
-        public IActionResult SearchAuthorsByName(int serverIndex, string authorName, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
+        [Route("{serverID}/truyen/{storyName}")]
+        public IActionResult SearchAuthorsByName(string serverID, string authorName, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
         {
             try
             {
-                bool isValid = Handler.ServerHandler.CheckServerIndex(serverIndex);
+                bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid)
                     return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverIndex].GetAuthorsBySearchName(authorName, page, limit));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].GetAuthorsBySearchName(authorName, page, limit));
             }
             catch (Exception e)
             {

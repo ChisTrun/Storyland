@@ -48,7 +48,7 @@ namespace ExporterEPUB
 //    tasks.Add(Task.Run(() =>
 //    {
 //        var temp = new TangThuVienCrawler();
-//        var content = temp.GetChapterContent(chapter.Id);
+//        var content = temp.GetChapterContent(chapter.ID);
 //        content.Chapter = chapter;
 //        return content;
 //    }));
