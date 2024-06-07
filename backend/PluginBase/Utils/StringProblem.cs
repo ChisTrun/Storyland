@@ -17,10 +17,16 @@ namespace PluginBase.Utils
             standardString = standardString.Replace("đ", "d");
             standardString = standardString.Replace("Đ", "D");
             standardString = standardString.ToLower();
-            standardString=standardString.Trim();
-            standardString = Regex.Replace(standardString   , @"[^A-Za-z\d\s]", " ").Replace("  ", " ");
+            standardString = standardString.Trim();
+            standardString = Regex.Replace(standardString, @"[^A-Za-z\d\s]", " ").Replace("  ", " ");
 
             return standardString;
+        }
+
+        public static string GetChapterNumber(string inputString)
+        {
+            var match = Regex.Match(inputString, @"Chương (\d+)");
+            return match.Success ? match.Groups[1].Value : "-1";
         }
     }
 }

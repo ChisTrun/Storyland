@@ -54,7 +54,26 @@ namespace backend.Controllers
             {
                 return StatusCode(500, $"Fail to get chapters list of the story with id {storyId}: {e.Message}.");
             }
-            
+        }
+
+        [ProducesResponseType(typeof(Chapter[]), 200)]
+        [HttpGet]
+        [Route("{serverID}/{storyId}/chapters/count")]
+        public IActionResult CountAllChaptersOfStory(string serverID, string storyId)
+        {
+            try
+            {
+                bool isValid = Handler.ServerHandler.CheckServerID(serverID);
+                if (!isValid)
+                    return BadRequest("Invalid server index.");
+                var crawler = StorySourceScanner.Instance.Commands[serverID];
+                return Ok(crawler.GetChaptersCount(storyId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get chapters list of the story with id {storyId}: {e.Message}.");
+            }
+
         }
 
         /// <summary>

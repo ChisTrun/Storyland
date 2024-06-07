@@ -7,6 +7,7 @@ using HtmlAgilityPack.CssSelectors.NetCore;
 using System.Text.RegularExpressions;
 using System.Net;
 using TruyenFullPlugin.Models;
+using System;
 
 namespace TruyenFullPlugin;
 
@@ -582,6 +583,19 @@ public class TruyenFullCommand : ICrawler
 
     public int GetChaptersCount(string storyId)
     {
-        throw new NotImplementedException();
+        var storyURL = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
+        var storyDocument = GetWebPageDocument(storyURL);
+
+        int numberOfChapters = 0;
+        TryCatch.Try(() =>
+        {
+            var lastpaginEle = storyDocument.QuerySelector("ul.pagination  li:last-child");
+            var lastChapterPageURL =lastpaginEle.GetChildElements().First().GetAttributeValue("href", null);
+            var lastChapterPageDocument = GetWebPageDocument(lastChapterPageURL);
+            var title = storyDocument.QuerySelector("#list-chapter . row").LastChild.QuerySelector(".list-chapter").LastChild.QuerySelector("a").InnerText;
+            numberOfChapters = int.Parse(StringProblem.GetChapterNumber(title));
+        });
+
+        return numberOfChapters;
     }
 }
