@@ -9,4 +9,5 @@ Console.OutputEncoding = Encoding.Unicode;
 
 var ttv = new TangThuVienCrawler();
 //TangThuVienSet.TestSet1(ttv);
-TangThuVienSet.TestSet2(ttv);
+//TangThuVienDraft.TestSet2(ttv);
+FileDownloadDraft.Test1();

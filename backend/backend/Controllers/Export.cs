@@ -4,6 +4,7 @@ using backend.DLLScanner.Concrete;
 using backend.DLLScanner;
 using System.Net.Mime;
 using PluginBase.Contract;
+using backend.Model;
 namespace backend.Controllers
 {
     [Route("api/export")]
@@ -12,7 +13,6 @@ namespace backend.Controllers
         /// <summary>
         /// Get export types
         /// </summary>
-        /// <param name="" example =""></param>
         /// <returns></returns>
         [ProducesResponseType(typeof(ExportType[]), 200)]
         [HttpGet]
@@ -45,7 +45,7 @@ namespace backend.Controllers
             {
                 var command = StorySourceScanner.Instance.Commands[serverIndex];
                 var storyDetail = command.GetStoryDetail(storyID);
-                var chapterContents = AsyncGetAllChapterContents(command, storyID);
+                var chapterContents = CrawlerModel.AsyncGetAllChapterContents(command, storyID);
 
                 // why async here?
                 byte[] bytes = await Task.Run(() => ScannerController.Instance.exporterScanner.Commands[type].ExportStory(storyDetail, chapterContents));
@@ -56,38 +56,6 @@ namespace backend.Controllers
             {
                 return StatusCode(500, $"Fail to get download link: {e.Message}.");
             }
-        }
-
-        public static List<ChapterContent> GetAllChapterContents(ICrawler command, string storyId)
-        {
-            var chapters = command.GetChaptersOfStory(storyId).ToList();
-            var chapterContents = new List<ChapterContent>();
-            foreach (var chapter in chapters)
-            {
-                var chapterContent = command.GetChapterContent(storyId, chapter.Index + 1);
-                chapterContents.Add(chapterContent);
-            }
-            return chapterContents;
-        }
-
-        public static List<ChapterContent> AsyncGetAllChapterContents(ICrawler command, string storyId)
-        {
-            var storyDetail = command.GetStoryDetail(storyId);
-            var chapters = command.GetChaptersOfStory(storyId);
-            List<Task<ChapterContent>> tasks = new();
-            foreach (var chapter in chapters)
-            {
-                tasks.Add(Task.Run(() =>
-                {
-                    var content = command.GetChapterContent(storyId, chapter.Index);
-                    content.ChapterName = chapter.Name;
-                    content.ChapterID = chapter.Id;
-                    content.ChapterIndex = chapter.Index;
-                    return content;
-                }));
-            }
-            var chapterContents = Task.WhenAll(tasks).Result.ToList();
-            return chapterContents;
         }
     }
 }

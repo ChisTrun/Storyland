@@ -3,7 +3,7 @@ using TangThuVien;
 
 namespace backend.draft
 {
-    public class TangThuVienSet
+    public class TangThuVienDraft
     {
         public static void TestSet1(TangThuVienCrawler crawler)
         {
