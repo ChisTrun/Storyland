@@ -589,10 +589,29 @@ public class TruyenFullCommand : ICrawler
         int numberOfChapters = 0;
         TryCatch.Try(() =>
         {
-            var lastpaginEle = storyDocument.QuerySelector("ul.pagination  li:last-child");
-            var lastChapterPageURL =lastpaginEle.GetChildElements().First().GetAttributeValue("href", null);
-            var lastChapterPageDocument = GetWebPageDocument(lastChapterPageURL);
-            var title = storyDocument.QuerySelector("#list-chapter . row").LastChild.QuerySelector(".list-chapter").LastChild.QuerySelector("a").InnerText;
+            string title = "";
+            var paginEle = storyDocument.QuerySelector("ul.pagination");
+            if (paginEle == null)
+            {
+                title = storyDocument.QuerySelector("#list-chapter .row").LastChild.QuerySelector(".list-chapter").LastChild.QuerySelector("a").InnerText;
+            }
+            else
+            {
+                var allAElements = paginEle.QuerySelectorAll("li a");
+                var cuoiElement = allAElements.FirstOrDefault(x => x.InnerText.Contains("Cuối"));
+                if (cuoiElement == null)
+                {
+                    cuoiElement = allAElements.ElementAt(allAElements.Count - 2);
+                }
+                var cuoiUrl = cuoiElement.GetAttributeValue("href", null);
+                var lastChapterPageDocument = GetWebPageDocument(cuoiUrl);
+
+                var t = lastChapterPageDocument.QuerySelector("#list-chapter .row");
+                var t2 = t.LastChild.QuerySelector(".list-chapter");
+                var t3 = t2.LastChild.QuerySelector("a");
+                title = t3.InnerText;
+            }
+
             numberOfChapters = int.Parse(StringProblem.GetChapterNumber(title));
         });
 
