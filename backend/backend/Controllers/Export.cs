@@ -58,7 +58,7 @@ namespace backend.Controllers
             }
         }
 
-        private static List<ChapterContent> GetAllChapterContents(ICrawler command, string storyId)
+        public static List<ChapterContent> GetAllChapterContents(ICrawler command, string storyId)
         {
             var chapters = command.GetChaptersOfStory(storyId).ToList();
             var chapterContents = new List<ChapterContent>();
@@ -70,7 +70,7 @@ namespace backend.Controllers
             return chapterContents;
         }
 
-        private static List<ChapterContent> AsyncGetAllChapterContents(ICrawler command, string storyId)
+        public static List<ChapterContent> AsyncGetAllChapterContents(ICrawler command, string storyId)
         {
             var storyDetail = command.GetStoryDetail(storyId);
             var chapters = command.GetChaptersOfStory(storyId);

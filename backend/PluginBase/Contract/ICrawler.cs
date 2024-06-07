@@ -18,7 +18,7 @@ public interface ICrawler
     /// </summary>
     /// <param name="categoryId">Ten the loai</param>
     /// <returns>Danh sach cac truyen thuoc the loai do</returns>
-    public IEnumerable<Story> GetStoriesOfCategory(string categoryId);
+    public IEnumerable<Story> GetStoriesOfCategory(string categoryId);  // No test
     public PagingRepresentative<Story> GetStoriesOfCategory(string categoryId, int page, int limit);
 
     /// <summary>
@@ -26,7 +26,7 @@ public interface ICrawler
     /// </summary>
     /// <param name="storyName">Ten truyen</param>
     /// <returns>Danh sach cac truyen la ket qua tim kiem</returns>
-    public IEnumerable<Story> GetStoriesBySearchName(string storyName);
+    public IEnumerable<Story> GetStoriesBySearchName(string storyName); // No test
     public PagingRepresentative<Story> GetStoriesBySearchName(string storyName, int page, int limit);
 
     /// <summary>

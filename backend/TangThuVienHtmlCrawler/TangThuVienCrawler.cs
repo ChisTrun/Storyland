@@ -12,24 +12,25 @@ namespace TangThuVien;
 
 public partial class TangThuVienCrawler : ICrawler
 {
-
     protected static HtmlDocument GetWebPageDocument(string sourceURL)
     {
         sourceURL = HttpUtility.UrlDecode(sourceURL);
-        var web = new HtmlWeb();
-        web.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
+        var web = new HtmlWeb
+        {
+            UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+        };
         var document = web.Load(sourceURL);
-        //var count = 0;
+        var count = 0;
         while (true)
         {
             var title = document.QuerySelector("title");
             if (title != null && title.GetDirectInnerTextDecoded() == "Site Maintenance")
             {
-                //if (count > 1000)
-                //{
-                //    throw new Exception("Bad request");
-                //}
-                //count++;
+                if (count > 10)
+                {
+                    throw new Exception("Bad request");
+                }
+                count++;
                 document = web.Load(sourceURL);
             }
             else
@@ -59,15 +60,9 @@ public partial class TangThuVienCrawler : ICrawler
 
     public string Description => "";
 
-    private string CategoryIDCast(string orgID)
-    {
-        var url = $"{DomainTheLoai}/{orgID}";
-        var doc = GetWebPageDocument(url);
-        var xemThem = doc.QuerySelector("#update-tab > a");
-        var xemThemURL = xemThem.GetAttributeValue("href", null) ?? throw new Exception();
-        var id = GetCTG().Match(xemThemURL).Value;
-        return "?" + id;
-    }
+    // =============== START INTERFACE ====================
+    // =============== START INTERFACE ====================
+    // =============== START INTERFACE ====================
 
     public IEnumerable<Category> GetCategories()
     {
@@ -105,8 +100,19 @@ public partial class TangThuVienCrawler : ICrawler
         var document = GetWebPageDocument(baseUrl);
         var stories = RankViewListFormat.CrawlStoriesFromAPage(document);
         var lastLiTag = document.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:last-child");
-        var aTag = lastLiTag.PreviousSiblingElement().GetChildElements().First();
-        var totalPage = int.Parse(aTag.GetDirectInnerTextDecoded());
+        int totalPage = 0;
+        if (lastLiTag == null)
+        {
+            if (stories.Any())
+            {
+                totalPage = stories.Count();
+            }
+        }
+        else
+        {
+            var aTag = lastLiTag.PreviousSiblingElement().GetChildElements().First();
+            totalPage = int.Parse(aTag.GetDirectInnerTextDecoded());
+        }
         var paging = new PagingRepresentative<Story>(page, limit, totalPage, stories);
         return paging;
     }
@@ -422,6 +428,16 @@ public partial class TangThuVienCrawler : ICrawler
     // sub-methods
     // sub-methods
     // sub-methods
+
+    private string CategoryIDCast(string orgID)
+    {
+        var url = $"{DomainTheLoai}/{orgID}";
+        var doc = GetWebPageDocument(url);
+        var xemThem = doc.QuerySelector("#update-tab > a");
+        var xemThemURL = xemThem.GetAttributeValue("href", null) ?? throw new Exception();
+        var id = GetCTG().Match(xemThemURL).Value;
+        return "?" + id;
+    }
 
     private static Tuple<string, string> GetNameUrlFromATag(HtmlNode aTag)
     {
