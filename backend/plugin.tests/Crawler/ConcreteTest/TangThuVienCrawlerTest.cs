@@ -30,6 +30,4 @@ public class TangThuVienCrawlerTest : CrawlerTestBase
     {
         base.GetStoriesOfCategory_InvalidCategoryId_ThrowsException(categoryId);
     }
-
-
 }

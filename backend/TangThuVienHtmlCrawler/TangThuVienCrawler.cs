@@ -2,6 +2,7 @@
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Newtonsoft.Json;
 using PluginBase.Contract;
+using PluginBase.Exceptions;
 using PluginBase.Models;
 using PluginBase.Utils;
 using System.Net;
@@ -20,17 +21,10 @@ public partial class TangThuVienCrawler : ICrawler
             UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
         };
         var document = web.Load(sourceURL);
-        while (true)
+        var title = document.QuerySelector("title");
+        if (title != null && title.GetDirectInnerTextDecoded() == "Site Maintenance")
         {
-            var title = document.QuerySelector("title");
-            if (title != null && title.GetDirectInnerTextDecoded() == "Site Maintenance")
-            {
-                throw new Exception("Bad request");
-            }
-            else
-            {
-                break;
-            }
+            throw new CrawlerDocumentException();
         }
         return document;
     }

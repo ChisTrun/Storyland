@@ -1,5 +1,9 @@
-using backend.DLLScanner;
-using Microsoft.OpenApi.Models;
+using backend.Application.Commands.Concrete;
+using backend.Application.Plugins.Abstract;
+using backend.Application.Queries.Abstract;
+using backend.Application.Queries.Concrete;
+using backend.Application.Services.Abstract;
+using backend.Application.Services.Concrete;
 using System.Reflection;
 
 namespace backend
@@ -8,13 +12,20 @@ namespace backend
     {
         public static void Main(string[] args)
         {
-            ScannerController.Instance.StartToScan();
-            
+            //ScannerController.Instance.StartToScan();
+
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add dependency through IOC
+
+            builder.Services.AddSingleton<IPluginProvider, PluginPro>();
+            builder.Services.AddSingleton<ICrawlingService, CrawlingService>();
+            builder.Services.AddSingleton<IExportService, ExportService>();
 
             // Add services to the container.
 
             builder.Services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             builder.Services.AddEndpointsApiExplorer();
