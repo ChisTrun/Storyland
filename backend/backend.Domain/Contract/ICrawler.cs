@@ -1,30 +1,30 @@
-﻿using backend.Application.DTO;
-using backend.Application.Mics;
+﻿using backend.Domain.Entities;
+using backend.Domain.Mics;
 
-namespace backend.Application.Plugins.Contracts;
+namespace backend.Domain.Contract;
 
 public interface ICrawler : IPlugin
 {
-    public List<DisplayDTO> GetCategories();
+    public List<Category> GetCategories();
 
-    public List<StoryDTO> GetStoriesOfCategory(string categoryId);
-    public PagedList<StoryDTO> GetStoriesOfCategory(string categoryId, int page, int limit);
+    public List<Story> GetStoriesOfCategory(string categoryId);
+    public PagedList<Story> GetStoriesOfCategory(string categoryId, int page, int limit);
 
-    public List<StoryDTO> GetStoriesBySearchName(string storyName);
-    public PagedList<StoryDTO> GetStoriesBySearchName(string storyName, int page, int limit);
+    public List<Story> GetStoriesBySearchName(string storyName);
+    public PagedList<Story> GetStoriesBySearchName(string storyName, int page, int limit);
 
-    public List<StoryDTO> GetStoriesOfAuthor(string authorId);
-    public PagedList<StoryDTO> GetStoriesOfAuthor(string authorId, int page, int limit);
+    public List<Story> GetStoriesOfAuthor(string authorId);
+    public PagedList<Story> GetStoriesOfAuthor(string authorId, int page, int limit);
 
-    public List<ChapterDTO> GetChaptersOfStory(string storyId);
-    public PagedList<ChapterDTO> GetChaptersOfStory(string storyId, int page, int limit);
+    public List<Chapter> GetChaptersOfStory(string storyId);
+    public PagedList<Chapter> GetChaptersOfStory(string storyId, int page, int limit);
 
-    public ChapterContentDTO GetChapterContent(string storyId, int chapterIndex);
+    public ChapterContent GetChapterContent(string storyId, int chapterIndex);
 
-    public StoryDetailDTO GetStoryDetail(string storyId);
+    public StoryDetail GetStoryDetail(string storyId);
 
-    public List<DisplayDTO> GetAuthorsBySearchName(string authorName);
-    public PagedList<DisplayDTO> GetAuthorsBySearchName(string authorName, int page, int limit);
+    public List<Author> GetAuthorsBySearchName(string authorName);
+    public PagedList<Author> GetAuthorsBySearchName(string authorName, int page, int limit);
 
     public int GetChaptersCount(string storyId);
 }

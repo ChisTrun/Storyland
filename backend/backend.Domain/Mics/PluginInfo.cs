@@ -1,4 +1,4 @@
-﻿namespace backend.Application.Objects;
+﻿namespace backend.Domain.Mics;
 
 public class PluginInfo(string iD, string name)
 {

@@ -1,7 +1,7 @@
 ﻿using backend.Application.DTO;
-using backend.Application.Mics;
 using backend.Application.Queries.Abstract;
 using backend.Application.Services.Abstract;
+using backend.Domain.Mics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers

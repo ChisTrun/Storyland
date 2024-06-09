@@ -1,6 +1,5 @@
 ﻿using backend.Application.DTO;
-using backend.Application.Mics;
-using backend.Application.Objects;
+using backend.Domain.Mics;
 
 namespace backend.Application.Services.Abstract;
 

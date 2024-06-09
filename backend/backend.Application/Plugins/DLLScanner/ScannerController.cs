@@ -1,29 +1,27 @@
-﻿using backend.Application.Contract;
-using backend.DLLScanner.Concrete;
-using backend.DLLScanner.Contract;
-using backend.Infrastructure.DLLScanner.Concrete;
+﻿using backend.Application.Plugins.DLLScanner.Concrete;
+using backend.Application.Plugins.DLLScanner.Contract;
+using backend.Domain.Contract;
 
-namespace backend.DLLScanner
+namespace backend.Application.Plugins.DLLScanner;
+
+public class ScannerController
 {
-    public class ScannerController
+    public IScanner<ICrawler> crawlerScanner;
+    public IScanner<IExporter> exporterScanner;
+    private static readonly Lazy<ScannerController> _lazy = new(() => new ScannerController());
+    public static ScannerController Instance => _lazy.Value;
+
+    private ScannerController()
     {
-        public IScanner<ICrawler> sourceScanner;
-        public IScanner<IExporter> exporterScanner;
-        private static readonly Lazy<ScannerController> _lazy = new(() => new ScannerController());
-        public static ScannerController Instance => _lazy.Value;
+        crawlerScanner = CrawlerScanner.Instance;
+        exporterScanner = ExporterScanner.Instance;
 
-        private ScannerController()
-        {
-            sourceScanner = StorySourceScanner.Instance;
-            exporterScanner = ExporterScanner.Instance;
+        StartToScan();
+    }
 
-            StartToScan();
-        }
-
-        public void StartToScan()
-        {
-            sourceScanner.StartScanThread();
-            exporterScanner.StartScanThread();
-        }
+    public void StartToScan()
+    {
+        crawlerScanner.StartScanThread();
+        exporterScanner.StartScanThread();
     }
 }

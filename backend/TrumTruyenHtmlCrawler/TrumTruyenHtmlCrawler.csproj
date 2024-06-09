@@ -14,13 +14,6 @@
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\PluginBase\PluginBase.csproj" >
-			<Private>false</Private>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</ProjectReference>
-	</ItemGroup>
-
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="xcopy /y /d /i  &quot;$(OutDir)*.dll&quot; &quot;$(SolutionDir)backend\plugins\storySource\&quot;" />

@@ -1,9 +1,9 @@
 ﻿using backend.Application.DTO;
-using backend.Application.Plugins;
+using backend.Domain.Entities;
 
 namespace backend.Application.Queries.Abstract;
 
 public interface IChapterQuery
 {
-    public List<ChapterContentDTO> GetChapterContents(string storyId);
+    public List<ChapterContent> GetChapterContents(string storyId);
 }

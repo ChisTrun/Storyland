@@ -1,8 +1,7 @@
 ﻿using backend.Application.Commands.Abstract;
-using backend.Application.Contract;
 using backend.Application.DTO;
-using backend.Application.Objects;
-using backend.Application.Plugins.Contracts;
+using backend.Domain.Contract;
+using backend.Domain.Entities;
 
 namespace backend.Application.Commands.Concrete;
 
@@ -15,7 +14,7 @@ public class ExportCommand : IExportCommand
         _exporter = exporter;
     }
 
-    public FileBytesDTO CreateFile(StoryDetailDTO storyDetail, IEnumerable<ChapterContentDTO> chapterContents)
+    public FileBytesDTO CreateFile(StoryDetail storyDetail, IEnumerable<ChapterContent> chapterContents)
     {
         var extension = _exporter.Extension;
         var bytes = _exporter.ExportStory(storyDetail, chapterContents);

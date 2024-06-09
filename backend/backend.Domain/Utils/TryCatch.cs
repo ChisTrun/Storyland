@@ -1,4 +1,4 @@
-﻿namespace PluginBase.Utils
+﻿namespace backend.Domain.Utils
 {
     public delegate void VoidDelegate();
 

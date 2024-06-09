@@ -1,9 +1,9 @@
-﻿using backend.Application.DTO;
+﻿using backend.Domain.Entities;
 
-namespace backend.Application.Plugins.Contracts;
+namespace backend.Domain.Contract;
 
 public interface IExporter : IPlugin
 {
     public string Extension { get; }
-    public byte[] ExportStory(StoryDetailDTO storyDetail, IEnumerable<ChapterContentDTO> chapterContents);
+    public byte[] ExportStory(StoryDetail story, IEnumerable<ChapterContent> chapteres);
 }

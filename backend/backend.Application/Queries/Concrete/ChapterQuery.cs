@@ -1,6 +1,8 @@
 ﻿using backend.Application.DTO;
-using backend.Application.Plugins.Contracts;
+using backend.Application.Mapper;
 using backend.Application.Queries.Abstract;
+using backend.Domain.Contract;
+using backend.Domain.Entities;
 
 namespace backend.Application.Queries.Concrete;
 
@@ -13,10 +15,10 @@ public class ChapterQuery : IChapterQuery
         _crawler = crawler;
     }
 
-    public List<ChapterContentDTO> GetChapterContents(string storyId)
+    public List<ChapterContent> GetChapterContents(string storyId)
     {
         var chapters = _crawler.GetChaptersOfStory(storyId);
-        var chapterContents = new List<ChapterContentDTO>();
+        var chapterContents = new List<ChapterContent>();
         foreach (var chapter in chapters)
         {
             var chapterContent = _crawler.GetChapterContent(chapter.Name, chapter.Index);

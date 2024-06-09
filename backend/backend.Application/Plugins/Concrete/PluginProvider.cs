@@ -1,8 +1,8 @@
-﻿using backend.Application.Objects;
-using backend.Application.Plugins.Abstract;
-using backend.Application.Plugins.Contracts;
+﻿using backend.Application.Plugins.Abstract;
+using backend.Domain.Contract;
+using backend.Domain.Mics;
 
-namespace backend.Infrastructure.Concrete;
+namespace backend.Application.Plugins.Concrete;
 
 public class PluginProvider : IPluginProvider
 {

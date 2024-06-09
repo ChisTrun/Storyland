@@ -11,13 +11,6 @@
 		<PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.4" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\PluginBase\PluginBase.csproj" >
-			<Private>false</Private>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</ProjectReference>
-	</ItemGroup>
-
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="xcopy /y /d /i  &quot;$(OutDir)*.dll&quot; &quot;$(SolutionDir)backend\plugins\exporter\&quot;" />
 	</Target>

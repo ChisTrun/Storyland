@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Text;
 
-namespace PluginBase.Utils
+namespace backend.Domain.Utils
 {
     public static class StringProblem
     {
@@ -17,8 +17,8 @@ namespace PluginBase.Utils
             standardString = standardString.Replace("đ", "d");
             standardString = standardString.Replace("Đ", "D");
             standardString = standardString.ToLower();
-            standardString=standardString.Trim();
-            standardString = Regex.Replace(standardString   , @"[^A-Za-z\d\s]", " ").Replace("  ", " ");
+            standardString = standardString.Trim();
+            standardString = Regex.Replace(standardString, @"[^A-Za-z\d\s]", " ").Replace("  ", " ");
 
             return standardString;
         }

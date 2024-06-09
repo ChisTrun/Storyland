@@ -1,12 +1,11 @@
-﻿using backend.Application.Commands.Abstract;
+﻿using backend.Application.Commands.Concrete;
 using backend.Application.DTO;
-using backend.Application.Objects;
 using backend.Application.Plugins.Abstract;
-using backend.Application.Queries.Abstract;
 using backend.Application.Queries.Concrete;
 using backend.Application.Services.Abstract;
+using backend.Domain.Mics;
 
-namespace backend.Application.Commands.Concrete;
+namespace backend.Application.Services.Concrete;
 
 public class ExportService : IExportService
 {

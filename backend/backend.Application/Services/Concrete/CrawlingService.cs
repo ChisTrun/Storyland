@@ -1,11 +1,9 @@
 ﻿using backend.Application.DTO;
-using backend.Application.Mics;
-using backend.Application.Objects;
+using backend.Application.Mapper;
 using backend.Application.Plugins.Abstract;
-using backend.Application.Queries.Abstract;
-using backend.Application.Queries.Concrete;
 using backend.Application.Services.Abstract;
-using System.Collections.Generic;
+using backend.Domain.Entities;
+using backend.Domain.Mics;
 
 namespace backend.Application.Services.Concrete;
 
@@ -23,14 +21,14 @@ public class CrawlingService : ICrawlingService
     public PagedList<DisplayDTO> GetAuthorBySearchName(string serverId, string authorName, int page, int limit)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var authors = crawler.GetAuthorsBySearchName(authorName, page, limit);
+        var authors = crawler.GetAuthorsBySearchName(authorName, page, limit).ToDTOList(a => a.ToDTO());
         return authors;
     }
 
     public List<DisplayDTO> GetAuthorsBySearchName(string serverId, string authorName)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var authors = crawler.GetAuthorsBySearchName(authorName);
+        var authors = crawler.GetAuthorsBySearchName(authorName).ToDTOList(x => x.ToDTO());
         return authors;
     }
 
@@ -39,7 +37,7 @@ public class CrawlingService : ICrawlingService
     public List<DisplayDTO> GetCategories(string serverId)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var categories = crawler.GetCategories();
+        var categories = crawler.GetCategories().ToDTOList(x => x.ToDTO());
         return categories;
     }
 
@@ -48,42 +46,42 @@ public class CrawlingService : ICrawlingService
     public List<StoryDTO> GetStoriesOfAuthor(string serverId, string authorId)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var stories = crawler.GetStoriesOfAuthor(authorId);
+        var stories = crawler.GetStoriesOfAuthor(authorId).ToDTOList(x => x.ToDTO());
         return stories;
     }
 
     public PagedList<StoryDTO> GetStoriesOfAuthor(string serverId, string authorId, int page, int limit)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var stories = crawler.GetStoriesOfAuthor(authorId, page, limit);
+        var stories = crawler.GetStoriesOfAuthor(authorId, page, limit).ToDTOList(x => x.ToDTO());
         return stories;
     }
 
     public List<StoryDTO> GetStoriesOfCategory(string serverId, string categoryId)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var stories = crawler.GetStoriesOfCategory(categoryId);
+        var stories = crawler.GetStoriesOfCategory(categoryId).ToDTOList(x => x.ToDTO());
         return stories;
     }
 
     public PagedList<StoryDTO> GetStoriesOfCategory(string serverId, string categoryId, int page, int limit)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var stories = crawler.GetStoriesOfCategory(categoryId, page, limit);
+        var stories = crawler.GetStoriesOfCategory(categoryId, page, limit).ToDTOList(x => x.ToDTO());
         return stories;
     }
 
     public List<StoryDTO> GetStoriesBySearchName(string serverId, string searchName)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var stories = crawler.GetStoriesBySearchName(searchName);
+        var stories = crawler.GetStoriesBySearchName(searchName).ToDTOList(x => x.ToDTO());
         return stories;
     }
 
     public PagedList<StoryDTO> GetStoriesBySearchName(string serverId, string searchName, int page, int limit)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var stories = crawler.GetStoriesBySearchName(searchName, page, limit);
+        var stories = crawler.GetStoriesBySearchName(searchName, page, limit).ToDTOList(x => x.ToDTO());
         return stories;
     }
 
@@ -92,28 +90,28 @@ public class CrawlingService : ICrawlingService
     public StoryDetailDTO GetStoryDetail(string serverId, string storyId)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var storyDetail = crawler.GetStoryDetail(storyId);
+        var storyDetail = crawler.GetStoryDetail(storyId).ToDTO();
         return storyDetail;
     }
 
     public List<ChapterDTO> GetChaptersOfStory(string serverId, string storyId)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var stories = crawler.GetChaptersOfStory(storyId);
+        var stories = crawler.GetChaptersOfStory(storyId).ToDTOList(x => x.ToDTO());
         return stories;
     }
 
     public PagedList<ChapterDTO> GetChaptersOfStory(string serverId, string storyId, int page, int limit)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var stories = crawler.GetChaptersOfStory(storyId, page, limit);
+        var stories = crawler.GetChaptersOfStory(storyId, page, limit).ToDTOList(x => x.ToDTO());
         return stories;
     }
 
     public ChapterContentDTO GetChapterContent(string serverId, string storyId, int chapterIndex)
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var stories = crawler.GetChapterContent(storyId, chapterIndex);
+        var stories = crawler.GetChapterContent(storyId, chapterIndex).ToDTO();
         return stories;
     }
 

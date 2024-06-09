@@ -1,4 +1,4 @@
-﻿namespace backend.Application.Mics;
+﻿namespace backend.Domain.Mics;
 
 public class PagedList<T>(int page, int limit, int totalPages, IEnumerable<T> data)
 {

@@ -1,10 +1,9 @@
 ﻿using backend.Application.DTO;
-using backend.Application.Objects;
-using backend.Application.Plugins;
+using backend.Domain.Entities;
 
 namespace backend.Application.Commands.Abstract;
 
 public interface IExportCommand
 {
-    public FileBytesDTO CreateFile(StoryDetailDTO storyDetail, IEnumerable<ChapterContentDTO> chapterContents);
+    public FileBytesDTO CreateFile(StoryDetail storyDetail, IEnumerable<ChapterContent> chapterContents);
 }
