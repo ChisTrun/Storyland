@@ -148,7 +148,7 @@ footer .web-logo {
   background-color: var(--senary-color);
 }
 
-.latest-chapter-btn  {
+.latest-chapter-btn {
   display: inline-block;
   color: white;
   background-color: var(--quaternary-color);
@@ -651,27 +651,29 @@ footer .web-logo {
 
 .server-chapter-btn {
   width: 9.5rem;
-  border-color: var(--text-color)!important;
+  border-color: var(--text-color) !important;
   background-color: #0f75ac;
   color: white;
-} 
+}
 
 #error-toast {
   font-size: 1.05rem;
   font-weight: 500;
   width: fit-content;
   color: red;
-  border: 2px solid red!important;
+  border: 2px solid red !important;
   background-color: white;
 }
 
 .btn-close.btn-close-red {
-  filter: invert(28%) sepia(90%) saturate(5368%) hue-rotate(356deg) brightness(99%) contrast(104%);
+  filter: invert(28%) sepia(90%) saturate(5368%) hue-rotate(356deg)
+    brightness(99%) contrast(104%);
   opacity: 1;
 }
 
 .btn-close.btn-close-red:hover {
-  filter: invert(28%) sepia(90%) saturate(5368%) hue-rotate(356deg) brightness(99%) contrast(104%);
+  filter: invert(28%) sepia(90%) saturate(5368%) hue-rotate(356deg)
+    brightness(99%) contrast(104%);
 }
 
 #pdfViewer {
@@ -680,6 +682,23 @@ footer .web-logo {
 
 #epubViewer {
   display: none;
+}
+
+#toc .toc-item {
+  width: 100%;
+  margin: 1rem 0rem;
+  padding: 0 0.8rem 1rem 1.2rem;
+  border-bottom: 1px solid #6868684f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+#toc .toc-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0.5rem;
 }
 
 #toc .sub-items .toc-item {
@@ -695,6 +714,35 @@ footer .web-logo {
 #toc .sub-items .sub-items .sub-items .toc-item {
   margin-left: 60px;
   padding: 5px;
+}
+
+#uploadForm {
+  font-size: 1.1rem;
+}
+
+.choose-file-btn {
+  margin-left: 1rem;
+  width: 35%;
+  border-bottom: 1px solid #6868684f;
+}
+
+#upload-file-btn {
+  padding: 0.088rem 0.6rem;
+}
+
+.border-upload {
+  border: 1px solid #6868684f;
+}
+
+.vh-95 {
+  height: 95vh !important;
+}
+
+.scroll-card {
+  white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-overflow: ellipsis;
 }
 
 @media only screen and (max-width: 768px) {

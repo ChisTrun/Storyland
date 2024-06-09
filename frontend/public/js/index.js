@@ -4,7 +4,7 @@ const directTo = (url) => {
 
 const handleError = async (errorMsg) => {
     try {
-        await fetch('/errorHandler', {
+        await fetch('/error-handler', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -165,7 +165,7 @@ $('.web-mode').on('click', async function () {
     const theme = doc.attr('data-theme');
     const iconMode = $(this);
     $.ajax({
-        url: '/changeDarkMode',
+        url: '/change-dark-mode',
         method: 'POST',
         data: {
             'curMode': theme,

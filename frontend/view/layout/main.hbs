@@ -10,8 +10,6 @@
 		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link rel="stylesheet" href="/css/style.css">
-	<script src="js/jszip.js"></script>
-	<script src="js/epub.js"></script>
 	{{#each styles}}
 	<link rel="stylesheet" href="{{this}}">
 	{{/each}}
@@ -25,7 +23,7 @@
 	{{!-- https://handlebarsjs.com/guide/builtin-helpers.html#lookup --}}
 	{{!-- The dot means the render context (the main context), which is the object
 	passed into the render method and 'header' is its property --}}
-	
+
 	{{> (lookup . 'header') }}
 
 	<main>

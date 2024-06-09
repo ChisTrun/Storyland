@@ -1,6 +1,6 @@
-const view = 'home';
 const { HOST, PORT } = require('../global/env');
 
+const view = 'home';
 const render = {
     layout: 'main',
     scripts: null,

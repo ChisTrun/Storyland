@@ -1,10 +1,10 @@
-const view = 'offlinereading';
 const { HOST, PORT } = require('../global/env');
 
+const view = 'offlinereading';
 const render = {
     layout: 'main',
-    scripts: ['js/offlinereading.js'],
-    styles: [],
+    scripts: ['/js/jszip.js', '/js/epub.js', 'js/offlinereading.js'],
+    styles: null,
     header: 'header',
     footer: 'footer',
     host: `https://${HOST}:${PORT}`,
@@ -12,10 +12,10 @@ const render = {
 
 module.exports = {
     async render(req, res, next) {
-        render.serverIndex = req.session.serverIndex;
+        render.sortedServerIds = req.session.sortedServerIds;
         render.isDark = req.session.isDark;
-        render.title = "Trình đọc truyện | StoryLand";
-        
+        render.title = "Trình đọc truyện đã tải | StoryLand";
+
         return res.render(view, render, null);
     },
 };
