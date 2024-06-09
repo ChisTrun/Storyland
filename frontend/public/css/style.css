@@ -674,6 +674,29 @@ footer .web-logo {
   filter: invert(28%) sepia(90%) saturate(5368%) hue-rotate(356deg) brightness(99%) contrast(104%);
 }
 
+#pdfViewer {
+  display: none;
+}
+
+#epubViewer {
+  display: none;
+}
+
+#toc .sub-items .toc-item {
+  margin-left: 20px;
+  padding: 5px;
+}
+
+#toc .sub-items .sub-items .toc-item {
+  margin-left: 40px;
+  padding: 5px;
+}
+
+#toc .sub-items .sub-items .sub-items .toc-item {
+  margin-left: 60px;
+  padding: 5px;
+}
+
 @media only screen and (max-width: 768px) {
   #header-link {
     display: none;

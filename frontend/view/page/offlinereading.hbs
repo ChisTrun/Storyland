@@ -1,0 +1,56 @@
+<div class="container min-vh-100">
+  <div class="row justify-content-center align-items-center g-2">
+    <div class="col-md-12 fs-5 mt-4 mb-2 notify-text fw-bold      ">
+      <h1>Trình Xem Sách Điện Tử</h1>
+    </div>
+  </div>
+
+
+  <!-- Biểu Mẫu Tải Lên Tệp -->
+  <form id="uploadForm">
+    <label for="file">Chọn tệp sách điện tử để tải lên:</label>
+    <input type="file" id="file" name="file" accept=".pdf,.epub">
+    <input type="button" value="Tải lên Sách Điện Tử" onclick="uploadFile()">
+  </form>
+
+  <!-- Thông Báo Lỗi -->
+  <div id="error"></div>
+
+  <div class="row mt-3 mb-3 justify-content-center align-items-center g-2">
+    <div class="bookRender">
+      <!-- Trình Xem PDF -->
+      <div id="pdfViewer" style="height: 75vh;">
+        <object id="pdfObject" type="application/pdf" width="100%" height="100%">
+          <p>Không thể hiển thị tệp PDF. <a id="pdfLink" href="" target="_blank">Tải xuống</a> thay thế.</p>
+        </object>
+      </div>
+
+      <!-- Trình Xem EPUB -->
+      <div id="epubViewer" style="height: auto;">
+        <div class="row h-100" id="container">
+          <div class="col-3">
+            <div class="card text-start h-100">
+              <div class="card-body">
+                <h4 class="card-title">Mục lục</h4>
+                <p class="card-text">
+                <div id="toc"></div>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-9">
+            <div class="card text-start h-100">
+              <div class="card-body">
+                <h4 class="card-title">Nội dung</h4>
+                <div class="col-8 w-100 h-100" id="viewerContainer">
+                  <iframe id="viewer" style="width: 100%; height: 100%;"></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
