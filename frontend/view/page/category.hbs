@@ -4,27 +4,19 @@
             <i class="fa-solid fa-flag pe-1"></i>
             Truyện thể loại: 
             <span class="ms-2 flex-grow-1">{{categoryName}}</span> 
-            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn:
-                {{#each serverArr}}
-                {{#ifEqual ../serverIndex index}}
-                {{name}}
-                {{/ifEqual}}
-                {{else}}
-                n/a
-                {{/each}}
-                ]
-            </span>
+            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn: {{#if
+                curServer}}{{curServer.name}}{{else}}n/a{{/if}}]</span>
         </div>
     </div>
 
-    {{> storiesList server=serverIndex }}
+    {{> storiesList server=curServer.id }}
 
     <div class="row mt-3 mb-4">
         <ul class="pagination d-flex align-items-center justify-content-center">
             <li></li>
             {{#ifNotEqual curPage 1}}
             <li class="page-item mx-2"><a class="page-link"
-                    href="/category/{{categoryName}}?id={{encodeUrl categoryId}}&page=1"><i
+                    href="/category/{{categoryName}}?id={{encodeUrl categoryId}}"><i
                         class="fa-solid fa-backward-step"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
                     href="/category/{{categoryName}}?id={{encodeUrl categoryId}}&page={{plus curPage -1}}"><i
@@ -50,3 +42,6 @@
         </ul>
     </div>
 </div>
+<script>
+    let unchangedServerId = "{{ curServer.id }}";
+</script>

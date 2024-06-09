@@ -1,5 +1,4 @@
-const { ErrorDisplay } = require('../middleware/error');
-const { BE_HOST, HOST, PORT } = require('../global/env');
+const { HOST, PORT } = require('../global/env');
 
 const view = 'history';
 const render = {
@@ -10,15 +9,22 @@ const render = {
     footer: 'footer',
     host: `https://${HOST}:${PORT}`,
 };
-const perPage = 24;
 
 module.exports = {
     render(req, res, next) {
-        const data = req.session.history;
-
-        render.stories = data;
-
-        render.serverIndex = req.session.serverIndex;
+        const sortedServerIds = req.session.sortedServerIds;
+        let history = req.session.history;
+        
+        const entries = Object.entries(history);
+        const filteredEntries = entries.filter(([key, value]) => {
+            const storyServer = (key.split('-server-'))[1];
+            return sortedServerIds.includes(storyServer);
+        });
+        history  = Object.fromEntries(filteredEntries);
+        req.session.history = history;
+        
+        render.stories = history;
+        render.sortedServerIds = sortedServerIds;
         render.isDark = req.session.isDark;
         render.title = `Lịch sử | StoryLand`;
 
@@ -28,7 +34,6 @@ module.exports = {
         const storyId = decodeURIComponent(req.body.storyId);
         const storyServer = req.body.storyServer;
         delete req.session.history[`${storyId}-server-${storyServer}`];
-        
-        return res.json({isSuccess: true});
+        res.end();
     },
 };

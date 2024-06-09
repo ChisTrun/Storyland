@@ -4,49 +4,47 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
-                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}/s{{storyServer}}">{{storyName}}</a>
+                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}/s{{curServerId}}">{{storyName}}</a>
                 </li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
-                <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
+                <li class="breadcrumb-item" aria-current="page">Chương {{plus chapterIndex 1}}</li>
             </ol>
         </nav>
     </div>
     <div class="row">
         <div class="text-center">
-            <a href="/story/{{encodeUrl storyId}}/s{{storyServer}}" class="chapter-title fw-bold fs-3">{{toLoud
+            <a href="/story/{{encodeUrl storyId}}/s{{curServerId}}" class="chapter-title fw-bold fs-3">{{toLoud
                 storyName}}</a>
         </div>
-        <div class="text-center mt-1">
-            <div>{{chapterName}}</div>
+        <div class="text-center mt-1" id="chapter-title">
+            <img src="/assets/loading.gif" class="load-img" />
         </div>
         <div class="d-flex align-items-center justify-content-center mt-3">
-            <select class="form-select" id="source-menu" aria-label="Default select example"
-                onchange="getContent($(this).val())">
-                {{#each serverArr}}
-                {{#ifEqual index ../storyServer}}
-                <option value="{{index}}" selected>{{name}}
-                </option>
-                {{/ifEqual}}
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                {{#each chapterContents}}
+                <input type="radio" class="btn-check" {{#unless chapterContent}}disabled{{/unless}} name="serverRadio"
+                    id="btnradio{{serverId}}" value="{{serverId}}" autocomplete="off"
+                    onchange="loadContent(this.value)">
+                <label class="btn btn-success server-chapter-btn" for="btnradio{{serverId}}">{{serverName}}</label>
                 {{/each}}
-            </select>
+            </div>
         </div>
         <div class="d-flex align-items-center justify-content-center mt-4">
             <a type="button"
-                class="text-center next-pre-button pre-chapter-btn {{#isDefined chapterPrevIndex}}{{else}}d-none{{/isDefined}}"
-                href="/story/{{encodeUrl storyId}}/s{{storyServer}}/chapter/{{chapterPrevIndex}}">
+                class="text-center next-pre-button pre-chapter-btn {{#ifEqual chapterIndex 0}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/s{{curServerId}}/chapter/{{plus chapterIndex -1}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </a>
             <a type="button"
-                class="text-center next-pre-button next-chapter-btn {{#isDefined chapterNextIndex}}{{else}}d-none{{/isDefined}}"
-                href="/story/{{encodeUrl storyId}}/s{{storyServer}}/chapter/{{chapterNextIndex}}">
+                class="text-center next-pre-button next-chapter-btn {{#ifEqual chapterIndex (plus chapterCount -1)}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/s{{curServerId}}/chapter/{{plus chapterIndex 1}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </a>
         </div>
     </div>
 </div>
-
 <div class="container mt-3">
     <div class="row">
         <div class="col-lg-1 col-md-2 col-sm-3 p-relative">
@@ -58,18 +56,24 @@
                 <i class="fa-solid fa-font fs-5"></i>
             </button>
             <div id="chapters-list-panel" style="display: none">
-                <img src="/assets/loading.gif" class="load-img m-auto text-center" />
+                {{#loop 1 chapterCount}}
+                <a class="chapter-item truncate text-center {{#ifEqual this (plus ../chapterIndex 1)}}active-chapter{{/ifEqual}}"
+                    id="chapter-index-{{plus this -1}}"
+                    href="/story/{{encodeUrl ../storyId}}/s{{../curServerId}}/chapter/{{plus this -1}}">Chương
+                    {{this}}</a>
+                {{/loop}}
             </div>
             <div id="text-format-panel" style="display: none">
                 <div class="button-container">
                     <span class="text-container">Font chữ</span>
                     <div class="d-inline-block" style="width: 26rem">
                         <div class="d-flex justify-content-between">
-                            <button class="text-format-button active"
+                            <button class="text-format-button font-family-btn" data-font="Times New Roman"
                                 onclick="changeFont('Times New Roman', this)">Times</button>
-                            <button class="text-format-button" onclick="changeFont('Arial', this)">Arial</button>
-                            <button class="text-format-button" onclick="changeFont('Courier New', this)">Courier
-                                New</button>
+                            <button class="text-format-button font-family-btn" data-font="Arial"
+                                onclick="changeFont('Arial', this)">Arial</button>
+                            <button class="text-format-button font-family-btn" data-font="Courier New"
+                                onclick="changeFont('Courier New', this)">Courier New</button>
                         </div>
                     </div>
                 </div>
@@ -77,20 +81,16 @@
                     <span class="text-container">Màu chữ</span>
                     <div class="d-inline-block" style="width: 26rem">
                         <div class="d-flex justify-content-between">
-                            <button class="color-text-format-button" style="background-color: #fefefe"
+                            <button class="color-text-format-button color-btn" style="background-color: #fefefe"
                                 onclick="changeColor('#fefefe', this)"></button>
-                            <button class="color-text-format-button" style="background-color: #202020"
+                            <button class="color-text-format-button color-btn" style="background-color: #202020"
                                 onclick="changeColor('#202020', this)"></button>
-                            <button class="color-text-format-button" style="background-color: #669900"
-                                onclick="changeColor('#669900', this)"></button>
-                            <button class="color-text-format-button" style="background-color: #691770"
-                                onclick="changeColor('#691770', this)"></button>
-                            <button class="color-text-format-button" style="background-color: #b8ffb8"
-                                onclick="changeColor('#b8ffb8', this)"></button>
-                            <button class="color-text-format-button" style="background-color: #a5e8ff"
-                                onclick="changeColor('#a5e8ff', this)"></button>
-                            <button class="color-text-format-button" style="background-color: #007058"
-                                onclick="changeColor('#007058', this)"></button>
+                            <button class="color-text-format-button color-btn" style="background-color: #003366"
+                                onclick="changeColor('#003366', this)"></button>
+                            <button class="color-text-format-button color-btn" style="background-color: #800080"
+                                onclick="changeColor('#800080', this)"></button>
+                            <button class="color-text-format-button color-btn" style="background-color: #c6ffb0"
+                                onclick="changeColor('#c6ffb0', this)"></button>
                         </div>
                     </div>
                 </div>
@@ -111,20 +111,16 @@
                     <span class="text-container">Theme</span>
                     <div class="d-inline-block" style="width: 26rem">
                         <div class="d-flex justify-content-between">
-                            <button class="background-color-button" style="background-color: #202020"
+                            <button class="background-color-button bg-color-btn" style="background-color: #202020"
                                 onclick="changeBackgroundColor('#202020', this)"></button>
-                            <button class="background-color-button" style="background-color: #ffffff"
+                            <button class="background-color-button bg-color-btn" style="background-color: #ffffff"
                                 onclick="changeBackgroundColor('#ffffff', this)"></button>
-                            <button class="background-color-button" style="background-color: #4913dd"
-                                onclick="changeBackgroundColor('#4913dd', this)"></button>
-                            <button class="background-color-button" style="background-color: peru"
-                                onclick="changeBackgroundColor('peru', this)"></button>
-                            <button class="background-color-button" style="background-color: #00ff22"
-                                onclick="changeBackgroundColor('#00ff22', this)"></button>
-                            <button class="background-color-button" style="background-color: #0280aa"
-                                onclick="changeBackgroundColor('#0280aa', this)"></button>
-                            <button class="background-color-button" style="background-color: #ffb9c5"
-                                onclick="changeBackgroundColor('#ffb9c5', this)"></button>
+                            <button class="background-color-button bg-color-btn" style="background-color: #99ccff"
+                                onclick="changeBackgroundColor('#99ccff', this)"></button>
+                            <button class="background-color-button bg-color-btn" style="background-color: #e6e6fa"
+                                onclick="changeBackgroundColor('#e6e6fa', this)"></button>
+                            <button class="background-color-button bg-color-btn" style="background-color: #003f00"
+                                onclick="changeBackgroundColor('#003f00', this)"></button>
                         </div>
                     </div>
                 </div>
@@ -145,7 +141,7 @@
         </div>
         <div class="col-lg-10 col-md-8 col-sm-6 main-container rounded">
             <div class="px-5 py-5 reading-font">
-                {{{ chapterContent }}}
+                <img src="/assets/loading.gif" class="load-img" />
             </div>
         </div>
         <div class="col-lg-1 col-md-2 col-sm-3 d-flex justify-content-end">
@@ -155,19 +151,18 @@
         </div>
     </div>
 </div>
-
 <div class="container rounded main-container my-4 px-4">
     <div class="row">
         <div class="d-flex align-items-center justify-content-center my-4">
             <a type="button"
-                class="text-center next-pre-button pre-chapter-btn {{#isDefined chapterPrevIndex}}{{else}}d-none{{/isDefined}}"
-                href="/story/{{encodeUrl storyId}}/s{{storyServer}}/chapter/{{chapterPrevIndex}}">
+                class="text-center next-pre-button pre-chapter-btn {{#ifEqual chapterIndex 0}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/s{{curServerId}}/chapter/{{plus chapterIndex -1}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </a>
             <a type="button"
-                class="text-center next-pre-button next-chapter-btn {{#isDefined chapterNextIndex}}{{else}}d-none{{/isDefined}}"
-                href="/story/{{encodeUrl storyId}}/s{{storyServer}}/chapter/{{chapterNextIndex}}">
+                class="text-center next-pre-button next-chapter-btn {{#ifEqual chapterIndex (plus chapterCount -1)}}d-none{{/ifEqual}}"
+                href="/story/{{encodeUrl storyId}}/s{{curServerId}}/chapter/{{plus chapterIndex 1}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </a>
@@ -178,19 +173,16 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
-                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}/s{{storyServer}}">{{storyName}}</a>
+                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}/s{{curServerId}}">{{storyName}}</a>
                 </li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
-                <li class="breadcrumb-item" aria-current="page">{{chapterName}}</li>
+                <li class="breadcrumb-item" aria-current="page">Chương {{plus chapterIndex 1}}</li>
             </ol>
         </nav>
     </div>
 </div>
 
 <script>
-    const chapterIndex = "{{ chapterIndex }}";
-    const storyId = "{{ storyId }}";
-    const storyServer = "{{ storyServer }}";
-    const serverArr = {{{json serverArr}}};
-    let contents = {};
+    let unchangedServerId = "{{ curServerId }}"
+    let chapterContents = {{{ json chapterContents }}};
 </script>

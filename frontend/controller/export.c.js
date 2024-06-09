@@ -1,4 +1,3 @@
-const { ErrorDisplay } = require('../middleware/error');
 const { BE_HOST } = require('../global/env');
 
 module.exports = {
@@ -7,13 +6,12 @@ module.exports = {
             const storyServer = req.body.storyServer;
             const storyId = decodeURIComponent(req.body.storyId);
             const type = req.body.type;
-
-            const backendUrl = `${BE_HOST}/api/export/${storyServer}/${type}/${encodeURIComponent(storyId)}`;
-            return res.send(backendUrl);
+            const exportUrl = `${BE_HOST}/api/export/${storyServer}/${type}/${encodeURIComponent(storyId)}`;
+            res.json({ url: exportUrl });
         }
         catch (error) {
             console.error(error.message);
-            return res.send("");
+            res.status(500).send(error.message);
         }
     },
     async getTypes(req, res, next) {
@@ -24,11 +22,11 @@ module.exports = {
                 throw Error(errorMessage);
             }
             const resBody = await response.json();
-            return res.json(resBody);
+            res.json(resBody);
         }
         catch (error) {
             console.error(error.message);
-            return res.json([]);
+            res.json([]);
         }
     },
 };

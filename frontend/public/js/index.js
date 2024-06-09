@@ -2,49 +2,49 @@ const directTo = (url) => {
     location.href = url;
 };
 
-const getServer = async () => {
-    if (!$('#staticBackdrop').is(':visible')) {
-        rsp = await fetch(`${host}/extension/server`)
-        data = await rsp.json()
-        let modal = $('.server-modal')
-        modal.empty()
-        data.forEach((server, index) => {
-            modal.append(`
-            <div class="form-check server-modal py-1">
-                <input class="form-check-input" ${index == serverIndex ? "checked" : ""} type="radio" name="flexRadioDefault" value="${server.index}" id="flexRadioDefault${server.index}">
-                <label class="form-check-label" for="flexRadioDefault${server.index}">
-                    ${server.name}
-                </label>
-            </div>
-            `)
+const handleError = async (errorMsg) => {
+    try {
+        await fetch('/errorHandler', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                error: errorMsg
+            })
         });
-    }
-};
-setInterval(getServer, 100);
 
-$('#save-btn').click(async () => {
-    await fetch(`${host}/extension/server/set`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify({
-            index: parseInt($('input[name="flexRadioDefault"]:checked').val()),
-        })
-    })
-    if (window.location.href.includes('page=')) {
-        const href = window.location.href;
-        const newHref = href.replace(/([&?]page=\d+)/, (match, text) => {
-            return text.startsWith('?') ? '?' : '';
-        }).replace(/&{2,}/g, '&')
-            .replace(/(\?&)|(&$)/, '');
-        location.href = newHref;
+        window.location.href = '/home';
+    } catch (error) {
+        console.error('Failed to report error to server:', error);
     }
-    else {
-        location.reload();
+}
+
+const areEqualArr = (array1, array2) => {
+    if (array1.length !== array2.length) {
+        return false;
     }
-});
+    const sortedArray1 = array1.slice().sort();
+    const sortedArray2 = array2.slice().sort();
+    for (let i = 0; i < sortedArray1.length; i++) {
+        if (sortedArray1[i] !== sortedArray2[i]) {
+            return false;
+        }
+    }
+    return true;
+};
+
+const getNewServerIds = (oldServerIds, newServerIds) => {
+    const sortedOldIdsInNewIds = oldServerIds.filter(id => newServerIds.includes(id));
+    const newIdsNotInOldIds = newServerIds.filter(id => !oldServerIds.includes(id));
+    return [...sortedOldIdsInNewIds, ...newIdsNotInOldIds];
+};
+
+const updateOrder = () => {
+    $('#sortable .ui-state-default').each(function (index) {
+        $(this).find('.source-index').html(`<span class='text-muted'>#${index + 1}&nbsp&nbsp</span>`);
+    });
+};
 
 const getCategory = async () => {
     const dropdownList = $('.dropdown-list');
@@ -61,11 +61,95 @@ const getCategory = async () => {
         },
         error: function (xhr, status, error) {
             dropdownList.empty();
-            console.log('Error get categories: ', error);
+            console.log('Error getting categories: ', error);
         }
     });
 };
-getCategory();
+
+const getServer = async () => {
+    if (!$('#staticBackdrop').is(':visible')) {
+        const response = await fetch(`${host}/extension/server`);
+        const resBody = await response.json();
+        const newServerIds = resBody.map(server => server.id);
+        if (!areEqualArr(newServerIds, sortedServerIds)) {
+            getCategory();
+            sortedServerIds = getNewServerIds(sortedServerIds, newServerIds);
+            await fetch(`${host}/extension/server/set`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    sortedServerIds: sortedServerIds,
+                })
+            });
+            if (unchangedServerId != undefined && unchangedServerId != null && !sortedServerIds.includes(unchangedServerId)) {
+                handleError('Server không còn khả dụng!');
+            }
+        }
+        const modal = $('.server-modal');
+        modal.empty();
+        sortedServerIds.map(serverId => {
+            const serverName = resBody.find(server => server.id === serverId).name;
+            modal.append(`
+            <div class="ui-state-default d-flex" data-id=${serverId}>
+                <span class="source-index"></span>
+                <span>${serverName}</span>
+                <span class="flex-grow-1"></span>
+                <span class="grab-label">
+                    <i class="fa-solid fa-grip-lines pe-2"></i>
+                    <span></span>
+                </span>
+            </div>
+            `);
+        });
+        updateOrder();
+    }
+};
+
+$('#sort-close-btn').on('click', () => {
+    getServer();
+});
+
+$('#sort-cancel-btn').on('click', () => {
+    getServer();
+});
+
+$(() => {
+    $("#sortable").sortable({
+        placeholder: "ui-state-highlight",
+        update: function (event, ui) {
+            updateOrder();
+        }
+    });
+    $("#sortable").disableSelection();
+});
+
+$('#save-btn').click(async () => {
+    const newSortedServerIds = [];
+    $('#sortable .ui-state-default').each(function () {
+        const serverId = $(this).data('id');
+        newSortedServerIds.push(serverId);
+    });
+    await fetch(`${host}/extension/server/set`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+            sortedServerIds: newSortedServerIds,
+        })
+    });
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    if (params.has('page')) {
+        params.delete('page');
+        url.search = params.toString();
+    }
+    location.href = url.toString();
+});
 
 const toggleCtgDropdown = () => {
     $('.category-dropdown').children('i').toggleClass('fa-rotate-270');
@@ -113,3 +197,15 @@ $('body').on('click', function (event) {
         toggleCtgDropdown();
     }
 })
+
+$(document).ready(function () {
+    const errorToast = $('#error-toast');
+    if (errorToast.length) {
+        const toast = new bootstrap.Toast(errorToast[0]);
+        toast.show();
+    }
+});
+
+getServer();
+setInterval(getServer, 3000);
+getCategory();

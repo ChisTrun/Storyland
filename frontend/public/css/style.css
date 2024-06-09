@@ -148,9 +148,10 @@ footer .web-logo {
   background-color: var(--senary-color);
 }
 
-.start-chapter-btn:hover,
-.start-chapter-btn:active {
-  opacity: 70%;
+.latest-chapter-btn  {
+  display: inline-block;
+  color: white;
+  background-color: var(--quaternary-color);
 }
 
 .con-chapter-btn {
@@ -159,6 +160,10 @@ footer .web-logo {
   background-color: var(--septenary-color);
 }
 
+.start-chapter-btn:hover,
+.start-chapter-btn:active,
+.latest-chapter-btn:hover,
+.latest-chapter-btn:active,
 .con-chapter-btn:hover,
 .con-chapter-btn:active {
   opacity: 70%;
@@ -235,7 +240,7 @@ footer .web-logo {
   border-top: 1px solid var(--text-color);
   border-bottom: 1px solid var(--text-color);
   width: 100%;
-  z-index: 1;
+  z-index: 99;
 }
 
 .dropdown-list {
@@ -370,8 +375,8 @@ footer .web-logo {
 
 #chapters-container > a:hover,
 #chapters-container > a:active {
-  transition: 0.1s ease!important;
-  color: var(--octonary-color)!important;
+  transition: 0.1s ease !important;
+  color: var(--octonary-color) !important;
 }
 
 #chapters-container > a:visited {
@@ -503,7 +508,7 @@ footer .web-logo {
 }
 
 .active {
-  border: 2px solid var(--octonary-color);
+  border: 3px solid var(--octonary-color);
   color: var(--octonary-color);
 }
 
@@ -548,7 +553,7 @@ footer .web-logo {
 .chapter-item {
   display: block;
   border: 1px solid var(--nonary-color);
-  width: 13rem;
+  width: 12rem;
   text-align: left;
   padding: 0.2rem 0.7rem;
   margin: 0.6rem;
@@ -579,7 +584,7 @@ footer .web-logo {
 .history-delete-btn:hover,
 .history-delete-btn:active {
   border: none;
-  color: red!important;
+  color: red !important;
 }
 
 .ebook-info > img {
@@ -591,6 +596,82 @@ footer .web-logo {
 
 .ebook-info > div {
   width: 80%;
+}
+
+.grab-label {
+  background-color: none;
+  border: 1px solid grey;
+  border-radius: 0.1rem;
+  padding: 0 0.8rem;
+  font-size: 1.1rem;
+}
+
+#sortable {
+  list-style-type: none;
+  margin: 1.2rem 0;
+  width: 100%;
+  min-height: 30vh;
+}
+
+#sortable div {
+  background-color: #f1f1f1;
+  border: 1px solid grey;
+  width: 85%;
+  margin: 0.9rem 2.1rem;
+  padding: 0.4em;
+  font-size: 1.2em;
+}
+
+#sortable div:active {
+  border-color: #000000;
+  background: #fefefe;
+  box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+}
+
+#sortable div:active .grab-label {
+  background-color: #0f80a5;
+  color: white;
+}
+
+#sortable div .grab-label span::before {
+  content: "Kéo thả";
+}
+
+#sortable div:active .grab-label span::before {
+  content: "Đang kéo";
+}
+
+.ui-state-highlight {
+  background-color: #eeeeee !important;
+  height: 2.9rem;
+  line-height: 2.9rem;
+  border: 1px dotted grey !important;
+  opacity: 50%;
+}
+
+.server-chapter-btn {
+  width: 9.5rem;
+  border-color: var(--text-color)!important;
+  background-color: #0f75ac;
+  color: white;
+} 
+
+#error-toast {
+  font-size: 1.05rem;
+  font-weight: 500;
+  width: fit-content;
+  color: red;
+  border: 2px solid red!important;
+  background-color: white;
+}
+
+.btn-close.btn-close-red {
+  filter: invert(28%) sepia(90%) saturate(5368%) hue-rotate(356deg) brightness(99%) contrast(104%);
+  opacity: 1;
+}
+
+.btn-close.btn-close-red:hover {
+  filter: invert(28%) sepia(90%) saturate(5368%) hue-rotate(356deg) brightness(99%) contrast(104%);
 }
 
 @media only screen and (max-width: 768px) {

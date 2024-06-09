@@ -11,8 +11,8 @@ const { router: storyRouter } = require('./story.r');
 const { router: searchRouter } = require('./search.r');
 const { router: authorRouter } = require('./author.r');
 const { router: categoryRouter } = require('./category.r');
-const { router: historyRouter } = require('./history.r');
 const { router: extensionRouter } = require('./extension.r');
+const { router: historyRouter } = require('./history.r');
 const { router: exportRouter } = require('./export.r');
 
 router.use("/", startRouter);

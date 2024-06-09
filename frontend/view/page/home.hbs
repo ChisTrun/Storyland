@@ -1,7 +1,23 @@
+<div id="toast-container" class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11;">
+    {{#if errorMessage}}
+    <div id="error-toast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true"
+        data-bs-autohide="true" data-bs-delay="4500">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fa-solid fa-circle-exclamation me-1"></i>
+                {{errorMessage}}
+            </div>
+            <button type="button" class="ms-3 btn-close btn-close-red me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+    {{/if}}
+</div>
+
 <div class="container-fluid d-flex justify-content-center align-items-center" id="home-bg">
     <form class="d-flex p-relative w-50" id="home-search-bar" action="/search" method="GET">
         <input class="form-control ps-4 me-3 rounded-pill" placeholder="Nhập từ khóa để tìm kiếm" aria-label="Search"
-            name="keyword" required/>
+            name="keyword" required />
         <button type="submit" class="btn btn-link text-dark p-absolute top-50 end-0 translate-middle p-1">
             <i class="fas fa-search pe-2"></i>
         </button>
