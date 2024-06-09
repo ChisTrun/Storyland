@@ -10,6 +10,13 @@ namespace backend.DLLScanner.Utilis
         public PluginLoadContext(string pluginPath)
         {
             _resolver = new AssemblyDependencyResolver(pluginPath);
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+        }
+
+        private Assembly? CurrentDomain_AssemblyResolve(object? sender, ResolveEventArgs args)
+        {
+            var assembly = ((AppDomain)sender).GetAssemblies().FirstOrDefault(x => x.FullName == args.Name);
+            return assembly;
         }
 
         protected override Assembly Load(AssemblyName assemblyName)

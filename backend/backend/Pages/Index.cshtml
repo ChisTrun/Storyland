@@ -1,0 +1,36 @@
+﻿@page
+@model backend.Pages.IndexModel
+<h2>Manage Plugins</h2>
+
+<select id="pluginSelect">
+    @foreach (var pluginID in Model.StoryPlugin.Keys)
+    {
+        <option value="@pluginID">@Model.StoryPlugin[pluginID].Name</option>
+    }
+</select>
+<button onclick="deletePlugin()">Delete Plugin</button>
+
+<form enctype="multipart/form-data" method="post" action="/api/server/upload">
+    <input type="file" name="file" />
+    <button type="submit">Upload Plugin</button>
+</form>
+
+<script>
+    function deletePlugin() {
+        var pluginName = document.getElementById("pluginSelect").value;
+        fetch('/api/server/delete', {
+            method: 'POST',
+            body: JSON.stringify(pluginName ),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                alert('Plugin deleted');
+                location.reload();
+            } else {
+                alert('Error deleting plugin');
+            }
+        });
+    }
+</script>

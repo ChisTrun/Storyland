@@ -6,5 +6,6 @@ namespace backend.DLLScanner.Contract
     {
         public Dictionary<string, T> Commands { get; }
         public void StartScanThread();
+        public string PluginsFolder { get; }
     }
 }

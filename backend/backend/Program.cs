@@ -17,6 +17,9 @@ namespace backend
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
+            builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
@@ -39,6 +42,8 @@ namespace backend
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MapRazorPages();
 
             app.Run();
         }

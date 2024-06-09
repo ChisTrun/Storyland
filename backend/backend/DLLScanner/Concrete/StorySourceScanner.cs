@@ -10,7 +10,7 @@ namespace backend.DLLScanner.Concrete
         private readonly string _exePath;
         private readonly string _folder;
         private FileInfo[] _pluginPaths;
-        private string _pluginsFolder = "./plugins/storySource/";
+        public string PluginsFolder => "./plugins/storySource/";
 
         private readonly object _commandsLock = new();
         public Dictionary<string, ICrawler> Commands { get; private set; }
@@ -20,6 +20,7 @@ namespace backend.DLLScanner.Concrete
 
         private static readonly Lazy<StorySourceScanner> _lazy = new(() => new StorySourceScanner());
         public static StorySourceScanner Instance => _lazy.Value;
+
 
         private StorySourceScanner()
         {
@@ -42,11 +43,11 @@ namespace backend.DLLScanner.Concrete
         {
             while (true)
             {
-                if (!Directory.Exists(_pluginsFolder))
+                if (!Directory.Exists(PluginsFolder))
                 {
-                    Directory.CreateDirectory(_pluginsFolder);
+                    Directory.CreateDirectory(PluginsFolder);
                 }
-                var scanAgain = new DirectoryInfo(_folder).GetFiles($"{_pluginsFolder}*.dll");
+                var scanAgain = new DirectoryInfo(_folder).GetFiles($"{PluginsFolder}*.dll");
                 var newPlugins = scanAgain.Where(x => !_pluginPaths.Any(p => p.FullName == x.FullName)).ToArray();
                 if (newPlugins.Length != 0)
                 {
@@ -81,6 +82,9 @@ namespace backend.DLLScanner.Concrete
                         yield return result;
                     }
                 }
+            }
+            if (count == 0)
+            {
             }
         }
     }
