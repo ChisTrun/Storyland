@@ -38,8 +38,8 @@ const getExportType = async () => {
         resBody.forEach((type, index) => {
             container.append(`
             <div class="form-check mt-1">
-                <input class="form-check-input" ${index == 0 ? "checked" : ""}  type="radio" name="ebookRadioDefault" value="${type.index}" id="ebookRadioDefault${type.index}">
-                <label class="form-check-label" for="ebookRadioDefault${type.index}">Định dạng ${type.name}</label>
+                <input class="form-check-input" ${index == 0 ? "checked" : ""}  type="radio" name="ebookRadioDefault" value="${type.id}" id="ebookRadioDefault${type.id}">
+                <label class="form-check-label" for="ebookRadioDefault${type.id}">Định dạng ${type.name}</label>
             </div>
             `)
         });
