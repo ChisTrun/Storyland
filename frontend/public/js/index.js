@@ -72,7 +72,6 @@ const getServer = async () => {
         const resBody = await response.json();
         const newServerIds = resBody.map(server => server.id);
         if (!areEqualArr(newServerIds, sortedServerIds)) {
-            getCategory();
             sortedServerIds = getNewServerIds(sortedServerIds, newServerIds);
             await fetch(`${host}/extension/server/set`, {
                 method: "POST",
@@ -84,6 +83,7 @@ const getServer = async () => {
                     sortedServerIds: sortedServerIds,
                 })
             });
+            getCategory();
             if (unchangedServerId != undefined && unchangedServerId != null && !sortedServerIds.includes(unchangedServerId)) {
                 handleError('Server không còn khả dụng!');
             }
@@ -207,5 +207,5 @@ $(document).ready(function () {
 });
 
 getServer();
-setInterval(getServer, 3000);
 getCategory();
+setInterval(getServer, 3000);
