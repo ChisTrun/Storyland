@@ -1,7 +1,8 @@
-﻿using PluginBase.Contract;
+﻿using backend.Domain.Contract;
+using plugin.tests.Crawler;
 using TrumTruyenHtmlCrawler;
 
-namespace plugin.tests.Crawler.ConcreteTest;
+namespace PluginBase.Tests.Crawler.ConcreteTest;
 
 public class TrumTruyenCrawlerTest : CrawlerTestBase
 {

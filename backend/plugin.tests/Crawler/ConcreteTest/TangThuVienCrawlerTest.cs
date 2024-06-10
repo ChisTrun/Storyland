@@ -1,7 +1,8 @@
-﻿using PluginBase.Contract;
+﻿using backend.Domain.Contract;
+using plugin.tests.Crawler;
 using TangThuVien;
 
-namespace plugin.tests.Crawler.ConcreteTest;
+namespace PluginBase.Tests.Crawler.ConcreteTest;
 
 public class TangThuVienCrawlerTest : CrawlerTestBase
 {

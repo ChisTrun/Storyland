@@ -10,7 +10,7 @@ public class PluginProvider : IPluginProvider
 {
     public ICrawler GetCrawlerPlugin(string id)
     {
-        if (ServerHandler.CheckServerID(id))
+        if (ServerHandler.CheckServerID(id) == false)
         {
             throw new InvalidOperationException("Invalid Plugin ID");
         }
@@ -24,7 +24,7 @@ public class PluginProvider : IPluginProvider
 
     public IExporter GetExporterPlugin(string id)
     {
-        if (ServerHandler.CheckExporterID(id))
+        if (ServerHandler.CheckExporterID(id) == false)
         {
             throw new InvalidOperationException("Invalid Plugin ID");
         }

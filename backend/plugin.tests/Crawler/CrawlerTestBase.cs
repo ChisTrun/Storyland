@@ -1,8 +1,6 @@
-using PluginBase.Contract;
-using PluginBase.Models;
-using System;
-using TangThuVien;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using backend.Domain.Contract;
+using backend.Domain.Objects;
+using backend.Domain.Primitives;
 
 namespace plugin.tests.Crawler;
 
@@ -24,12 +22,14 @@ namespace plugin.tests.Crawler;
 
 public abstract class CrawlerTestBase
 {
-    private static bool ValidRepresentative(Representative rep) => string.IsNullOrEmpty(rep.Id) == false && string.IsNullOrEmpty(rep.Name) == false;
+    private static bool ValidID(EntityBase rep) => string.IsNullOrEmpty(rep.ID) == false;
 
-    private void AssertPaging<T>(Func<int, int, PagingRepresentative<T>> getPage) where T : Representative
+    private void AssertPaging<T>(Func<int, int, PagedList<T>> getPage) where T : class
     {
+        // Arrange
         const int FIRST_PAGE = 1;
         const int LIMIT = 10;
+
         // Act
         var firstPageData = getPage(FIRST_PAGE, LIMIT);
         var lastPageCount = getPage(firstPageData.TotalPages, LIMIT).Data.Count();
@@ -66,7 +66,7 @@ public abstract class CrawlerTestBase
 
         // Act
         var list = crawler.GetCategories();
-        var isAllValidItem = list.All(ValidRepresentative);
+        var isAllValidItem = list.All(ValidID);
 
         // Assert
         Assert.True(isAllValidItem);
@@ -86,7 +86,7 @@ public abstract class CrawlerTestBase
 
         // Act
         var stories = crawler.GetStoriesOfCategory(categoryId, 1, 10);
-        var isAllValidItem = stories.Data.All(ValidRepresentative);
+        var isAllValidItem = stories.Data.All(ValidID);
 
         // Assert
         Assert.True(isAllValidItem);

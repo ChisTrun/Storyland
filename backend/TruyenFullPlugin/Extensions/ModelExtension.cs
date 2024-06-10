@@ -61,10 +61,10 @@ public static class ModelExtension
     {
         return $"{TruyenFullCommand.DomainTheLoai}{representative.ID}";
     }
-    public static string GetUrl(this Chapter representative)
-    {
-        return $"{TruyenFullCommand.Domain}{representative.Id}";
-    }
+    //public static string GetUrl(this Chapter representative)
+    //{
+    //    return $"{TruyenFullCommand.Domain}{representative.Id}";
+    //}
 
     public static string PagingType(ModelType modelType)
     {

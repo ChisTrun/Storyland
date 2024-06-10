@@ -149,7 +149,7 @@ namespace PDFExporter
         private static Document CreateDocument(string path)
         {
             FileInfo file = new FileInfo(path);
-            if (!file.Directory.Exists)
+            if (!file.Directory!.Exists)
                 file.Directory.Create();
 
             PdfWriter writer = new PdfWriter(path);
