@@ -7,7 +7,6 @@ module.exports = {
             res.json(serverArr);
         }
         catch (error) {
-            console.error(error.message);
             res.json([]);
         }
     },

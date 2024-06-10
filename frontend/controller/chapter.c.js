@@ -20,37 +20,49 @@ module.exports = {
             const storyServer = req.params.storyServer;
             const storyId = decodeURIComponent(req.params.storyId);
 
-            const response = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`);
+            const results = await Promise.allSettled([
+                fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`),
+                getServerArr(),
+                getNumChaptersInStory(storyId, sortedServerIds),
+                ...sortedServerIds.map(serverId => loadChapterContent(serverId, storyId, chapterIndex))
+            ]);
+            const [responseResult, serverArrResult, chapterCountResult, ...chapterContentsResults] = results;
+            // responseResult
+            if (responseResult.status !== 'fulfilled') {
+                throw Error(`Error fetching request: ${responseResult.hasOwnProperty("reason") ? responseResult.reason : "pending"}`);
+            }
+            const response = responseResult.value;
             if (!response.ok) {
                 const errorMessage = await response.text();
-                throw Error(errorMessage);
+                next(new ErrorDisplay("Xem nội dung chương truyện thất bại!", response.status, errorMessage));
             }
             const resBody = await response.json();
-            const serverArr = await getServerArr();
-            const chapterCount = await getNumChaptersInStory(storyId);
-
-            const tempContents = {};
-            await Promise.all(sortedServerIds.map(async serverId => {
-                try {
-                    const serverName = serverArr.find(server => server.id === serverId).name;
-                    const { name, content } = await loadChapterContent(serverId, storyId, chapterIndex);
-                    tempContents[serverId] = { 
-                        'serverId': serverId, 
-                        'serverName': serverName, 
-                        'chapterName': name, 
-                        'chapterContent': content 
-                    };
-                } catch (error) {
-                    console.error(error.message);
-                    tempContents[serverId] = { 
-                        'serverId': serverId, 
-                        'serverName': null, 
-                        'chapterName': null, 
-                        'chapterContent': null 
-                    };
+            // serverArrResult
+            const serverArr = serverArrResult.status === 'fulfilled' ? serverArrResult.value : [];
+            // chapterCountResult
+            const chapterCount = chapterCountResult.status === 'fulfilled' ? chapterCountResult.value : 0;
+            // chapterContentsResults
+            const contents = [];
+            chapterContentsResults.forEach((result, index) => {
+                const serverId = sortedServerIds[index];
+                const serverName = serverArr.find(server => server.id === serverId)?.name || null;
+                if (result.status === 'fulfilled') {
+                    const { name, content } = result.value;
+                    contents.push({
+                        'serverId': serverId,
+                        'serverName': serverName,
+                        'chapterName': name,
+                        'chapterContent': content
+                    });
+                } else {
+                    contents.push({
+                        'serverId': serverId,
+                        'serverName': serverName,
+                        'chapterName': null,
+                        'chapterContent': null
+                    });
                 }
-            }));
-            const contents = sortedServerIds.map(serverId => tempContents[serverId]);
+            });
 
             render.chapterIndex = chapterIndex;
             render.chapterCount = chapterCount;
@@ -74,7 +86,7 @@ module.exports = {
 
             return res.render(view, render, null);
         } catch (error) {
-            next(new ErrorDisplay("Xem nội dung chương truyện thất bại!", 500, error.message));
+            next(new ErrorDisplay("Xem nội dung chương truyện thất bại!", 503, error.message));
         }
     }
 };

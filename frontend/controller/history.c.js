@@ -14,15 +14,15 @@ module.exports = {
     render(req, res, next) {
         const sortedServerIds = req.session.sortedServerIds;
         let history = req.session.history;
-        
+
         const entries = Object.entries(history);
         const filteredEntries = entries.filter(([key, value]) => {
             const storyServer = (key.split('-server-'))[1];
             return sortedServerIds.includes(storyServer);
         });
-        history  = Object.fromEntries(filteredEntries);
+        history = Object.fromEntries(filteredEntries);
         req.session.history = history;
-        
+
         render.stories = history;
         render.sortedServerIds = sortedServerIds;
         render.isDark = req.session.isDark;

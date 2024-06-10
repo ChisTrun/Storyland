@@ -21,17 +21,25 @@ module.exports = {
             const categoryId = decodeURIComponent(req.query.id);
             const curPage = parseInt(req.query.page) || 1;
 
-            const response = await fetch(`${BE_HOST}/api/category/${sortedServerIds[0]}/${encodeURIComponent(categoryId)}?page=${curPage}&limit=${perPage}`);
+            const url = `${BE_HOST}/api/search/${sortedServerIds[0]}/${encodeURIComponent(categoryId)}?page=${curPage}&limit=${perPage}`;
+            const [responseResult, serverArrResult] = await Promise.allSettled([
+                fetch(url),
+                getServerArr()
+            ]);
             let resBody = {};
-            if (!response.ok) {
+            if (responseResult.status === 'fulfilled' && responseResult.value.ok) {
+                resBody = await responseResult.value.json();
+            }
+            else if (responseResult.status === 'fulfilled' && !responseResult.value.ok) {
                 resBody.data = [];
-                const errorMessage = await response.text();
-                console.error(`${response.status}: ${errorMessage}`);
+                const errorMessage = await responseResult.value.text();
+                console.error(`Error fetching api to get stories of the category ${categoryId}: ${responseResult.value.status} - ${errorMessage}`);
             }
             else {
-                resBody = await response.json();
+                resBody.data = [];
+                console.error(`Error fetching request: ${responseResult.hasOwnProperty("reason") ? responseResult.reason : "pending"}`);
             }
-            const serverArr = await getServerArr();
+            const serverArr = serverArrResult.status === 'fulfilled' ? serverArrResult.value : [];
             const totalPages = resBody.totalPages && resBody.totalPages > 0 ? resBody.totalPages : 1;
 
             render.stories = resBody.data;
@@ -48,7 +56,7 @@ module.exports = {
             return res.render(view, render, null);
         }
         catch (error) {
-            next(new ErrorDisplay("Tìm kiếm thể loại thất bại!", 500, error.message));
+            next(new ErrorDisplay("Tìm kiếm thể loại thất bại!", 503, error.message));
         }
     },
     async getAll(req, res, next) {
@@ -56,14 +64,12 @@ module.exports = {
             const sortedServerIds = req.session.sortedServerIds;
             const response = await fetch(`${BE_HOST}/api/category/${sortedServerIds[0]}`);
             if (!response.ok) {
-                const errorMessage = await response.text();
-                throw Error(errorMessage);
+                throw Error();
             }
             const resBody = await response.json();
             res.json(resBody);
         }
         catch (error) {
-            console.error(error.message);
             res.json([]);
         }
     },

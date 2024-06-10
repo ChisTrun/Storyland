@@ -19,20 +19,33 @@ module.exports = {
             const storyServer = req.params.storyServer;
             const storyId = decodeURIComponent(req.params.storyId);
 
-            const response = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`);
+            const results = await Promise.allSettled([
+                fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`),
+                getServerArr(),
+                getNumChaptersInStory(storyId, sortedServerIds),
+            ]);
+            const [responseResult, serverArrResult, chapterCountResult] = results;
+            // responseResult
+            if (responseResult.status !== 'fulfilled') {
+                throw Error(`Error fetching request: ${responseResult.hasOwnProperty("reason") ? responseResult.reason : "pending"}`);
+            }
+            const response = responseResult.value;
             if (!response.ok) {
                 const errorMessage = await response.text();
-                throw Error(errorMessage);
+                next(new ErrorDisplay("Xem thông tin truyện thất bại!", response.status, errorMessage));
             }
             const resBody = await response.json();
-            const serverArr = await getServerArr();
-            const chapterCount = await getNumChaptersInStory(storyId);
+            // serverArrResult
+            const serverArr = serverArrResult.status === 'fulfilled' ? serverArrResult.value : [];
+            // chapterCountResult
+            const chapterCount = chapterCountResult.status === 'fulfilled' ? chapterCountResult.value : 0;
+
             let desc = resBody.description.replace(/\r\n\r\n/g, '<br>')
                 .replace(/\r\n/g, '<br>')
                 .replace(/\n/g, '<br>')
                 .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
             resBody.description = desc.replace(/<br>(\s*&nbsp;)*/g, '<br>');
-            
+
             Object.assign(render, {
                 ...resBody
             });
@@ -51,7 +64,7 @@ module.exports = {
             return res.render(view, render, null);
         }
         catch (error) {
-            next(new ErrorDisplay("Xem thông tin truyện thất bại!", 500, error.message));
+            next(new ErrorDisplay("Xem thông tin truyện thất bại!", 503, error.message));
         }
     }
 };

@@ -18,7 +18,6 @@ module.exports = {
             }
         }
         catch (error) {
-            console.error(error.message);
             req.session.sortedServerIds = [];
         }
         next();

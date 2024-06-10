@@ -11,21 +11,19 @@ module.exports = {
         }
         catch (error) {
             console.error(error.message);
-            res.status(500).send(error.message);
+            res.status(503).send(error.message);
         }
     },
     async getTypes(req, res, next) {
         try {
             const response = await fetch(`${BE_HOST}/api/export`);
             if (!response.ok) {
-                const errorMessage = await response.text();
-                throw Error(errorMessage);
+                throw Error();
             }
             const resBody = await response.json();
             res.json(resBody);
         }
         catch (error) {
-            console.error(error.message);
             res.json([]);
         }
     },

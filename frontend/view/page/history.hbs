@@ -14,7 +14,7 @@
                         onclick="deleteHistory('{{storyId}}','{{storyServer}}')">x</button>
                     <a class="story-card-image" href="/story/{{encodeUrl storyId}}/s{{storyServer}}">
                         <img {{#if storyImageUrl}} src="{{storyImageUrl}}" {{else}} src="/assets/naimage.jpg" {{/if}}
-                            alt="{{storyName}}" title="{{storyName}}" />
+                            loading="lazy" alt="{{storyName}}" title="{{storyName}}" />
                     </a>
                     <a class="story-card-name text-center mt-2 mb-1 fw-bold truncate"
                         href="/story/{{encodeUrl storyId}}/s{{storyServer}}" title="{{storyName}}">
