@@ -1,9 +1,9 @@
 ﻿using backend.Application.Commands.Concrete;
 using backend.Application.DTO;
-using backend.Application.Plugins.Abstract;
+using backend.Application.Plugins.Contract;
 using backend.Application.Queries.Concrete;
 using backend.Application.Services.Abstract;
-using backend.Domain.Mics;
+using backend.Domain.Objects;
 
 namespace backend.Application.Services.Concrete;
 

@@ -1,6 +1,8 @@
 ﻿using backend.Application.DTO;
+using backend.Application.Plugins.DLLScanner.Concrete;
 using backend.Application.Services.Abstract;
-using backend.Domain.Mics;
+using backend.Domain.Entities;
+using backend.Domain.Objects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -74,6 +76,27 @@ namespace backend.Controllers
             catch (Exception e)
             {
                 return StatusCode(500, $"Fail to get chapters list at page {page} of the story with id {storyId}: {e.Message}.");
+            }
+        }
+
+        /// <summary>
+        /// Get number of chapters of a story.
+        /// </summary>
+        /// <param name="serverId">ID of server.</param>
+        /// <param name="storyId" example="bat-lo-thanh-sac">Story's identity of each page, usally the last section of URL.</param>
+        /// <returns></returns>
+        [ProducesResponseType(typeof(int), 200)]
+        [HttpGet]
+        [Route("{serverId}/{storyId}/chapters/count")]
+        public IActionResult CountAllChaptersOfStory(string serverId, string storyId)
+        {
+            try
+            {
+                return Ok(_crawlingService.GetChaptersCount(serverId, storyId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get chapters list of the story with id {storyId}: {e.Message}.");
             }
         }
 

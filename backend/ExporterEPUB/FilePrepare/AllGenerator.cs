@@ -1,8 +1,7 @@
-﻿using ExporterEPUB.Helpers;
+﻿using backend.Domain.Entities;
+using ExporterEPUB.Helpers;
 using ExporterEPUB.Model;
 using ExporterEPUB.XHTMLBuilder;
-using PluginBase.Models;
-using System.Runtime.InteropServices;
 
 namespace ExporterEPUB.FilePrepare;
 

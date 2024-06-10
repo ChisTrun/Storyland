@@ -1,5 +1,5 @@
 ﻿using backend.Application.DTO;
-using backend.Domain.Mics;
+using backend.Domain.Objects;
 
 namespace backend.Application.Services.Abstract;
 
@@ -19,4 +19,5 @@ public interface ICrawlingService
     List<ChapterDTO> GetChaptersOfStory(string serverId, string storyId);
     StoryDetailDTO GetStoryDetail(string serverId, string storyId);
     List<PluginInfo> GetServers();
+    int GetChaptersCount(string serverId, string storyId);
 }

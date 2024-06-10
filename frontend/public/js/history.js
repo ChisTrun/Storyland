@@ -1,4 +1,4 @@
-function deleteHistory(storyId, storyServer) {
+const deleteHistory = (storyId, storyServer) => {
     $.ajax({
         url: '/history/delete',
         method: 'POST',
@@ -7,12 +7,10 @@ function deleteHistory(storyId, storyServer) {
             "storyServer": storyServer
         },
         success: function (data) {
-            if (data.isSuccess) {
-                location.reload();
-            }
+            location.reload();
         },
         error: function(xhr, status, error) {
-            console.error('Error stories history: ', error);
+            console.error('Error getting stories history: ', error);
         }
     });
 };

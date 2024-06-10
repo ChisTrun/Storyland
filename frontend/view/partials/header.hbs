@@ -9,8 +9,8 @@
                                 src="/assets/logo.png" />
                         </a>
                         <a class="web-name d-block" href="/home">
-                            <pan class="web-first-word">Story</pan><!-- 
-                            --><pan class="web-last-word">LAND</pan>
+                            <pan class="web-first-word">Story</pan>
+                            <pan class="web-last-word">LAND</pan>
                         </a>
                     </div>
                 </div>
@@ -19,16 +19,16 @@
                     <a href="#">Contact</a>
                 </div>
                 <div class="col-md-3 col-sm-5 col-5 d-flex align-items-center flex-row-reverse">
-                    <button class="btn btn-outline-light fs-5 border-3 rounded-pill" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop" type="button">
+                    <button class="btn btn-outline-light fs-5 border-3 rounded-pill" id="sort-server-btn"
+                        data-bs-toggle="modal" data-bs-target="#staticBackdrop" type="button">
                         Nguồn ưu tiên
                     </button>
                 </div>
                 <div class="col-md-4 col-sm-12 col-12 d-flex align-items-center flex-row-reverse" id="header-search">
                     <div class="container p-relative">
                         <form action="/search" method="GET">
-                            <input class="form-control pe-5" placeholder="Nhập từ khóa để tìm kiếm"
-                                name="keyword" aria-label="Search" required />
+                            <input class="form-control pe-5" placeholder="Nhập từ khóa để tìm kiếm" name="keyword"
+                                aria-label="Search" required />
                             <button type="submit"
                                 class="btn btn-link text-dark fs-5 p-absolute top-50 end-0 translate-middle-y me-2">
                                 <i class="fas fa-search"></i>
@@ -39,7 +39,6 @@
             </div>
         </div>
     </div>
-
     <div class="mt-2 main-nav p-relative">
         <div class="container">
             <div class="row">
@@ -56,6 +55,9 @@
                     <li>
                         <a href="/history">Lịch sử</a>
                     </li>
+                    <li>
+                        <a href="/offline-reading">Truyện Tải</a>
+                    </li>
                     <li class="flex-grow-1"></li>
                     <li class="me-2">
                         <button type="button"
@@ -65,7 +67,6 @@
             </div>
         </div>
     </div>
-
     <div class="container-fluid p-relative">
         <div class="dropdown-content d-none">
             <div class="container my-4 px-5">
@@ -82,15 +83,16 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-color-primary">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Chọn nguồn ưu tiên</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Sắp xếp thứ tự nguồn ưu tiên</h1>
+                <button type="button" class="btn-close btn-close-white" id="sort-close-btn" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
-            <div class="modal-body px-3 py-4 text-black server-modal">
-
+            <div class="modal-body p-0 text-black server-modal" id="sortable">
             </div>
             <div class="modal-footer bg-success p-2 text-dark bg-opacity-10">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="save-btn" class="btn bg-color-primary text-light">Save Change</button>
+                <button type="button" class="btn btn-secondary" id="sort-cancel-btn"
+                    data-bs-dismiss="modal">Huỷ</button>
+                <button type="button" id="save-btn" class="btn bg-color-primary text-light">Lưu Thay Đổi</button>
             </div>
         </div>
     </div>

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const controller = require('../controller/extension.c');
 
-router.get('/server', controller.getServer);
-router.post('/server/set', controller.setServerIndex);
+router.get('/server', controller.getServerArr);
+router.post('/server/set', controller.setServerIds);
 
 module.exports = { router };

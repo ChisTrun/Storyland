@@ -1,8 +1,7 @@
-﻿using ExporterEPUB.Helpers;
-using ExporterEPUB.Model;
+﻿using backend.Domain.Entities;
+using ExporterEPUB.Helpers;
 using ExporterEPUB.XHTMLBuilder;
 using ExporterEPUB.XHTMLBuilder.Content;
-using PluginBase.Models;
 
 namespace ExporterEPUB.FilePrepare;
 
@@ -82,7 +81,7 @@ public class XHTMLContentGenerator
     private XHTMLDocument GenerateChapter(ChapterContent chapter)
     {
         var layout = GenerateLayout();
-        var intro = new ChapterXHTML(chapter.ChapterName, chapter.Content);
+        var intro = new ChapterXHTML(chapter.Name, chapter.Content);
         return intro.SetContent(layout).GetXHTML();
     }
 
@@ -94,7 +93,7 @@ public class XHTMLContentGenerator
         var chapterDocs = new List<ChapterDocument>();
         foreach (var chapter in _chapters)
         {
-            chapterDocs.Add(new ChapterDocument(GenerateChapter(chapter), chapter.ChapterName));
+            chapterDocs.Add(new ChapterDocument(GenerateChapter(chapter), chapter.Name));
         }
         return new ContentStructure(coverDoc, originDoc, introDoc, chapterDocs);
     }

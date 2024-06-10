@@ -1,8 +1,75 @@
 const content = $('.reading-font');
-let curFontSize = content.css('font-size');
-let curLineHeight = content.css('line-height');
-$('#font-size-display').html(parseFloat(curFontSize));
-$('#row-spacing-display').html(parseFloat(curLineHeight));
+let readingFont = {};
+const firstAvailContent = chapterContents.find(e => e.chapterContent != null && e.chapterContent != "");
+
+const rgbFromHex = (color) => {
+    if (!color.includes('#')) {
+        return color;
+    }
+    let r = 0, g = 0, b = 0;
+    if (color.length === 4) {
+        r = "0x" + color[1] + color[1];
+        g = "0x" + color[2] + color[2];
+        b = "0x" + color[3] + color[3];
+    } 
+    else {
+        r = "0x" + color[1] + color[2];
+        g = "0x" + color[3] + color[4];
+        b = "0x" + color[5] + color[6];
+    }
+    return `rgb(${+r}, ${+g}, ${+b})`;
+};
+
+$(() => {
+    if (localStorage.getItem('readingFont') === null) {
+        readingFont = {
+            fontFamily: "Times New Roman",
+            color: "rgb(32, 32, 32)",
+            fontSize: 28,
+            bgColor: "rgb(255, 255, 255)",
+            lineHeight: 42
+        }
+        content.css("font-family", readingFont.fontFamily);
+        content.css("color", readingFont.color);
+        content.css("font-size", `${readingFont.fontSize}px`);
+        content.parent().css("background-color", readingFont.bgColor);
+        content.css("line-height", `${readingFont.lineHeight}px`);
+        localStorage.setItem('readingFont', JSON.stringify(readingFont));
+    } else {
+        readingFont = JSON.parse(localStorage.getItem('readingFont'));      
+        content.css('font-family', readingFont.fontFamily);    
+        content.css('color', readingFont.color);
+        content.css('font-size', `${readingFont.fontSize}px`);
+        content.parent().css('background-color', readingFont.bgColor);
+        content.css('line-height', `${readingFont.lineHeight}px`);
+    }
+    $('.font-family-btn').each(function () {
+        const style = $(this).attr('data-font');
+        if (style == readingFont.fontFamily) {
+            $(this).addClass('active');
+        } else {
+            $(this).removeClass('active');
+        }
+    });
+    $('.color-btn').each(function () {
+        const style = $(this).css('background-color');
+        if (rgbFromHex(style) == rgbFromHex(readingFont.color)) {
+            $(this).addClass('active');
+        } else {
+            $(this).removeClass('active');
+        }
+    });
+    $('.bg-color-btn').each(function () {
+        const style = $(this).css('background-color');
+        if (rgbFromHex(style) == rgbFromHex(readingFont.bgColor)) {
+            $(this).addClass('active');
+        } else {
+            $(this).removeClass('active');
+        }
+    });
+    $('#font-size-display').html(readingFont.fontSize);
+    $('#row-spacing-display').html(readingFont.lineHeight); 
+});
 
 function togglePanel(id) {
     const panel = $(id);
@@ -26,38 +93,46 @@ $('body').on('click', function (event) {
 
 function changeFont(font, button) {
     $('.text-format-button').removeClass('active');
-    content.css("font-family", font);
+    readingFont.fontFamily = font;
+    localStorage.setItem('readingFont', JSON.stringify(readingFont));
+    content.css('font-family', font);
     $(button).addClass('active');
 }
 
 function changeColor(color, button) {
     $('.color-text-format-button').removeClass('active');
+    readingFont.color = color;
+    localStorage.setItem('readingFont', JSON.stringify(readingFont));
     content.css('color', color);
     $(button).addClass('active');
 }
 
 function changeFontSize(delta) {
-    curFontSize = parseFloat(curFontSize) + delta;
-    if (curFontSize < 0) {
-        curFontSize = 0;
+    readingFont.fontSize = parseFloat(readingFont.fontSize) + delta;
+    if (readingFont.fontSize < 1) {
+        readingFont.fontSize = 1;
     }
-    $("#font-size-display").text(curFontSize);
-    content.css("font-size", `${curFontSize}px`);
+    localStorage.setItem('readingFont', JSON.stringify(readingFont));
+    $("#font-size-display").text(readingFont.fontSize);
+    content.css("font-size", `${readingFont.fontSize}px`);
 }
 
 function changeBackgroundColor(color, button) {
     $('.background-color-button').removeClass('active');
+    readingFont.bgColor = color;
+    localStorage.setItem('readingFont', JSON.stringify(readingFont));
     content.parent().css('background-color', color);
     $(button).addClass('active');
 }
 
 function changeLineHeight(delta) {
-    curLineHeight = parseFloat(curLineHeight) + delta;
-    if (curLineHeight < 0) {
-        curLineHeight = 0;
+    readingFont.lineHeight = parseFloat(readingFont.lineHeight) + delta;
+    if (readingFont.lineHeight < 1) {
+        readingFont.lineHeight = 1;
     }
-    $('#row-spacing-display').text(curLineHeight);
-    content.css('line-height', `${curLineHeight}px`);
+    localStorage.setItem('readingFont', JSON.stringify(readingFont));
+    $('#row-spacing-display').text(readingFont.lineHeight);
+    content.css('line-height', `${readingFont.lineHeight}px`);
 }
 
 $(document).on("keydown", function (event) {
@@ -82,66 +157,11 @@ function setChapterPanel(chapIndex) {
     }
 }
 
-contents[`${storyServer}`] = content.html();
-
-const setSource = async (chapterServer, chapterServerName) => {
-    $('#source-menu').append(`
-    <option id="temp${chapterServer}"> Đang load...
-    </option>
-    `);
-    const sourceTemp = $(`#temp${chapterServer}`);
-    $.ajax({
-        url: `/story/${encodeURIComponent(storyId)}/${chapterIndex}/content`,
-        method: 'POST',
-        data: {
-            'chapterServer': chapterServer
-        },
-        success: function (data) {
-            sourceTemp.remove();
-            if (data.content != "") {
-                contents[`${chapterServer}`] = data.content;
-                $('#source-menu').append(`
-                <option value="${chapterServer}">${chapterServerName}
-                </option>
-                `);
-            }
-        },
-        error: function (xhr, status, error) {
-            sourceTemp.remove();
-            if (xhr.status === 400) {
-                console.log('Nguồn không khả thi:', xhr.responseText);
-            } else {
-                console.log('Nguồn không khả thi: ', status, error);
-            }
-        }
-    });
-}
-
-serverArr.map(e => {
-    if (e.index != storyServer) setSource(e.index, e.name);
-});
-
-const getContent = async (chapterServer) => {
-    content.html(contents[`${chapterServer}`]);
+const loadContent = (chapterServer) => {
+    const chapterContent = chapterContents.find(e => e.serverId == chapterServer);
+    $('#chapter-title').html(chapterContent.chapterName);
+    $(`#btnradio${chapterServer}`).prop("checked", true);
+    content.html(chapterContent.chapterContent);
 };
 
-const getChapters = async () => {
-    const container = $('#chapters-list-panel');
-    $.ajax({
-        url: `/story/${encodeURIComponent(storyId)}/s${storyServer}/chapters`,
-        method: 'GET',
-        success: function (data) {
-            container.empty();
-            data.map(e => {
-                container.append(`
-                <a class="chapter-item truncate ${e.index == chapterIndex ? `active-chapter` : ``}" id="chapter-index-${e.index}" title="${e.name}" href="/story/${encodeURIComponent(storyId)}/s${storyServer}/chapter/${e.index}">${e.name}</a>
-                `);
-            });
-        },
-        error: function (xhr, status, error) {
-            container.empty();
-            console.log('Error getting all chapters of the story: ', error);
-        }
-    });
-};
-getChapters();
+loadContent(firstAvailContent.serverId);

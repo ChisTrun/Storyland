@@ -1,6 +1,4 @@
-﻿using PluginBase.Contract;
-using PluginBase.Models;
-using iText.IO.Image;
+﻿using iText.IO.Image;
 using iText.Layout.Properties;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
@@ -9,28 +7,31 @@ using iText.Layout;
 using iText.Layout.Element;
 using iText.Kernel.Colors;
 using iText.IO.Font;
+using backend.Domain.Contract;
+using backend.Domain.Entities;
 
 namespace PDFExporter
 {
     public class PDFExport : IExporter
     {
-        private const string destDir = "../../../tmp/pdf/";
+        private const string DESTDIR = "../../../tmp/pdf/";
 
-        public string Ext { get; } = "pdf";
+        public string Name => throw new NotImplementedException();
 
+        public string Extension => "pdf";
 
         public byte[] ExportStory(StoryDetail storyDetail, List<ChapterContent> chapterContents)
         {
-            var dest = $"{destDir}story.pdf";
+            var dest = $"{DESTDIR}story.pdf";
             CreatePDFDocumentOfStory(dest, storyDetail, chapterContents);
-            byte[] bytes = System.IO.File.ReadAllBytes(dest);
+            byte[] bytes = File.ReadAllBytes(dest);
             File.Delete(dest);
             return bytes;
         }
 
         public byte[] ExportChapter(StoryDetail storyDetail, ChapterContent chapterContent)
         {
-            var dest = $"{destDir}chapter.pdf";
+            var dest = $"{DESTDIR}chapter.pdf";
             CreatePDFDocumentOfChapter(dest, storyDetail, chapterContent);
             byte[] bytes = System.IO.File.ReadAllBytes(dest);
             File.Delete(dest);
@@ -40,14 +41,14 @@ namespace PDFExporter
         {
             var document = CreateDocument(path);
             SetDefaultFont(ref document);
-            ImageData imageData = ImageDataFactory.Create(storyDetail.ImageUrl);
+            ImageData imageData = ImageDataFactory.Create(storyDetail.ImageURL);
             Image cover = new Image(imageData).SetAutoScale(true).SetHorizontalAlignment(HorizontalAlignment.CENTER);
             document.Add(cover);
             SetStoryName(storyDetail.Name, ref document);
             SetAuthor(storyDetail.Author.Name, ref document);
             SetDescription(storyDetail.Description, ref document);
             SetStatus(storyDetail.Status, ref document);
-            SetCategories(storyDetail.Categories, ref document);
+            SetCategories(storyDetail.Categories.ToArray(), ref document);
             document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
             AddChapterContent(chapterContent, ref document);
 
@@ -56,7 +57,7 @@ namespace PDFExporter
 
         private static void AddChapterContent(ChapterContent chapterContent, ref Document document)
         {
-            Paragraph chapterName = new Paragraph(chapterContent.ChapterName).SetBold().SetFontSize(18).SetDestination($"chuong{chapterContent.ChapterIndex}");
+            Paragraph chapterName = new Paragraph(chapterContent.Name).SetBold().SetFontSize(18).SetDestination($"chuong{chapterContent.Index}");
             document.Add(chapterName);
 
             var content = chapterContent.Content.Replace("\n\n\n", "\n\n");
@@ -68,14 +69,14 @@ namespace PDFExporter
         {
             var document = CreateDocument(path);
             SetDefaultFont(ref document);
-            ImageData imageData = ImageDataFactory.Create(storyDetail.ImageUrl);
+            ImageData imageData = ImageDataFactory.Create(storyDetail.ImageURL);
             Image cover = new Image(imageData).SetAutoScale(true).SetHorizontalAlignment(HorizontalAlignment.CENTER);
             document.Add(cover);
             SetStoryName(storyDetail.Name, ref document);
             SetAuthor(storyDetail.Author.Name, ref document);
             SetDescription(storyDetail.Description, ref document);
             SetStatus(storyDetail.Status, ref document);
-            SetCategories(storyDetail.Categories, ref document);
+            SetCategories(storyDetail.Categories.ToArray(), ref document);
             document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
             SetChapterTable(ref document);
             AddChaptersTable(chapterContents, ref document);
@@ -95,7 +96,7 @@ namespace PDFExporter
         {
             for (int i = 0; i < chapterContents.Count; i++)
             {
-                Paragraph chapterName = new Paragraph($"{chapterContents[i].ChapterName}").SetMarginLeft(50).SetAction(PdfAction.CreateGoTo($"chuong{chapterContents[i].ChapterIndex}")).SetUnderline();
+                Paragraph chapterName = new Paragraph($"{chapterContents[i].Name}").SetMarginLeft(50).SetAction(PdfAction.CreateGoTo($"chuong{chapterContents[i].Index}")).SetUnderline();
                 document.Add(chapterName);
             }
         }
@@ -148,12 +149,18 @@ namespace PDFExporter
         private static Document CreateDocument(string path)
         {
             FileInfo file = new FileInfo(path);
-            if (!file.Directory.Exists) file.Directory.Create();
+            if (!file.Directory.Exists)
+                file.Directory.Create();
 
             PdfWriter writer = new PdfWriter(path);
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
             return document;
+        }
+
+        public byte[] ExportStory(StoryDetail story, IEnumerable<ChapterContent> chapteres)
+        {
+            throw new NotImplementedException();
         }
     }
 }

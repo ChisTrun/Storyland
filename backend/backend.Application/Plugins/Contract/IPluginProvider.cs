@@ -1,7 +1,7 @@
 ﻿using backend.Domain.Contract;
-using backend.Domain.Mics;
+using backend.Domain.Objects;
 
-namespace backend.Application.Plugins.Abstract;
+namespace backend.Application.Plugins.Contract;
 
 public interface IPluginProvider
 {

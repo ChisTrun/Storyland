@@ -1,8 +1,8 @@
 ﻿namespace PluginBase.Models
 {
-    public class Server(int index, string name)
+    public class Server(string id, string name)
     {
-        public int Index { get; set; } = index;
+        public string ID { get; set; } = id;
         public string Name { get; set; } = name;
     }
 }

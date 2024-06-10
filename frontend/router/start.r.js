@@ -3,8 +3,9 @@ const router = express.Router();
 
 const controller = require('../controller/start.c');
 
-router.get('/', controller.redirectToHomePage);
 router.get('*', controller.setUpCookies);
-router.post('/changeDarkMode', controller.changeDarkMode);
+router.get('/', controller.redirectToHomePage);
+router.post('/change-dark-mode', controller.changeDarkMode);
+router.post('/error-handler', controller.handleError);
 
 module.exports = { router };

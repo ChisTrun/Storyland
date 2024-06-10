@@ -1,6 +1,6 @@
 const { ErrorDisplay } = require('../middleware/error');
 const { BE_HOST, HOST, PORT } = require('../global/env');
-const { getServerArr } = require('../utils/utils');
+const { getServerArr, getNumChaptersInStory, loadChapterContent } = require('../utils/utils');
 
 const view = 'chapter';
 const render = {
@@ -15,106 +15,66 @@ const render = {
 module.exports = {
     async render(req, res, next) {
         try {
+            const sortedServerIds = req.session.sortedServerIds;
             const chapterIndex = parseInt(req.params.index);
             const storyServer = req.params.storyServer;
             const storyId = decodeURIComponent(req.params.storyId);
-            const serverIndex = req.session.serverIndex;
 
-            const chapterResponse = await fetch(`${BE_HOST}/api/story/${storyServer}/story/chapter?storyid=${encodeURIComponent(storyId)}&index=${chapterIndex}`);
-            if (!chapterResponse.ok) {
-                const errorMessage = await chapterResponse.text();
+            const response = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`);
+            if (!response.ok) {
+                const errorMessage = await response.text();
                 throw Error(errorMessage);
             }
-            const chapterResBody = await chapterResponse.json();
-            const storyResponse = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`);
-            if (!storyResponse.ok) {
-                const errorMessage = await storyResponse.text();
-                throw Error(errorMessage);
-            }
-            const storyResBody = await storyResponse.json();
+            const resBody = await response.json();
             const serverArr = await getServerArr();
+            const chapterCount = await getNumChaptersInStory(storyId);
+
+            const tempContents = {};
+            await Promise.all(sortedServerIds.map(async serverId => {
+                try {
+                    const serverName = serverArr.find(server => server.id === serverId).name;
+                    const { name, content } = await loadChapterContent(serverId, storyId, chapterIndex);
+                    tempContents[serverId] = { 
+                        'serverId': serverId, 
+                        'serverName': serverName, 
+                        'chapterName': name, 
+                        'chapterContent': content 
+                    };
+                } catch (error) {
+                    console.error(error.message);
+                    tempContents[serverId] = { 
+                        'serverId': serverId, 
+                        'serverName': null, 
+                        'chapterName': null, 
+                        'chapterContent': null 
+                    };
+                }
+            }));
+            const contents = sortedServerIds.map(serverId => tempContents[serverId]);
 
             render.chapterIndex = chapterIndex;
-            render.chapterName = chapterResBody.chapterName;
-            if (chapterResBody.nextChapID != undefined && chapterResBody.nextChapID != 0 && chapterResBody.nextChapID != null && chapterResBody.nextChapID != "") {
-                render.chapterNextIndex = chapterIndex + 1;
-            }
-            else {
-                render.chapterNextIndex = undefined;
-            }
-            if (chapterResBody.prevChapID != undefined && chapterResBody.prevChapID != 0 && chapterResBody.prevChapID != null && chapterResBody.prevChapID != "") {
-                render.chapterPrevIndex = chapterIndex - 1;
-            }
-            else {
-                render.chapterPrevIndex = undefined;
-            }
-            render.chapterContent = chapterResBody.content.replace(/\r\n/g, '<br>')
-                .replace(/\n/g, '<br>')
-                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');;
-            render.storyServer = storyServer;
+            render.chapterCount = chapterCount;
+            render.chapterContents = contents;
             render.storyId = storyId;
-            render.storyName = storyResBody.name;
-            render.serverArr = serverArr;
+            render.storyName = resBody.name;
+            render.curServerId = storyServer;
 
             req.session.history[`${storyId}-server-${storyServer}`] = {
-                chapterName: render.chapterName,
+                chapterName: `Chương ${chapterIndex + 1}`,
                 chapterIndex: render.chapterIndex,
                 storyId: render.storyId,
-                storyServer: render.storyServer,
-                storyImageUrl: storyResBody.imageUrl,
+                storyServer: storyServer,
+                storyImageUrl: resBody.imageUrl,
                 storyName: render.storyName,
             };
 
-            render.serverIndex = serverIndex;
+            render.sortedServerIds = sortedServerIds;
             render.isDark = req.session.isDark;
-            render.title = `${render.storyName} - ${render.chapterName} | StoryLand`;
+            render.title = `${render.storyName} - Chương ${chapterIndex + 1} | StoryLand`;
 
             return res.render(view, render, null);
         } catch (error) {
             next(new ErrorDisplay("Xem nội dung chương truyện thất bại!", 500, error.message));
         }
-    },
-    async getAll(req, res, next) {
-        try {
-            const storyServer = req.params.storyServer;
-            const storyId = decodeURIComponent(req.params.storyId);
-
-            const response = await fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}/chapters/all`);
-            if (!response.ok) {
-                const errorMessage = await response.text();
-                throw Error(errorMessage);
-            }
-            const resBody = await response.json();
-
-            return res.json(resBody);
-        }
-        catch (error) {
-            console.error(error.message);
-            return res.json([]);
-        }
-    },
-    async getContent(req, res, next) {
-        try {
-            const chapterServer = req.body.chapterServer;
-            const chapterIndex = req.params.index;
-            const storyId = decodeURIComponent(req.params.storyId);
-
-            const response = await fetch(`${BE_HOST}/api/story/${chapterServer}/story/chapter?storyid=${encodeURIComponent(storyId)}&index=${chapterIndex}`);
-            if (!response.ok) {
-                const errorMessage = await response.text();
-                throw Error(errorMessage);
-            }
-            const resBody = await response.json();
-
-            const content = resBody.content.replace(/\r\n/g, '<br>')
-                .replace(/\n/g, '<br>')
-                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
-
-            return res.json({ 'content': content });
-        }
-        catch (error) {
-            console.error(error.message);
-            return res.status(400).send("Bad Request");
-        }
-    },
+    }
 };

@@ -22,5 +22,11 @@ namespace backend.Domain.Utils
 
             return standardString;
         }
+
+        public static string GetChapterNumber(string inputString)
+        {
+            var match = Regex.Match(inputString, @"Chương (\d+)");
+            return match.Success ? match.Groups[1].Value : "-1";
+        }
     }
 }

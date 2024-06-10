@@ -16,17 +16,16 @@ const perPage = 24;
 module.exports = {
     async render(req, res, next) {
         try {
-            const serverIndex = req.session.serverIndex;
+            const sortedServerIds = req.session.sortedServerIds;
             const keyword = req.query.keyword || ' ';
             const curPage = parseInt(req.query.page) || 1;
             
-            const response = await fetch(`${BE_HOST}/api/search/${serverIndex}/truyen/${encodeURIComponent(keyword)}?page=${curPage}&limit=${perPage}`);
+            const response = await fetch(`${BE_HOST}/api/search/${sortedServerIds[0]}/truyen/${encodeURIComponent(keyword)}?page=${curPage}&limit=${perPage}`);
             let resBody = {};
             if (!response.ok) {
                 resBody.data = [];
-                resBody.totalPages = 0;
                 const errorMessage = await response.text();
-                console.error(`HTTP error! status: ${response.status}, message: ${errorMessage}`);
+                console.error(`${response.status}: ${errorMessage}`);
             }
             else {
                 resBody = await response.json();
@@ -38,9 +37,9 @@ module.exports = {
             render.keyword = keyword;
             render.curPage = curPage;
             render.totalPages = totalPages;
-            render.serverArr = serverArr;
 
-            render.serverIndex = serverIndex;
+            render.curServer = serverArr.find(server => server.id === sortedServerIds[0]);
+            render.sortedServerIds = sortedServerIds;
             render.isDark = req.session.isDark;
             render.title = "Kết quả tìm kiếm | StoryLand";
 

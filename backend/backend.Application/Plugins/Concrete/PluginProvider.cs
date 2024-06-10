@@ -1,6 +1,8 @@
-﻿using backend.Application.Plugins.Abstract;
+﻿using backend.Application.Plugins.Contract;
+using backend.Application.Plugins.DLLScanner.Concrete;
+using backend.Application.Plugins.Handler;
 using backend.Domain.Contract;
-using backend.Domain.Mics;
+using backend.Domain.Objects;
 
 namespace backend.Application.Plugins.Concrete;
 
@@ -8,31 +10,29 @@ public class PluginProvider : IPluginProvider
 {
     public ICrawler GetCrawlerPlugin(string id)
     {
-        throw new NotImplementedException();
+        if (ServerHandler.CheckServerID(id))
+        {
+            throw new InvalidOperationException("Invalid Plugin ID");
+        }
+        return StorySourceScanner.Instance.Commands[id];
     }
 
     public List<PluginInfo> GetCrawlers()
     {
-        throw new NotImplementedException();
+        return StorySourceScanner.Instance.Commands.Select(x => new PluginInfo(x.Key, x.Value.Name)).ToList();
     }
 
     public IExporter GetExporterPlugin(string id)
     {
-        throw new NotImplementedException();
+        if (ServerHandler.CheckExporterID(id))
+        {
+            throw new InvalidOperationException("Invalid Plugin ID");
+        }
+        return ExporterScanner.Instance.Commands[id];
     }
 
     public List<PluginInfo> GetExporters()
     {
-        throw new NotImplementedException();
-    }
-
-    ICrawler IPluginProvider.GetCrawlerPlugin(string id)
-    {
-        throw new NotImplementedException();
-    }
-
-    IExporter IPluginProvider.GetExporterPlugin(string id)
-    {
-        throw new NotImplementedException();
+        return ExporterScanner.Instance.Commands.Select(x => new PluginInfo(x.Key, x.Value.Name)).ToList();
     }
 }

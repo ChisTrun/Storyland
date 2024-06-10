@@ -1,6 +1,6 @@
-﻿using ExporterEPUB.FilePrepare;
+﻿using backend.Domain.Entities;
+using ExporterEPUB.FilePrepare;
 using ExporterEPUB.Helpers;
-using PluginBase.Models;
 
 namespace ExporterEPUB
 {
@@ -21,7 +21,7 @@ namespace ExporterEPUB
 
         public byte[] ExportEpub()
         {
-            var imgPath = FileGenerator.SaveImage(_storyDetail.ImageUrl, _structure);
+            var imgPath = FileGenerator.SaveImage(_storyDetail.ImageURL, _structure);
             var allGen = new AllGenerator(_storyDetail, _chapterContents, imgPath, _structure);
             allGen.CreareFile();
             var zipFileBytes = FileZipper.Zip(_structure.BaseAbsoluteDir);
@@ -34,30 +34,3 @@ namespace ExporterEPUB
         }
     }
 }
-
-//var t = new TangThuVienCrawler();
-//var chapterContents = new List<ChapterContent>();
-//var s1 = "thi-ra-ho-moi-la-nhan-vat-chinh";
-//var s2 = "nga-de-duy-the-gioi-duy-nhat-chan-than";
-//var s = s1;
-//var sd = t.GetStoryDetail(s);
-//var chapters = t.GetChaptersOfStory(s);
-//List<Task<ChapterContent>> tasks = new();
-//foreach (var chapter in chapters)
-//{
-//    tasks.Add(Task.Run(() =>
-//    {
-//        var temp = new TangThuVienCrawler();
-//        var content = temp.GetChapterContent(chapter.Id);
-//        content.Chapter = chapter;
-//        return content;
-//    }));
-//}
-
-//var res = Task.WhenAll(tasks).Result;
-//FolderStructure.Generate();
-//var rg = new FileGenerator();
-//var path = rg.SaveImage(sd.ImageUrl!);
-//var ex = new AllGenerator(sd, res.ToList(), path);
-//ex.CreareFile();
-//return FileZipper.Zip();

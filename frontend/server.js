@@ -16,5 +16,5 @@ const server = https.createServer({
 }, app);
 
 server.listen(PORT, HOST, () => {
-    console.log(`App Server is on: ${HOST}:${PORT}`);
+    console.log(`App Server is on: https://${HOST}:${PORT}`);
 });

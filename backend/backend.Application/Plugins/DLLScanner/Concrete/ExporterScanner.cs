@@ -14,10 +14,10 @@ public class ExporterScanner : PluginLoader, IScanner<IExporter>
     private string _pluginsFolder = "./plugins/exporter/";
 
     private readonly object _commandsLock = new();
-    public List<IExporter> Commands { get; private set; }
+    public Dictionary<string, IExporter> Commands { get; private set; }
     private bool _isCalled = false;
 
-    public IExporter? GetCurrentCrawler(int index) => Commands.Count > 0 ? Commands[index] : null;
+    public IExporter? GetCurrentCrawler(int index) => Commands.Count > 0 ? Commands.ElementAt(index).Value : null;
 
     private static readonly Lazy<ExporterScanner> _lazy = new(() => new ExporterScanner());
     public static ExporterScanner Instance => _lazy.Value;
@@ -60,7 +60,7 @@ public class ExporterScanner : PluginLoader, IScanner<IExporter>
                 }).ToList();
                 lock (_commandsLock)
                 {
-                    Commands.AddRange(newCommands);
+                    newCommands.ForEach(command => Commands.Add(UUID.GenerateUUID(), command));
                 }
             }
             Thread.Sleep(5000);
@@ -75,8 +75,7 @@ public class ExporterScanner : PluginLoader, IScanner<IExporter>
         {
             if (typeof(IExporter).IsAssignableFrom(type))
             {
-                IExporter? result = Activator.CreateInstance(type) as IExporter;
-                if (result != null)
+                if (Activator.CreateInstance(type) is IExporter result)
                 {
                     count++;
                     yield return result;

@@ -1,8 +1,8 @@
 ﻿namespace backend.Domain.Entities;
 
-public class Chapter(Story belong, int index, string name)
+public class Chapter(string name, string storyId, int index)
 {
-    public Story Belong { get; } = belong;
+    public string StoryID { get; } = storyId;
     public int Index { get; } = index;
     public string Name { get; } = name;
 }

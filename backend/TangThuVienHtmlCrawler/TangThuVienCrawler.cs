@@ -1,13 +1,15 @@
-﻿using HtmlAgilityPack;
+﻿using backend.Domain.Contract;
+using backend.Domain.Entities;
+using backend.Domain.Exceptions;
+using backend.Domain.Objects;
+using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Newtonsoft.Json;
-using PluginBase.Contract;
-using PluginBase.Exceptions;
-using PluginBase.Models;
-using PluginBase.Utils;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
+using TangThuVienHtmlCrawler.Extensions;
+using TangThuVienHtmlCrawler.Models;
 
 namespace TangThuVien;
 
@@ -44,15 +46,15 @@ public partial class TangThuVienCrawler : ICrawler
     private static string DomainStoryChapters(string ttvStoryId) => $"https://truyen.tangthuvien.vn/story/chapters?story_id={ttvStoryId}";
     private static string DomainStoryChaptersPage(int page, int limit, string ttvStoryId) => $"{DomainDocTruyen}/page/{ttvStoryId}?page={page - 1}&limit={limit}&web=1";
 
+    // =============== START INTERFACE ====================
+    // =============== START INTERFACE ====================
+    // =============== START INTERFACE ====================
+
     public string Name => "Tàng Thư Viện";
 
-    public string Description => "";
+    public string Address => Domain;
 
-    // =============== START INTERFACE ====================
-    // =============== START INTERFACE ====================
-    // =============== START INTERFACE ====================
-
-    public IEnumerable<Category> GetCategories()
+    public List<Category> GetCategories()
     {
         var categories = new List<Category>();
         var document = GetWebPageDocument(Domain);
@@ -70,7 +72,7 @@ public partial class TangThuVienCrawler : ICrawler
     }
 
     // https://truyen.tangthuvien.vn/tong-hop?ctg=1&limit=100000
-    public IEnumerable<Story> GetStoriesOfCategory(string categoryId)
+    public List<Story> GetStoriesOfCategory(string categoryId)
     {
         string castId = CategoryIDCast(categoryId);
         string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, castId);
@@ -81,7 +83,7 @@ public partial class TangThuVienCrawler : ICrawler
     }
 
     // https://truyen.tangthuvien.vn/tong-hop?ctg=1&page=800&limit=2
-    public PagingRepresentative<Story> GetStoriesOfCategory(string categoryId, int page, int limit)
+    public PagedList<Story> GetStoriesOfCategory(string categoryId, int page, int limit)
     {
         string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, CategoryIDCast(categoryId));
         var baseUrl = $"{categoryUrl}&limit={limit}&page={page}";
@@ -101,22 +103,22 @@ public partial class TangThuVienCrawler : ICrawler
             var aTag = lastLiTag.PreviousSiblingElement().GetChildElements().First();
             totalPage = int.Parse(aTag.GetDirectInnerTextDecoded());
         }
-        var paging = new PagingRepresentative<Story>(page, limit, totalPage, stories);
+        var paging = new PagedList<Story>(page, limit, totalPage, stories);
         return paging;
     }
 
     // https://truyen.tangthuvien.vn/ket-qua-tim-kiem?term=dinh&page=2
-    public IEnumerable<Story> GetStoriesBySearchName(string storyName)
+    public List<Story> GetStoriesBySearchName(string storyName)
     {
         var baseUrl = $"{DomainKetQuaTimKiem}?term={WebUtility.UrlEncode(storyName)}";
         var createUrlFromPage = new CreateURLFromPage((page) => $"{baseUrl}&page={page}");
-        IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
+        var stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
         return stories;
     }
 
     // https://truyen.tangthuvien.vn/ket-qua-tim-kiem?term=dinh&page=2
     // dont have limit
-    public PagingRepresentative<Story> GetStoriesBySearchName(string storyName, int page, int limit)
+    public PagedList<Story> GetStoriesBySearchName(string storyName, int page, int limit)
     {
         var baseUrl = $"{DomainKetQuaTimKiem}?term={WebUtility.UrlEncode(storyName)}";
         var createUrlFromPage = new CreateURLFromPage((page) => $"{baseUrl}&page={page}");
@@ -125,17 +127,17 @@ public partial class TangThuVienCrawler : ICrawler
     }
 
     // https://truyen.tangthuvien.vn/tac-gia?author=27&page=1
-    public IEnumerable<Story> GetStoriesOfAuthor(string authorId)
+    public List<Story> GetStoriesOfAuthor(string authorId)
     {
         var authorUrl = ModelExtension.GetUrlFromID(ModelType.Author, authorId);
         var createUrlFromPage = new CreateURLFromPage((page) => $"{authorUrl}&page={page}");
-        IEnumerable<Story> stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
+        var stories = GetRepresentativesFromATagsFromAllPages(RankViewListFormat.CrawlStoriesFromAPage, createUrlFromPage.Invoke, RankViewListFormat.IsLastPage);
         return stories;
     }
 
     // https://truyen.tangthuvien.vn/tac-gia?author=27&page=1
     // dont have limit
-    public PagingRepresentative<Story> GetStoriesOfAuthor(string authorId, int page, int limit)
+    public PagedList<Story> GetStoriesOfAuthor(string authorId, int page, int limit)
     {
         var authorUrl = ModelExtension.GetUrlFromID(ModelType.Author, authorId);
         var createUrlFromPage = new CreateURLFromPage((page) => $"{authorUrl}&page={page}");
@@ -144,7 +146,7 @@ public partial class TangThuVienCrawler : ICrawler
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/page/38020?page=0&limit=100000&web=1
-    public IEnumerable<Chapter> GetChaptersOfStory(string storyId)
+    public List<Chapter> GetChaptersOfStory(string storyId)
     {
         var story = GetStory(storyId);
         var ttvStoryId = GetTTVStoryId(storyId);
@@ -154,7 +156,7 @@ public partial class TangThuVienCrawler : ICrawler
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
         var aTags = document.QuerySelectorAll(chaptersSelector);
-        var count = 0;
+        var index = 0;
         foreach (var aTag in aTags)
         {
             var fontTag = aTag.QuerySelector("font > font");
@@ -162,8 +164,8 @@ public partial class TangThuVienCrawler : ICrawler
             {
                 var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
                 var name = fontTag.GetDirectInnerTextDecoded();
-                chapters.Add(new Chapter(name, ModelExtension.GetIDFromUrl(ModelType.Chapter, url), story, count));
-                count++;
+                chapters.Add(new Chapter(name, story.ID, index));
+                index++;
             }
         }
         return chapters;
@@ -171,7 +173,7 @@ public partial class TangThuVienCrawler : ICrawler
 
     // https://truyen.tangthuvien.vn/doc-truyen/page/6270?page=2&limit=10&web=1
     // https://truyen.tangthuvien.vn/story/chapters?story_id=6270
-    public PagingRepresentative<Chapter> GetChaptersOfStory(string storyId, int page, int limit)
+    public PagedList<Chapter> GetChaptersOfStory(string storyId, int page, int limit)
     {
         var story = GetStory(storyId);
         var ttvStoryId = GetTTVStoryId(storyId);
@@ -181,7 +183,7 @@ public partial class TangThuVienCrawler : ICrawler
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
         var aTags = document.QuerySelectorAll(chaptersSelector);
-        var count = 0;
+        var index = 0;
         foreach (var aTag in aTags)
         {
             var fontTag = aTag.QuerySelector("font > font");
@@ -189,14 +191,14 @@ public partial class TangThuVienCrawler : ICrawler
             {
                 var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
                 var name = fontTag.GetDirectInnerTextDecoded();
-                chapters.Add(new Chapter(name, ModelExtension.GetIDFromUrl(ModelType.Chapter, url), story, count));
-                count++;
+                chapters.Add(new Chapter(name, story.ID, index));
+                index++;
             }
         }
         var documentTotal = GetWebPageDocument($"https://truyen.tangthuvien.vn/story/chapters?story_id={ttvStoryId}");
         var totalRecord = documentTotal.QuerySelectorAll("ul > li").Count;
         var totalPage = (totalRecord / limit) + (totalRecord % limit == 0 ? 0 : 1);
-        return new PagingRepresentative<Chapter>(page, limit, totalPage, chapters);
+        return new PagedList<Chapter>(page, limit, totalPage, chapters);
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-vu-em-nhan-nha-sinh-hoat/chuong-480
@@ -216,7 +218,7 @@ public partial class TangThuVienCrawler : ICrawler
         var chapterDoc = GetWebPageDocument(chapterUrl);
         GetNameContentStoryOfChapter(chapterDoc, out string chapterName, out string content, out Story story);
         PrevNextChapId(chaptersDoc, currentChapterIndex, out string? prevChapId, out string? nextChapId);
-        return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId, chapterName, chapterId, currentChapterIndex - 1, story);
+        return new ChapterContent(WebUtility.HtmlEncode(content), chapterName, currentChapterIndex - 1, story.ID);
     }
 
     // storyId + index => chapterId (90% accurate)
@@ -233,7 +235,7 @@ public partial class TangThuVienCrawler : ICrawler
         var currentChapterIndex = docChaptersWithActive.QuerySelector(@"li.active").GetAttributeValue("title", -1);
         GetNameContentStoryOfChapter(chapterDoc, out string chapterName, out string content, out var story);
         PrevNextChapId(docChaptersWithActive, currentChapterIndex, out string? prevChapId, out string? nextChapId);
-        return new ChapterContent(WebUtility.HtmlEncode(content), nextChapId, prevChapId, chapterName, chapterId, currentChapterIndex - 1, story);
+        return new ChapterContent(WebUtility.HtmlEncode(content), chapterName, currentChapterIndex - 1, story.ID);
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/dichdinh-cao-quyen-luc-suu-tam
@@ -249,15 +251,15 @@ public partial class TangThuVienCrawler : ICrawler
         var categoryTag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-information.cf > div.book-info > p.tag > a.red");
         var id = categoryTag.GetAttributeValue("href", null).TakeLastParamURL();
         var name = categoryTag.GetDirectInnerTextDecoded();
-        var category = new Category(name, id);
+        var category = new List<Category>() { new(name, id) };
         var descriptionPTag = document.QuerySelector("body > div.book-detail-wrap.center990 > div.book-content-wrap.cf > div.left-wrap.fl > div.book-info-detail > div.book-intro > p");
         var description = descriptionPTag.GetDirectInnerTextDecoded();
-        return new StoryDetail(story, author, status, [category], description);
+        return new StoryDetail(story, author, status, category, description);
     }
 
     // note: search engine cua trang nay khong duoc on dinh
     // chi search duoc toi da 5 tac gia co ten gan giong
-    public IEnumerable<Author> GetAuthorsBySearchName(string authorName)
+    public List<Author> GetAuthorsBySearchName(string authorName)
     {
         var authors = new List<Author>();
         var domainTimKiemWithKey = $"{DomainTimKiem}?term={WebUtility.UrlEncode(authorName)}";
@@ -289,7 +291,7 @@ public partial class TangThuVienCrawler : ICrawler
         return authors;
     }
 
-    public PagingRepresentative<Author> GetAuthorsBySearchName(string authorName, int page, int limit)
+    public PagedList<Author> GetAuthorsBySearchName(string authorName, int page, int limit)
     {
         var authors = GetAuthorsBySearchName(authorName).ToList();
         var offset = (page - 1) * limit;
@@ -299,7 +301,7 @@ public partial class TangThuVienCrawler : ICrawler
         {
             authorsRes.Add(authors[i]);
         }
-        return new PagingRepresentative<Author>(page, limit, totalPage, authorsRes);
+        return new PagedList<Author>(page, limit, totalPage, authorsRes);
     }
 
     // https://truyen.tangthuvien.vn/doc-truyen/trong-sinh-chi-toi-cuong-kiem-than => 2922 != 2924
@@ -325,12 +327,12 @@ public partial class TangThuVienCrawler : ICrawler
     // #rank-list-view format
 
     private delegate string CreateURLFromPage(int page);
-    private delegate Representative CreateDefaultRepresentative(string name, string url);
+    private delegate DisplayObject CreateDefaultRepresentative(string name, string url);
 
-    private static IEnumerable<T> GetRepresentativesFromATagsFromAllPages<T>(Func<HtmlDocument, IEnumerable<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible) where T : Representative
+    private static List<T> GetRepresentativesFromATagsFromAllPages<T>(Func<HtmlDocument, List<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible) where T : class
     {
         var page = 1;
-        var tasks = new List<Task<IEnumerable<T>>>();
+        var tasks = new List<Task<List<T>>>();
         while (true)
         {
             var accessUrl = createURLFromPage.Invoke(page);
@@ -353,7 +355,7 @@ public partial class TangThuVienCrawler : ICrawler
         return representatives;
     }
 
-    private static PagingRepresentative<T> GetRepresentativesFromATagsFromAllPagesFixedPageSize<T>(Func<HtmlDocument, IEnumerable<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible, int page, int limit) where T : Representative
+    private static PagedList<T> GetRepresentativesFromATagsFromAllPagesFixedPageSize<T>(Func<HtmlDocument, List<T>> crawlRepresentativesFromAPage, Func<int, string> createURLFromPage, Predicate<HtmlDocument> nextPageAvailible, int page, int limit) where T : class
     {
         int systemLimit;
         int totalPage;
@@ -364,7 +366,7 @@ public partial class TangThuVienCrawler : ICrawler
             systemLimit = documentFirstPage.QuerySelectorAll("#rank-view-list > div > ul > li > div.book-mid-info").Count;
             if (systemLimit == 0)
             {
-                return new PagingRepresentative<T>(page, limit, 0, new List<T>());
+                return new PagedList<T>(page, limit, 0, new List<T>());
             }
             var lastLiPagingTag = documentFirstPage.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:last-child");
             if (lastLiPagingTag == null)
@@ -410,7 +412,7 @@ public partial class TangThuVienCrawler : ICrawler
             }
             systemCurrentPage += 1;
         }
-        return new PagingRepresentative<T>(page, limit, totalPage, results);
+        return new PagedList<T>(page, limit, totalPage, results);
     }
 
     // sub-methods
@@ -496,7 +498,7 @@ public partial class TangThuVienCrawler : ICrawler
     internal static class RankViewListFormat
     {
         // https://truyen.tangthuvien.vn/tong-hop?ctg=1&limit=10
-        public static IEnumerable<Story> CrawlStoriesFromAPage(HtmlDocument doc)
+        public static List<Story> CrawlStoriesFromAPage(HtmlDocument doc)
         {
             var lisSelector = "#rank-view-list > div > ul > li";
             var aTagSelector = "div.book-mid-info > h4 > a";

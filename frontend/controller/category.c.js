@@ -16,33 +16,32 @@ const perPage = 24;
 module.exports = {
     async render(req, res, next) {
         try {
-            const serverIndex = req.session.serverIndex;
-            const categoryId = decodeURIComponent(req.query.id);
+            const sortedServerIds = req.session.sortedServerIds;
             const categoryName = req.params.categoryName;
+            const categoryId = decodeURIComponent(req.query.id);
             const curPage = parseInt(req.query.page) || 1;
 
+            const response = await fetch(`${BE_HOST}/api/category/${sortedServerIds[0]}/${encodeURIComponent(categoryId)}?page=${curPage}&limit=${perPage}`);
             let resBody = {};
-            const response = await fetch(`${BE_HOST}/api/category/${serverIndex}/${encodeURIComponent(categoryId)}?page=${curPage}&limit=${perPage}`);
             if (!response.ok) {
                 resBody.data = [];
-                resBody.totalPages = 0;
                 const errorMessage = await response.text();
-                console.error(errorMessage)
+                console.error(`${response.status}: ${errorMessage}`);
             }
             else {
                 resBody = await response.json();
             }
             const serverArr = await getServerArr();
             const totalPages = resBody.totalPages && resBody.totalPages > 0 ? resBody.totalPages : 1;
-            
+
             render.stories = resBody.data;
             render.categoryName = categoryName;
             render.categoryId = categoryId;
             render.curPage = curPage;
             render.totalPages = totalPages;
-            render.serverArr = serverArr;
 
-            render.serverIndex = req.session.serverIndex;
+            render.curServer = serverArr.find(server => server.id === sortedServerIds[0]);
+            render.sortedServerIds = sortedServerIds;
             render.isDark = req.session.isDark;
             render.title = `Thể loại ${categoryName} | StoryLand`;
 
@@ -54,19 +53,18 @@ module.exports = {
     },
     async getAll(req, res, next) {
         try {
-            const serverIndex = req.session.serverIndex;
-            const response = await fetch(`${BE_HOST}/api/category/${serverIndex}`);
+            const sortedServerIds = req.session.sortedServerIds;
+            const response = await fetch(`${BE_HOST}/api/category/${sortedServerIds[0]}`);
             if (!response.ok) {
                 const errorMessage = await response.text();
                 throw Error(errorMessage);
             }
             const resBody = await response.json();
-
-            return res.json(resBody);
+            res.json(resBody);
         }
         catch (error) {
             console.error(error.message);
-            return res.json([]);
+            res.json([]);
         }
     },
 };

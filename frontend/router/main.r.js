@@ -11,9 +11,10 @@ const { router: storyRouter } = require('./story.r');
 const { router: searchRouter } = require('./search.r');
 const { router: authorRouter } = require('./author.r');
 const { router: categoryRouter } = require('./category.r');
-const { router: historyRouter } = require('./history.r');
 const { router: extensionRouter } = require('./extension.r');
+const { router: historyRouter } = require('./history.r');
 const { router: exportRouter } = require('./export.r');
+const { router: offlineReadingRouter } = require('./offlinereading.r');
 
 router.use("/", startRouter);
 router.use('/home', homeRouter);
@@ -24,6 +25,7 @@ router.use('/category', categoryRouter);
 router.use('/extension', extensionRouter);
 router.use('/history', historyRouter);
 router.use('/export', exportRouter);
+router.use('/offline-reading', offlineReadingRouter);
 
 // >>>> =============================================
 // Error

@@ -1,15 +1,11 @@
 ﻿namespace backend.Domain.Entities;
 
-public class ChapterContent(Story belong, int index, string name, string content)
+public class ChapterContent(string content, string name, int index, string storyId)
 {
-    public ChapterContent(Chapter chapter, string content) : this(chapter.Belong, chapter.Index, chapter.Name, content)
-    {
-    }
-
-    public Story Belong { get; } = belong;
+    public string StoryID { get; } = storyId;
     public int Index { get; } = index;
     public string Name { get; } = name;
     public string Content { get; } = content;
 
-    public Chapter ToChapter() => new(Belong, Index, Name);
+    public Chapter ToChapter() => new(Name, StoryID, Index);
 }

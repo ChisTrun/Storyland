@@ -1,6 +1,6 @@
-const view = 'home';
 const { HOST, PORT } = require('../global/env');
 
+const view = 'home';
 const render = {
     layout: 'main',
     scripts: null,
@@ -12,7 +12,11 @@ const render = {
 
 module.exports = {
     async render(req, res, next) {
-        render.serverIndex = req.session.serverIndex;
+        const errorMessage = req.session.errorMessage;
+        req.session.errorMessage = null;
+
+        render.errorMessage = errorMessage;
+        render.sortedServerIds = req.session.sortedServerIds;
         render.isDark = req.session.isDark;
         render.title = "Trang chủ | StoryLand";
         

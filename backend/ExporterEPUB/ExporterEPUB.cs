@@ -1,12 +1,14 @@
-﻿using PluginBase.Contract;
-using PluginBase.Models;
+﻿using backend.Domain.Contract;
+using backend.Domain.Entities;
+using backend.Domain.Objects;
 
 namespace ExporterEPUB;
 
 public class EPUBExport : IExporter
 {
-    public string Ext { get; } = "epub";
+    public string Extension => "epub";
 
+    public string Name => "EPUB";
 
     public byte[] ExportStory(StoryDetail story, List<ChapterContent> chapters)
     {
@@ -26,5 +28,10 @@ public class EPUBExport : IExporter
             byteStream = serve.ExportEpub();
         }
         return byteStream;
+    }
+
+    public byte[] ExportStory(StoryDetail story, IEnumerable<ChapterContent> chapteres)
+    {
+        throw new NotImplementedException();
     }
 }

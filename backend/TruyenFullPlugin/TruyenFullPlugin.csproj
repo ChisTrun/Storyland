@@ -13,6 +13,14 @@
 		<PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\backend.Application\backend.Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Models\" />
+	</ItemGroup>
+
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="xcopy /y /d /i  &quot;$(OutDir)*.dll&quot; &quot;$(SolutionDir)backend\plugins\storySource\&quot;" />
 	</Target>

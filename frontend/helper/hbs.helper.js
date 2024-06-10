@@ -11,7 +11,7 @@ module.exports = {
         return encodeURIComponent(str);
     },
     isDefined: function (value, block) {
-        return value !== undefined ? block.fn(this) : block.inverse(this);
+        return (value !== undefined && value !== null) ? block.fn(this) : block.inverse(this);
     },
     limitText: function (text, maxLength) {
         if (text.length <= maxLength) {
@@ -65,5 +65,11 @@ module.exports = {
     },
     json: function (context) {
         return JSON.stringify(context);
+    },
+    firstElement: function (array) {
+        if (Array.isArray(array) && array.length > 0) {
+            return array[0];
+        }
+        return null;
     },
 };

@@ -1,5 +1,6 @@
-using backend.Application.Plugins.Abstract;
 using backend.Application.Plugins.Concrete;
+using backend.Application.Plugins.Contract;
+using backend.Application.Plugins.DLLScanner;
 using backend.Application.Services.Abstract;
 using backend.Application.Services.Concrete;
 using System.Reflection;
@@ -10,7 +11,7 @@ namespace backend
     {
         public static void Main(string[] args)
         {
-            //ScannerController.Instance.StartToScan();
+            ScannerController.Instance.StartToScan();
 
             var builder = WebApplication.CreateBuilder(args);
 

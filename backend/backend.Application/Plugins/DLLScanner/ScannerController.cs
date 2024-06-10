@@ -13,7 +13,7 @@ public class ScannerController
 
     private ScannerController()
     {
-        crawlerScanner = CrawlerScanner.Instance;
+        crawlerScanner = StorySourceScanner.Instance;
         exporterScanner = ExporterScanner.Instance;
 
         StartToScan();

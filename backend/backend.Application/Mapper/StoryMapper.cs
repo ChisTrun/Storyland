@@ -7,6 +7,6 @@ public static class StoryMapper
 {
     public static StoryDTO ToDTO(this Story story)
     {
-        return new StoryDTO(story.ID, story.Name, story.ImageURL, story.Author?.Name ?? "");
+        return new StoryDTO(story.ID, story.Name, story.ImageURL, story.AuthorName ?? "");
     }
 }

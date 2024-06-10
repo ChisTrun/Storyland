@@ -2,6 +2,6 @@
 
 public interface IScanner<T> where T : class
 {
-    public List<T> Commands { get; }
+    public Dictionary<string, T> Commands { get; }
     public void StartScanThread();
 }

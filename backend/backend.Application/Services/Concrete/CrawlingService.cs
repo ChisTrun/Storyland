@@ -1,9 +1,10 @@
 ﻿using backend.Application.DTO;
 using backend.Application.Mapper;
-using backend.Application.Plugins.Abstract;
+using backend.Application.Plugins.Contract;
 using backend.Application.Services.Abstract;
 using backend.Domain.Entities;
-using backend.Domain.Mics;
+using backend.Domain.Objects;
+using System.Collections.Generic;
 
 namespace backend.Application.Services.Concrete;
 
@@ -105,6 +106,13 @@ public class CrawlingService : ICrawlingService
     {
         var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
         var stories = crawler.GetChaptersOfStory(storyId, page, limit).ToDTOList(x => x.ToDTO());
+        return stories;
+    }
+
+    public int GetChaptersCount(string serverId, string storyId)
+    {
+        var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
+        var stories = crawler.GetChaptersCount(storyId);
         return stories;
     }
 

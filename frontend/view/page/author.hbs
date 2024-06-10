@@ -2,51 +2,46 @@
     <div class="row">
         <div class="col-md-12 fs-5 mt-4 mb-2 notify-text fw-bold d-flex align-items-center">
             <i class="fa-solid fa-flag pe-1"></i>
-            Tác giả: 
-            <span class="ms-2 flex-grow-1">{{authorName}}</span> 
-            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn:
-                {{#each serverArr}}
-                {{#ifEqual ../storyServer index}}
-                {{name}}
-                {{/ifEqual}}
-                {{else}}
-                n/a
-                {{/each}}
-                ]
-            </span>
+            Tác giả:
+            <span class="ms-2 flex-grow-1">{{authorName}}</span>
+            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn: {{#if
+                curServer}}{{curServer.name}}{{else}}n/a{{/if}}]</span>
         </div>
     </div>
 
-    {{> storiesList server=storyServer }}
+    {{> storiesList server=curServer.id }}
 
     <div class="row mt-3 mb-4">
         <ul class="pagination d-flex align-items-center justify-content-center">
             <li></li>
             {{#ifNotEqual curPage 1}}
             <li class="page-item mx-2"><a class="page-link"
-                    href="/author/{{authorName}}?id={{encodeUrl authorId}}&page=1"><i
+                    href="/author/{{authorName}}/s{{curServer.id}}?id={{encodeUrl authorId}}"><i
                         class="fa-solid fa-backward-step"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
-                    href="/author/{{authorName}}?id={{encodeUrl authorId}}&page={{plus curPage -1}}"><i
+                    href="/author/{{authorName}}/s{{curServer.id}}?id={{encodeUrl authorId}}&page={{plus curPage -1}}"><i
                         class="fa-solid fa-chevron-left"></i></a></li>
             {{/ifNotEqual}}
 
             {{#genPagination curPage totalPages}}
             <li class="page-item mx-2">
                 <a class="page-link {{#ifEqual this ../curPage}}page-active{{/ifEqual}}"
-                    href="/author/{{../authorName}}?id={{encodeUrl ../authorId}}&page={{this}}">{{this}}</a>
+                    href="/author/{{../authorName}}/s{{../curServer.id}}?id={{encodeUrl ../authorId}}&page={{this}}">{{this}}</a>
             </li>
             {{/genPagination}}
 
             {{#ifNotEqual curPage totalPages}}
             <li class="page-item mx-2"><a class="page-link"
-                    href="/author/{{authorName}}?id={{encodeUrl authorId}}&page={{plus curPage 1}}"><i
+                    href="/author/{{authorName}}/s{{curServer.id}}?id={{encodeUrl authorId}}&page={{plus curPage 1}}"><i
                         class="fa-solid fa-chevron-right"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
-                    href="/author/{{authorName}}?id={{encodeUrl authorId}}&page={{totalPages}}"><i
+                    href="/author/{{authorName}}/s{{curServer.id}}?id={{encodeUrl authorId}}&page={{totalPages}}"><i
                         class="fa-solid fa-forward-step"></i></a></li>
             {{/ifNotEqual}}
             <li></li>
         </ul>
     </div>
 </div>
+<script>
+    let unchangedServerId = "{{ curServer.id }}";
+</script>

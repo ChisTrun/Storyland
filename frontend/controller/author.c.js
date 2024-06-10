@@ -16,18 +16,18 @@ const perPage = 24;
 module.exports = {
     async render(req, res, next) {
         try {
-            const storyServer = req.params.storyServer;
-            const authorId = decodeURIComponent(req.query.id);
+            const sortedServerIds = req.session.sortedServerIds;
             const authorName = req.params.authorName;
+            const authorServer = req.params.authorServer;
+            const authorId = decodeURIComponent(req.query.id);
             const curPage = parseInt(req.query.page) || 1;
-            let resBody = {};
 
             const response = await fetch(`${BE_HOST}/api/search/${storyServer}/tacgia/${encodeURIComponent(authorId)}?page=${curPage}&limit=${perPage}`);
+            let resBody = {};
             if (!response.ok) {
                 resBody.data = [];
-                resBody.totalPages = 0;
                 const errorMessage = await response.text();
-                console.error(errorMessage);
+                console.error(`${response.status}: ${errorMessage}`);
             }
             else {
                 resBody = await response.json();
@@ -40,10 +40,9 @@ module.exports = {
             render.authorId = authorId;
             render.curPage = curPage;
             render.totalPages = totalPages;
-            render.storyServer = storyServer;
-            render.serverArr = serverArr;
 
-            render.serverIndex = req.session.serverIndex;
+            render.curServer = serverArr.find(server => server.id === authorServer);
+            render.sortedServerIds = sortedServerIds;
             render.isDark = req.session.isDark;
             render.title = `Tác giả ${render.authorName} | StoryLand`;
 

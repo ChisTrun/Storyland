@@ -1,13 +1,16 @@
 ﻿using backend.Application.Plugins.DLLScanner.Concrete;
-using System.Collections.Generic;
 
-namespace backend.Handler
+namespace backend.Application.Plugins.Handler;
+
+public class ServerHandler
 {
-    public class ServerHandler
+    public static bool CheckServerID(string id)
     {
-        public static bool CheckServerIndex(int index)
-        {
-            return CrawlerScanner.Instance.Commands.ElementAtOrDefault(index) != null;
-        }
+        return StorySourceScanner.Instance.Commands[id] != null;
+    }
+    
+    public static bool CheckExporterID(string id)
+    {
+        return ExporterScanner.Instance.Commands[id] != null;
     }
 }
