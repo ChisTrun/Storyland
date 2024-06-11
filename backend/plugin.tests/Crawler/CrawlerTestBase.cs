@@ -1,6 +1,8 @@
 using PluginBase.Contract;
+using PluginBase.Exceptions;
 using PluginBase.Models;
 using System;
+using System.Xml.Linq;
 using TangThuVien;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -25,6 +27,20 @@ namespace plugin.tests.Crawler;
 public abstract class CrawlerTestBase
 {
     private static bool ValidRepresentative(Representative rep) => string.IsNullOrEmpty(rep.Id) == false && string.IsNullOrEmpty(rep.Name) == false;
+    private static bool ValidChapterContent(ChapterContent chapterContent)
+    {
+        return string.IsNullOrEmpty(chapterContent.Content) == false
+            && string.IsNullOrEmpty(chapterContent.ChapterName) == false
+            && string.IsNullOrEmpty(chapterContent.ChapterID) == false;
+    }
+
+    private static bool ValidStoryDetail(StoryDetail storyDetail)
+    {
+        return storyDetail.Author != null
+            && storyDetail.Categories != null
+            && string.IsNullOrEmpty(storyDetail.Status) == false
+            && string.IsNullOrEmpty(storyDetail.Description) == false;
+    }
 
     private void AssertPaging<T>(Func<int, int, PagingRepresentative<T>> getPage) where T : Representative
     {
@@ -111,14 +127,269 @@ public abstract class CrawlerTestBase
         void testCode() => crawler.GetStoriesOfCategory(categoryId, 1, 10);
 
         // Assert
-        Assert.Throws<Exception>(testCode);
+        Assert.Throws<CrawlerDocumentException>(testCode);
     }
 
     // ===============================
     // GetStoriesBySearchName
-    // + valid category ID
+    // + valid story name
     // + valid paging
-    // + invalid category ID
+    // + invalid story name
     // ===============================
 
+    public virtual void GetStoriesBySearchName_ValidStoryName_ReturnsStories(string storyName)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        var stories = crawler.GetStoriesBySearchName(storyName, 1, 10);
+        var isAllValidItem = stories.Data.All(ValidRepresentative);
+
+        // Assert
+        Assert.True(isAllValidItem);
+    }
+
+    public virtual void GetStoriesBySearchName_ValidStoryName_ValidPaging(string storyName)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        // Assert
+        AssertPaging((page, limit) => crawler.GetStoriesBySearchName(storyName, page, limit));
+    }
+
+    public virtual void GetStoriesBySearchName_InvalidStoryName_ThrowsException(string storyName)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetStoriesBySearchName(storyName, 1, 10);
+
+        // Assert
+        Assert.Throws<CrawlerDocumentException>(testCode);
+    }
+
+    // ===============================
+    // GetStoriesOfAuthor
+    // + valid author ID
+    // + valid paging
+    // + invalid author ID
+    // ===============================
+
+    public virtual void GetStoriesOfAuthor_ValidAuthorId_ReturnsStories(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        var stories = crawler.GetStoriesOfAuthor(id, 1, 10);
+        var isAllValidItem = stories.Data.All(ValidRepresentative);
+
+        // Assert
+        Assert.True(isAllValidItem);
+    }
+
+    public virtual void GetStoriesOfAuthor_ValidAuthorId_ValidPaging(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        // Assert
+        AssertPaging((page, limit) => crawler.GetStoriesOfAuthor(id, page, limit));
+    }
+
+    public virtual void GetStoriesOfAuthor_InvalidAuthorId_ThrowsException(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetStoriesBySearchName(id, 1, 10);
+
+        // Assert
+        Assert.Throws<CrawlerDocumentException>(testCode);
+    }
+
+    // ===============================
+    // GetChaptersOfStory
+    // + valid story ID
+    // + valid paging
+    // + invalid story ID
+    // ===============================
+
+    public virtual void GetChaptersOfStory_ValidStoryId_ReturnChapters(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        var chapters = crawler.GetChaptersOfStory(id, 1, 10);
+        var isAllValidItem = chapters.Data.All(ValidRepresentative);
+
+        // Assert
+        Assert.True(isAllValidItem);
+    }
+
+    public virtual void GetChaptersOfStory_ValidPaging_ReturnChapters(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        // Assert
+        AssertPaging((page, limit) => crawler.GetChaptersOfStory(id, page, limit));
+    }
+
+    public virtual void GetChaptersOfStory_InvalidStoryId_ThrowsException(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetChaptersOfStory(id, 1, 10);
+
+        // Assert
+        Assert.Throws<CrawlerDocumentException>(testCode);
+    }
+
+    // ===============================
+    // GetChapterContent
+    // + valid story ID, chapter index
+    // + invalid story ID
+    // + invalid chapter index
+    // ===============================
+
+    public virtual void GetChapterContent_ValidStoryId_ReturnChapterContent(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        var chapter = crawler.GetChapterContent(id, 0);
+        var isAllValidItem = ValidChapterContent(chapter);
+
+        // Assert
+        Assert.True(isAllValidItem);
+    }
+
+    public virtual void GetChapterContent_InvalidChapterIndex_ThrowsException(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetChapterContent(id, -1);
+
+        // Assert
+        Assert.Throws<Exception>(testCode);
+    }
+
+    public virtual void GetChapterContent_InvalidStoryId_ThrowsException(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetChapterContent(id, 0);
+
+        // Assert
+        Assert.Throws<CrawlerDocumentException>(testCode);
+    }
+
+    // ===============================
+    // GetStoryDetail
+    // + valid story ID
+    // + invalid story ID
+    // ===============================
+
+    public virtual void GetStoryDetail_ValidStoryId_ReturnStoryDetail(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        var story = crawler.GetStoryDetail(id);
+        var isAllValidItem = ValidStoryDetail(story);
+
+        // Assert
+        Assert.True(isAllValidItem);
+    }
+
+    public virtual void GetStoryDetail_InvalidStoryId_ThrowsException(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetStoryDetail(id);
+
+        // Assert
+        Assert.Throws<Exception>(testCode);
+    }
+
+    // ===============================
+    // GetAuthorsBySearchName
+    // + valid name
+    // + empty name
+    // ===============================
+
+    public virtual void GetAuthorsBySearchName_ValidName_ReturnsAuthors(string name)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        var authors = crawler.GetAuthorsBySearchName(name, 1, 10);
+        var isAllValidItem = authors.Data.All(ValidRepresentative);
+
+        // Assert
+        Assert.True(isAllValidItem);
+    }
+
+    public virtual void GetAuthorsBySearchName_EmptyName_ThrowsException(string name)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetAuthorsBySearchName(name, 1, 10);
+
+        // Assert
+        Assert.Throws<CrawlerDocumentException>(testCode);
+    }
+
+    // ===============================
+    // GetChaptersCount
+    // + valid story id
+    // + invalid story id
+    // ===============================
+
+    public virtual void GetChapterCount_ValidStoryId_ReturnChaptersCount(string storyId)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        var count = crawler.GetChaptersCount(storyId);
+        var isAllValidItem = count >= 0;
+
+        // Assert
+        Assert.True(isAllValidItem);
+    }
+
+    public virtual void GetChapterCount_InValidStoryId_ThrowsException(string storyId)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetChaptersCount(storyId);
+
+        // Assert
+        Assert.Throws<CrawlerDocumentException>(testCode);
+    }
 }
