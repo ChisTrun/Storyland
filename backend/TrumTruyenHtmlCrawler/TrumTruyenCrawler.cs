@@ -601,6 +601,6 @@ public class TrumTruyenCrawler : ICrawler
 
     public int GetChaptersCount(string storyId)
     {
-        throw new NotImplementedException();
+        return GetTotalChap(storyId);
     }
 }
