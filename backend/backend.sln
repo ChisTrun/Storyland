@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backend.Domain", "backend.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backend.Application", "backend.Application\backend.Application.csproj", "{35D2E3FF-3E69-4448-BB05-EDA308554D30}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRCExporter", "PRCExporter\PRCExporter.csproj", "{F47E3755-1223-453C-A797-02F5B283F0D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{35D2E3FF-3E69-4448-BB05-EDA308554D30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35D2E3FF-3E69-4448-BB05-EDA308554D30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35D2E3FF-3E69-4448-BB05-EDA308554D30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F47E3755-1223-453C-A797-02F5B283F0D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F47E3755-1223-453C-A797-02F5B283F0D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F47E3755-1223-453C-A797-02F5B283F0D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F47E3755-1223-453C-A797-02F5B283F0D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
