@@ -7,7 +7,7 @@ namespace backend.Application.Mapper
     {
         public static StoryDetailDTO ToDTO(this StoryDetail storyDetail)
         {
-            return new StoryDetailDTO(storyDetail.ID, storyDetail.Name, storyDetail.ImageURL, storyDetail.Author.ToDTO(), storyDetail.Status, storyDetail.Categories.Select(x => x.ToDTO()), storyDetail.Description);
+            return new StoryDetailDTO(storyDetail.Identity, storyDetail.Name, storyDetail.ImageURL, storyDetail.Author.ToDTO(), storyDetail.Status, storyDetail.Categories.Select(x => x.ToDTO()), storyDetail.Description);
         }
     }
 }

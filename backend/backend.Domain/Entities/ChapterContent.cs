@@ -1,9 +1,9 @@
-﻿namespace backend.Domain.Entities;
+﻿using backend.Domain.Primitives;
 
-public class ChapterContent(string content, string name, int index, string storyId)
+namespace backend.Domain.Entities;
+
+public class ChapterContent(string content, string name, int index, string storyId) : ChapterEntityBase(storyId, index)
 {
-    public string StoryID { get; } = storyId;
-    public int Index { get; } = index;
     public string Name { get; } = name;
     public string Content { get; } = content;
 

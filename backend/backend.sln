@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backend", "backend\backend.
 		{5B4AE220-93CD-4C26-A3F0-E00466AFE15B} = {5B4AE220-93CD-4C26-A3F0-E00466AFE15B}
 		{7D77ECD0-8968-47BE-B730-D1C492EC8182} = {7D77ECD0-8968-47BE-B730-D1C492EC8182}
 		{987892E9-5908-4B28-80D3-911DD589DFFB} = {987892E9-5908-4B28-80D3-911DD589DFFB}
+		{CC1985E3-A4FF-4687-93F0-B1CC999A82FF} = {CC1985E3-A4FF-4687-93F0-B1CC999A82FF}
+		{F47E3755-1223-453C-A797-02F5B283F0D9} = {F47E3755-1223-453C-A797-02F5B283F0D9}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TruyenFullPlugin", "TruyenFullPlugin\TruyenFullPlugin.csproj", "{43DE4F1B-609E-419C-9A27-95BB691F7A2B}"
@@ -29,13 +31,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDFExporter", "PDFExporter\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrumTruyenHtmlCrawler", "TrumTruyenHtmlCrawler\TrumTruyenHtmlCrawler.csproj", "{7D77ECD0-8968-47BE-B730-D1C492EC8182}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginBase.Tests", "plugin.tests\PluginBase.Tests.csproj", "{B8C51043-7E91-47D0-AE7B-0950AF988C95}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backend.Domain", "backend.Domain\backend.Domain.csproj", "{CC1985E3-A4FF-4687-93F0-B1CC999A82FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backend.Application", "backend.Application\backend.Application.csproj", "{35D2E3FF-3E69-4448-BB05-EDA308554D30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRCExporter", "PRCExporter\PRCExporter.csproj", "{F47E3755-1223-453C-A797-02F5B283F0D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backend.Tests", "backend.Tests\backend.Tests.csproj", "{CF3487FA-E5A7-480C-A581-EE5293F9236C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +73,6 @@ Global
 		{7D77ECD0-8968-47BE-B730-D1C492EC8182}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D77ECD0-8968-47BE-B730-D1C492EC8182}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D77ECD0-8968-47BE-B730-D1C492EC8182}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8C51043-7E91-47D0-AE7B-0950AF988C95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8C51043-7E91-47D0-AE7B-0950AF988C95}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8C51043-7E91-47D0-AE7B-0950AF988C95}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8C51043-7E91-47D0-AE7B-0950AF988C95}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CC1985E3-A4FF-4687-93F0-B1CC999A82FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC1985E3-A4FF-4687-93F0-B1CC999A82FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC1985E3-A4FF-4687-93F0-B1CC999A82FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,6 +85,10 @@ Global
 		{F47E3755-1223-453C-A797-02F5B283F0D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F47E3755-1223-453C-A797-02F5B283F0D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F47E3755-1223-453C-A797-02F5B283F0D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF3487FA-E5A7-480C-A581-EE5293F9236C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF3487FA-E5A7-480C-A581-EE5293F9236C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF3487FA-E5A7-480C-A581-EE5293F9236C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF3487FA-E5A7-480C-A581-EE5293F9236C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -51,15 +51,15 @@ public static class ModelExtension
 
     public static string GetUrl(this Story representative)
     {
-        return $"{TruyenFullCommand.Domain}{representative.ID}";
+        return $"{TruyenFullCommand.Domain}{representative.Identity}";
     }
     public static string GetUrl(this Author representative)
     {
-        return $"{TruyenFullCommand.DomainTacGia}{representative.ID}";
+        return $"{TruyenFullCommand.DomainTacGia}{representative.Identity}";
     }
     public static string GetUrl(this Category representative)
     {
-        return $"{TruyenFullCommand.DomainTheLoai}{representative.ID}";
+        return $"{TruyenFullCommand.DomainTheLoai}{representative.Identity}";
     }
     //public static string GetUrl(this Chapter representative)
     //{

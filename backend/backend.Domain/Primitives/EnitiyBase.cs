@@ -1,8 +1,8 @@
 ﻿namespace backend.Domain.Primitives;
 
-public abstract class EntityBase(string id) : IEquatable<EntityBase>
+public abstract class EntityBase : IEquatable<EntityBase>
 {
-    public string ID { get; } = id;
+    public abstract string Identity { get; }
 
     public static bool operator ==(EntityBase? first, EntityBase? second)
     {
@@ -21,7 +21,7 @@ public abstract class EntityBase(string id) : IEquatable<EntityBase>
         {
             return false;
         }
-        return entityBase.ID == ID;
+        return entityBase.Identity == Identity;
     }
 
     public bool Equals(EntityBase? other)
@@ -30,11 +30,11 @@ public abstract class EntityBase(string id) : IEquatable<EntityBase>
         {
             return false;
         }
-        return other.ID == ID;
+        return other.Identity == Identity;
     }
 
     public override int GetHashCode()
     {
-        return ID.GetHashCode();
+        return Identity.GetHashCode();
     }
 }
