@@ -1,4 +1,4 @@
-﻿namespace backend.Application.Plugins.DLLScanner.Utilis;
+﻿namespace backend.Application.DLLScanner.Utilis;
 
 public class UUID
 {

@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 
-namespace backend.Application.Plugins.DLLScanner.Utilis;
+namespace backend.Application.DLLScanner.Utilis;
 
-class PluginLoadContext : AssemblyLoadContext
+internal class PluginLoadContext : AssemblyLoadContext
 {
     private AssemblyDependencyResolver _resolver;
 

@@ -1,6 +1,3 @@
-using backend.Application.Plugins.Concrete;
-using backend.Application.Plugins.Contract;
-using backend.Application.Plugins.DLLScanner;
 using backend.Application.Services.Abstract;
 using backend.Application.Services.Concrete;
 using System.Reflection;
@@ -11,13 +8,13 @@ namespace backend
     {
         public static void Main(string[] args)
         {
-            ScannerController.Instance.StartToScan();
-
             var builder = WebApplication.CreateBuilder(args);
+
+            var pluginProvider = new PluginsScannerService();
 
             // Add dependency through IOC
 
-            builder.Services.AddSingleton<IPluginProvider, PluginProvider>();
+            builder.Services.AddSingleton<IPluginsScannerService>(pluginProvider);
             builder.Services.AddSingleton<ICrawlingService, CrawlingService>();
             builder.Services.AddSingleton<IExportService, ExportService>();
 
@@ -34,6 +31,10 @@ namespace backend
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
 
+            // Razor
+
+            builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
             var app = builder.Build();
 
 
@@ -49,6 +50,8 @@ namespace backend
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MapRazorPages();
 
             app.Run();
         }

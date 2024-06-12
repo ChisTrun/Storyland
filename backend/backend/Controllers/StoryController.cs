@@ -1,7 +1,5 @@
 ﻿using backend.Application.DTO;
-using backend.Application.Plugins.DLLScanner.Concrete;
 using backend.Application.Services.Abstract;
-using backend.Domain.Entities;
 using backend.Domain.Objects;
 using Microsoft.AspNetCore.Mvc;
 

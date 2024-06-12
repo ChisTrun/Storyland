@@ -18,6 +18,5 @@ public interface ICrawlingService
     PagedList<ChapterDTO> GetChaptersOfStory(string serverId, string storyId, int page, int limit);
     List<ChapterDTO> GetChaptersOfStory(string serverId, string storyId);
     StoryDetailDTO GetStoryDetail(string serverId, string storyId);
-    List<PluginInfo> GetServers();
     int GetChaptersCount(string serverId, string storyId);
 }

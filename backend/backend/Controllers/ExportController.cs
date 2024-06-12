@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using backend.Application.Commands.Abstract;
 using backend.Application.Services.Abstract;
-using backend.Domain.Objects;
+using backend.Application.DTO;
+using backend.Services;
 
 namespace backend.Controllers;
 
 [Route("api/export")]
 public class ExportController : Controller
 {
+    private readonly IPluginsScannerService _pluginsScannerService;
     private readonly IExportService _exportService;
 
-    public ExportController(IExportService exportService)
+    public ExportController(IPluginsScannerService pluginsScannerService, IExportService exportService)
     {
+        _pluginsScannerService = pluginsScannerService;
         _exportService = exportService;
     }
 
@@ -19,13 +21,13 @@ public class ExportController : Controller
     /// Get all export formats.
     /// </summary>
     /// <returns></returns>
-    [ProducesResponseType(typeof(PluginInfo[]), 200)]
+    [ProducesResponseType(typeof(PluginInfoDTO[]), 200)]
     [HttpGet]
     public IActionResult GetExportFormats()
     {
         try
         {
-            return Ok(_exportService.GetExportFormats());
+            return Ok(_pluginsScannerService.GetExporterPluginInfos());
         }
         catch (Exception e)
         {
@@ -53,6 +55,44 @@ public class ExportController : Controller
         catch (Exception e)
         {
             return StatusCode(500, $"Fail to get download link: {e.Message}.");
+        }
+    }
+
+    /// <summary>
+    /// Change plugins status (used / removed).
+    /// </summary>
+    /// <param name="serverID"></param>
+    /// <returns></returns>
+    [HttpPost("changestatus")]
+    public IActionResult ChangeStatus([FromBody] string serverID)
+    {
+        try
+        {
+            _pluginsScannerService.GetExporterScanner().ChangeStatus(serverID);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, $"Fail to get servers: {e.Message}.");
+        }
+    }
+
+    /// <summary>
+    /// Upload plugins files.
+    /// </summary>
+    /// <param name="files"></param>
+    /// <returns></returns>
+    [HttpPost("upload")]
+    public IActionResult UploadPlugins(List<IFormFile> files)
+    {
+        try
+        {
+            var message = PluginFile.UploadFiles(_pluginsScannerService.GetExporterScanner(), files);
+            return Ok(message);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, $"Fail to get servers: {e.Message}.");
         }
     }
 }

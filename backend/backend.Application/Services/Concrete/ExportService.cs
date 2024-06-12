@@ -1,30 +1,25 @@
 ﻿using backend.Application.Commands.Concrete;
+using backend.Application.DLLScanner.Contract;
 using backend.Application.DTO;
-using backend.Application.Plugins.Contract;
 using backend.Application.Queries.Concrete;
 using backend.Application.Services.Abstract;
-using backend.Domain.Objects;
+using backend.Domain.Contract;
 
 namespace backend.Application.Services.Concrete;
 
 public class ExportService : IExportService
 {
-    private readonly IPluginProvider _pluginProvider;
+    private readonly IPluginsScannerService _pluginsScannerService;
 
-    public ExportService(IPluginProvider pluginProvider)
+    public ExportService(IPluginsScannerService pluginsScannerService)
     {
-        _pluginProvider = pluginProvider;
-    }
-
-    public List<PluginInfo> GetExportFormats()
-    {
-        return _pluginProvider.GetExporters();
+        _pluginsScannerService = pluginsScannerService;
     }
 
     public FileBytesDTO CreateFile(string serverId, string fileTypeId, string storyId)
     {
-        var crawler = _pluginProvider.GetCrawlerPlugin(serverId);
-        var exporter = _pluginProvider.GetExporterPlugin(fileTypeId);
+        var crawler = _pluginsScannerService.GetCrawlerScanner().UsePlugin(serverId);
+        var exporter = _pluginsScannerService.GetExporterScanner().UsePlugin(fileTypeId);
         var exportCommand = new ExportCommand(exporter);
         var chapterQuery = new ChapterQuery(crawler);
         var chapterContents = chapterQuery.GetChapterContents(storyId);

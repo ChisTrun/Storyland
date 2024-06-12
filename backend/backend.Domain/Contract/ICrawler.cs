@@ -3,9 +3,8 @@ using backend.Domain.Objects;
 
 namespace backend.Domain.Contract;
 
-public interface ICrawler
+public interface ICrawler : IPlugin
 {
-    public string Name { get; }
     public string Address { get; }
 
     public List<Category> GetCategories();

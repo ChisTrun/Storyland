@@ -2,9 +2,8 @@
 
 namespace backend.Domain.Contract;
 
-public interface IExporter
+public interface IExporter : IPlugin
 {
-    public string Name { get; }
     public string Extension { get; }
 
     public byte[] ExportStory(StoryDetail story, IEnumerable<ChapterContent> chapteres);

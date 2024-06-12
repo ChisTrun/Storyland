@@ -1,35 +1,75 @@
-﻿using backend.Application.Services.Abstract;
-using backend.Domain.Objects;
+﻿using backend.Application.DTO;
+using backend.Application.Services.Abstract;
+using backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 
-namespace backend.Controllers
+namespace backend.Controllers;
+
+[ApiController]
+[Route("api/server")]
+public class ServerController : Controller
 {
-    [Route("api/server")]
-    public class ServerController : Controller
+    private readonly IPluginsScannerService _pluginsScannerService;
+
+    public ServerController(IPluginsScannerService pluginsScannerService)
     {
-        private readonly ICrawlingService _crawlingService;
+        _pluginsScannerService = pluginsScannerService;
+    }
 
-        public ServerController(ICrawlingService crawlingService)
+    /// <summary>
+    /// Get servers.
+    /// </summary>
+    [ProducesResponseType(typeof(PluginInfoDTO[]), 200)]
+    [HttpGet]
+    public IActionResult GetServers()
+    {
+        try
         {
-            _crawlingService = crawlingService;
+            return Ok(_pluginsScannerService.GetExporterPluginInfos());
         }
-
-        /// <summary>
-        /// Get servers.
-        /// </summary>
-        [ProducesResponseType(typeof(PluginInfo[]), 200)]
-        [HttpGet]
-        public IActionResult GetServers()
+        catch (Exception e)
         {
-            try
-            {
-                return Ok(_crawlingService.GetServers());
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, $"Fail to get servers: {e.Message}.");
-            }
+            return StatusCode(500, $"Fail to get servers: {e.Message}.");
+        }
+    }
+
+    /// <summary>
+    /// Change plugins status (used / removed).
+    /// </summary>
+    /// <param name="serverID"></param>
+    /// <returns></returns>
+    [HttpPost("changestatus")]
+    public IActionResult ChangeStatus([FromBody] string serverID)
+    {
+        try
+        {
+            _pluginsScannerService.GetCrawlerScanner().ChangeStatus(serverID);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, $"Fail to get servers: {e.Message}.");
+        }
+    }
+
+    /// <summary>
+    /// Upload plugins files.
+    /// </summary>
+    /// <param name="files"></param>
+    /// <returns></returns>
+    [HttpPost("upload")]
+    public IActionResult UploadPlugins(List<IFormFile> files)
+    {
+        try
+        {
+            var message = PluginFile.UploadFiles(_pluginsScannerService.GetCrawlerScanner(), files);
+            return Ok(message);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, $"Fail to get servers: {e.Message}.");
         }
     }
 }
