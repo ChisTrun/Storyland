@@ -1,4 +1,5 @@
-﻿using backend.DLLScanner.Concrete;
+﻿using backend.DLLScanner;
+using backend.DLLScanner.Concrete;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -9,7 +10,8 @@ namespace backend.Handler
  
         public static bool CheckServerID(string id)
         {
-            return StorySourceScanner.Instance.Commands[id] != null;
+            var plugin = ScannerController.Instance.sourceScanner.Commands[id];
+            return plugin != null && plugin.Item2 != DLLScanner.Utilis.PluginStatus.Removed;
         }
     }
 }

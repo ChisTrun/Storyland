@@ -23,7 +23,7 @@ namespace backend.Controllers
             {
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid) return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverID].GetStoriesOfAuthor(authorId));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].Item1.GetStoriesOfAuthor(authorId));
             }
             catch (Exception e)
             {
@@ -47,7 +47,7 @@ namespace backend.Controllers
             {
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid) return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverID].GetStoriesOfAuthor(authorId, page, limit));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].Item1.GetStoriesOfAuthor(authorId, page, limit));
             }
             catch (Exception e)
             {
@@ -69,7 +69,7 @@ namespace backend.Controllers
             {
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid) return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverID].GetStoriesBySearchName(storyName));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].Item1.GetStoriesBySearchName(storyName));
             }
             catch (Exception e)
             {
@@ -94,7 +94,7 @@ namespace backend.Controllers
             {
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid) return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverID].GetStoriesBySearchName(storyName, page, limit));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].Item1.GetStoriesBySearchName(storyName, page, limit));
             }
             catch (Exception e)
             {

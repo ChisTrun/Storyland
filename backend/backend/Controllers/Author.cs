@@ -23,7 +23,7 @@ namespace backend.Controllers
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid)
                     return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverID].GetAuthorsBySearchName(authorName));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].Item1.GetAuthorsBySearchName(authorName));
             }
             catch (Exception e)
             {
@@ -49,7 +49,7 @@ namespace backend.Controllers
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid)
                     return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverID].GetAuthorsBySearchName(authorName, page, limit));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].Item1.GetAuthorsBySearchName(authorName, page, limit));
             }
             catch (Exception e)
             {

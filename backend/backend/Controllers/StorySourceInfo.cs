@@ -4,6 +4,7 @@ using backend.DLLScanner.Concrete;
 using Microsoft.AspNetCore.Identity.Data;
 using backend.DLLScanner;
 using System.Reflection;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace backend.Controllers
@@ -24,7 +25,7 @@ namespace backend.Controllers
         {
             try
             {
-                var list = StorySourceScanner.Instance.Commands.Select(source => new Server(source.Key, source.Value.Name));
+                var list = StorySourceScanner.Instance.Commands.Where(souce => backend.Handler.ServerHandler.CheckServerID(souce.Key)).Select(source => new Server(source.Key, source.Value.Item1.Name));
                 return Ok(list);
             }
             catch (Exception e)
@@ -33,45 +34,41 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPost("delete")]
-        public IActionResult DeletePlugin([FromBody] string serverID)
+        [HttpPost("changestatus")]
+        public IActionResult ChangeStatus([FromBody] string serverID)
         {
-            ScannerController.Instance.sourceScanner.Commands.Remove(serverID);
-            return Ok();
-        }
-
-        [HttpGet("useTF")]
-        public IActionResult USETF()
-        {
-            AppDomain appDomain = AppDomain.CreateDomain("USETF");
-            string assemblyPath = @"F:\Tai_lieu_dh\ThietKePhanMem\Project\Storyland\backend\backend\bin\Debug\net8.0\plugins\TruyenFullPlugin.dll";
-            appDomain.Load(AssemblyName.GetAssemblyName(assemblyPath));
-
-            
+            ScannerController.Instance.sourceScanner.ChangeStatus(serverID);
             return Ok();
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadPlugin([FromForm] FileUploadModel model)
+        public async Task<IActionResult> UploadPlugins(List<IFormFile> files)
         {
-            var file = model.File;
-            if (file == null || file.Length == 0)
-                return BadRequest("Upload a file.");
-
-            var filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ScannerController.Instance.sourceScanner.PluginsFolder, file.FileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            string message = string.Empty;
+            int numberSuccess = 0;
+            foreach (var formFile in files)
             {
-                await file.CopyToAsync(stream);
+                if (formFile.Length > 0)
+                {
+                    var filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ScannerController.Instance.sourceScanner.PluginsFolder, formFile.FileName);
+
+                    try
+                    {
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await formFile.CopyToAsync(stream);
+                        }
+                        numberSuccess++;
+                    }
+                    catch (Exception ex)
+                    {
+                        message += ex.Message + "\n";
+                    }
+                }
             }
-
-            // Implement plugin loading logic
-            return Redirect("/index");
+            message += $"\nLoaded {numberSuccess} file(s).";
+            ScannerController.Instance.sourceScanner.ScanDLLFiles();
+            return Ok(new { message });
         }
-
-    }
-    public class FileUploadModel
-    {
-        public IFormFile File { get; set; }
     }
 }

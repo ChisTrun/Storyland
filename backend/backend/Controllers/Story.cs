@@ -23,7 +23,7 @@ namespace backend.Controllers
                 if (!isValid)
                     return BadRequest("Invalid server index.");
                 var crawler = StorySourceScanner.Instance.Commands[serverID];
-                return Ok(crawler.GetStoryDetail(storyId));
+                return Ok(crawler.Item1.GetStoryDetail(storyId));
             }
             catch (Exception e)
             {
@@ -48,7 +48,7 @@ namespace backend.Controllers
                 if (!isValid)
                     return BadRequest("Invalid server index.");
                 var crawler = StorySourceScanner.Instance.Commands[serverID];
-                return Ok(crawler.GetChaptersOfStory(storyId));
+                return Ok(crawler.Item1.GetChaptersOfStory(storyId));
             }
             catch (Exception e)
             {
@@ -67,7 +67,7 @@ namespace backend.Controllers
                 if (!isValid)
                     return BadRequest("Invalid server index.");
                 var crawler = StorySourceScanner.Instance.Commands[serverID];
-                return Ok(crawler.GetChaptersCount(storyId));
+                return Ok(crawler.Item1.GetChaptersCount(storyId));
             }
             catch (Exception e)
             {
@@ -94,7 +94,7 @@ namespace backend.Controllers
                 if (!isValid)
                     return BadRequest("Invalid server index.");
                 var crawler = StorySourceScanner.Instance.Commands[serverID];
-                return Ok(crawler.GetChaptersOfStory(storyId, page, limit));
+                return Ok(crawler.Item1.GetChaptersOfStory(storyId, page, limit));
             }
             catch (Exception e)
             {
@@ -118,7 +118,7 @@ namespace backend.Controllers
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid)
                     return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverID].GetChapterContent(storyId, chapterIndex));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].Item1.GetChapterContent(storyId, chapterIndex));
             }
             catch (Exception e)
             {

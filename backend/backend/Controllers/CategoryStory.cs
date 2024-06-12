@@ -21,7 +21,7 @@ namespace backend.Controllers
             {
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid) return BadRequest("Invalid server index.");
-                return Ok(ScannerController.Instance.sourceScanner.Commands[serverID].GetCategories());
+                return Ok(ScannerController.Instance.sourceScanner.Commands[serverID].Item1.GetCategories());
             } 
             catch (Exception e) 
             {
@@ -44,7 +44,7 @@ namespace backend.Controllers
             {
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid) return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverID].GetStoriesOfCategory(categoryId));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].Item1.GetStoriesOfCategory(categoryId));
             }
             catch (Exception e)
             {
@@ -68,7 +68,7 @@ namespace backend.Controllers
             {
                 bool isValid = Handler.ServerHandler.CheckServerID(serverID);
                 if (!isValid) return BadRequest("Invalid server index.");
-                return Ok(StorySourceScanner.Instance.Commands[serverID].GetStoriesOfCategory(categoryId, page, limit));
+                return Ok(StorySourceScanner.Instance.Commands[serverID].Item1.GetStoriesOfCategory(categoryId, page, limit));
             }
             catch (Exception e)
             {

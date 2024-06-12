@@ -22,8 +22,8 @@ namespace backend.DLLScanner
 
         public void StartToScan()
         {
-            sourceScanner.StartScanThread();
-            exporterScanner.StartScanThread();
+            sourceScanner.ScanDLLFiles();
+            exporterScanner.ScanDLLFiles();
         }
     }
 }

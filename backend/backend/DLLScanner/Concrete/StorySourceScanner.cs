@@ -13,10 +13,10 @@ namespace backend.DLLScanner.Concrete
         public string PluginsFolder => "./plugins/storySource/";
 
         private readonly object _commandsLock = new();
-        public Dictionary<string, ICrawler> Commands { get; private set; }
+        public Dictionary<string, Tuple<ICrawler, PluginStatus>> Commands { get; private set; }
         private bool _isCalled = false;
 
-        public ICrawler? GetCurrentCrawler(int index) => Commands.Count > 0 ? Commands.ElementAt(index).Value : null;
+        public ICrawler? GetCurrentCrawler(int index) => Commands.Count > 0 ? Commands.ElementAt(index).Value.Item1 : null;
 
         private static readonly Lazy<StorySourceScanner> _lazy = new(() => new StorySourceScanner());
         public static StorySourceScanner Instance => _lazy.Value;
@@ -30,19 +30,19 @@ namespace backend.DLLScanner.Concrete
             _pluginPaths = [];
         }
 
-        public void StartScanThread()
-        {
-            if (_isCalled)
-                return;
-            _isCalled = true;
-            Thread ScanDLL = new Thread(new ThreadStart(Instance.ScanDLLFiles));
-            ScanDLL.Start();
-        }
+        //public void StartScanThread()
+        //{
+        //    if (_isCalled)
+        //        return;
+        //    _isCalled = true;
+        //    Thread ScanDLL = new Thread(new ThreadStart(Instance.ScanDLLFiles));
+        //    ScanDLL.Start();
+        //}
 
         public void ScanDLLFiles()
         {
-            while (true)
-            {
+            //while (true)
+            //{
                 if (!Directory.Exists(PluginsFolder))
                 {
                     Directory.CreateDirectory(PluginsFolder);
@@ -60,11 +60,11 @@ namespace backend.DLLScanner.Concrete
                         }).ToList();
                     lock (_commandsLock)
                     {
-                        newCommands.ForEach(command => Commands.Add(UUID.GenerateUUID(), command));
+                        newCommands.ForEach(command => Commands.Add(UUID.GenerateUUID(), new Tuple<ICrawler, PluginStatus>(command, PluginStatus.Used)));
                     }
                 }
-                Thread.Sleep(5000);
-            }
+            //    Thread.Sleep(5000);
+            //}
         }
 
         static IEnumerable<ICrawler> CreateCommands(Assembly assembly)
@@ -86,6 +86,14 @@ namespace backend.DLLScanner.Concrete
             if (count == 0)
             {
             }
+        }
+
+        public void ChangeStatus(string key)
+        {
+            var plugin = Commands[key].Item1;
+            var status = Commands[key].Item2;
+
+            Commands[key] = new Tuple<ICrawler, PluginStatus>(plugin, status.ChangeStatus());
         }
     }
 }
