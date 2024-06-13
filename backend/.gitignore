@@ -2,6 +2,7 @@
 backend/.vs
 **/bin/
 **/obj/
+backend/plugins
 
 # Frontend
 frontend/node_modules
