@@ -44,7 +44,7 @@ public class ExportController : Controller
     /// <returns></returns>
     [ProducesResponseType(typeof(FileContentResult), 200)]
     [HttpGet]
-    [Route("{serverId}/{fileTypeId}/{storyID}/")]
+    [Route("{serverId}/{fileTypeId}/{storyId}/")]
     public IActionResult GetAllCategories(string serverId, string fileTypeId, string storyId)
     {
         try
