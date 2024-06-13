@@ -135,13 +135,13 @@ public class TruyenFullCommand : ICrawler
         return Tuple.Create(url, name);
     }
 
-    private Category GetCategoryFromSubURL(string subUrl)
-    {
-        var doc = GetWebPageDocument(subUrl);
-        var name = doc.QuerySelector(".list.list-truyen .title-list h2 ").GetDirectInnerTextDecoded();
-        string ctgValue = subUrl.Replace(Domain, "");
-        return new Category(name, ctgValue);
-    }
+    //private Category GetCategoryFromSubURL(string subUrl)
+    //{
+    //    var doc = GetWebPageDocument(subUrl);
+    //    var name = doc.QuerySelector(".list.list-truyen .title-list h2 ").GetDirectInnerTextDecoded();
+    //    string ctgValue = subUrl.Replace(Domain, "");
+    //    return new Category(name, ctgValue);
+    //}
 
     public StoryDetail GetStoryDetail(string storyName)
     {

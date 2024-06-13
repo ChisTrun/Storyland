@@ -55,7 +55,6 @@ public abstract class CrawlerTestBase
         Assert.True(emptyFirstPage || lastPageCount > 0);
     }
 
-
     protected static async Task<bool> CheckIfServerAlive(string url)
     {
         using HttpClient client = new();

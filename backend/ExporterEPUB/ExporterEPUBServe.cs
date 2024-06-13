@@ -10,10 +10,10 @@ namespace ExporterEPUB
         private readonly StoryDetail _storyDetail;
         private readonly List<ChapterContent> _chapterContents;
 
-        public ExporterEPUBServe(StoryDetail storyDetail, List<ChapterContent> chapterContents)
+        public ExporterEPUBServe(StoryDetail storyDetail, IEnumerable<ChapterContent> chapterContents)
         {
             _storyDetail = storyDetail;
-            _chapterContents = chapterContents;
+            _chapterContents = chapterContents.ToList();
             var gui = $"Epub-{Guid.NewGuid()}-{DateTime.Now:dd-MM-yyyy}";
             var dir = Directory.CreateDirectory(gui);
             _structure = new FolderStructure(dir.FullName, FolderStructure.EPUBRESOURCE);
