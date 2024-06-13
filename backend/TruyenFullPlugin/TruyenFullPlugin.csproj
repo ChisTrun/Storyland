@@ -9,17 +9,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Models\**" />
-	  <EmbeddedResource Remove="Models\**" />
-	  <None Remove="Models\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.61" />
 		<PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1">
 			<Private>false</Private>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Models\**" />
+	  <EmbeddedResource Remove="Models\**" />
+	  <None Remove="Models\**" />
 	</ItemGroup>
 
 	<ItemGroup>

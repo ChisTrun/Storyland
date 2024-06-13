@@ -73,19 +73,22 @@ const getServer = async () => {
         const newServerIds = resBody.map(server => server.id);
         if (!areEqualArr(newServerIds, sortedServerIds)) {
             sortedServerIds = getNewServerIds(sortedServerIds, newServerIds);
-            await fetch(`${host}/extension/server/set`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+
+            $.ajax({
+                url: `${host}/extension/server/set`,
+                method: 'POST',
+                data: {
+                    'sortedServerIds': sortedServerIds,
                 },
-                credentials: 'same-origin',
-                body: JSON.stringify({
-                    sortedServerIds: sortedServerIds,
-                })
+                success: function (data) {
+                    getCategory();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error setting server: ", error);
+                }
             });
-            getCategory();
             if (unchangedServerId != undefined && unchangedServerId != null && !sortedServerIds.includes(unchangedServerId)) {
-                handleError('Server không còn khả dụng!');
+                handleError(`Server ${unchangedServerName} không còn khả dụng!`);
             }
         }
         const modal = $('.server-modal');
@@ -206,6 +209,26 @@ $(document).ready(function () {
     }
 });
 
+const applyChapterQuery = (min, max) => {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    if (params.has('page')) {
+        params.delete('page');
+    }
+    if (params.has('maxChapter')) {
+        params.set('maxChapter', max);
+    } else {
+        params.append('maxChapter', max);
+    }
+    if (params.has('minChapter')) {
+        params.set('minChapter', min);
+    } else {
+        params.append('minChapter', min);
+    }
+    url.search = params.toString();
+    location.href = url.toString();
+}
+
 getServer();
 getCategory();
-setInterval(getServer, 3000);
+setInterval(getServer, 500);

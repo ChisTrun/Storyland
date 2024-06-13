@@ -5,7 +5,7 @@ const { getServerArr } = require('../utils/utils');
 const view = 'search';
 const render = {
     layout: 'main',
-    scripts: null,
+    scripts: ['/js/search.js'],
     styles: null,
     header: 'header',
     footer: 'footer',
@@ -16,11 +16,18 @@ const perPage = 24;
 module.exports = {
     async render(req, res, next) {
         try {
+            const minChapter = req.query.minChapter || -1;
+            const maxChapter = req.query.maxChapter || -1;
             const sortedServerIds = req.session.sortedServerIds;
             const keyword = req.query.keyword || ' ';
             const curPage = parseInt(req.query.page) || 1;
-            
-            const url = `${BE_HOST}/api/search/${sortedServerIds[0]}/truyen/${encodeURIComponent(keyword)}?page=${curPage}&limit=${perPage}`;
+            let url = null;
+            if (minChapter == -1) {
+                url = `${BE_HOST}/api/search/${sortedServerIds[0]}/truyen/${encodeURIComponent(keyword)}?page=${curPage}&limit=${perPage}`;
+            }
+            else {
+                url = `${BE_HOST}/api/search/${sortedServerIds[0]}/truyen/${encodeURIComponent(keyword)}/${minChapter}/${maxChapter}?page=${curPage}&limit=${perPage}`
+            }
             const [responseResult, serverArrResult] = await Promise.allSettled([
                 fetch(url),
                 getServerArr()
@@ -45,6 +52,8 @@ module.exports = {
             render.keyword = keyword;
             render.curPage = curPage;
             render.totalPages = totalPages;
+            render.minChapter = minChapter;
+            render.maxChapter = maxChapter;
 
             render.curServer = serverArr.find(server => server.id === sortedServerIds[0]);
             render.sortedServerIds = sortedServerIds;

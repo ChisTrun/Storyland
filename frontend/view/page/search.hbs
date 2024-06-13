@@ -3,9 +3,28 @@
         <div class="col-md-12 fs-5 mt-4 mb-2 notify-text fw-bold d-flex align-items-center">
             <i class="fa-solid fa-flag pe-1"></i>
             Kết quả tìm kiếm với từ khoá:
-            <span class="ms-2 flex-grow-1">{{keyword}}</span>
+            <span class="ms-2 flex-grow-1">
+                {{keyword}}
+                {{#if (isLess -1 maxChapter)}}
+                ({{minChapter}} - {{maxChapter}} chương)
+                {{/if}}
+            </span>
             <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn: {{#if
                 curServer}}{{curServer.name}}{{else}}n/a{{/if}}]</span>
+        </div>
+    </div>
+
+    <div class="container rounded main-container my-2 p-4 shadow-sm border-upload fs-5">
+        <label for="file">Phân loại theo chương</label>
+        <div class="price-range-block d-flex mt-2 align-items-center">
+            <input type="number" min=0 max="9900" oninput="validity.valid||(value='0');" id="min_price"
+                class="price-range-field" />
+            <div id="slider-range" class="price-filter-range" name="rangeInput"></div>
+            <input type="number" min=0 max="10000" oninput="validity.valid||(value='10000');" id="max_price"
+                class="price-range-field" />
+            <div class="flex-grow-1"></div>
+            <div class="btn btn-success apply-btn"
+                onclick="applyChapterQuery($('#min_price').val(), $('#max_price').val())">Áp dụng</div>
         </div>
     </div>
 
@@ -15,25 +34,25 @@
         <ul class="pagination d-flex align-items-center justify-content-center">
             <li></li>
             {{#ifNotEqual curPage 1}}
-            <li class="page-item mx-2"><a class="page-link" href="/search?keyword={{keyword}}"><i
+            <li class="page-item mx-2"><a class="page-link" href="/search?keyword={{keyword}}&minChapter={{minChapter}}&maxChapter={{maxChapter}}"><i
                         class="fa-solid fa-backward-step"></i></a></li>
             <li class="page-item mx-2"><a class="page-link"
-                    href="/search?keyword={{keyword}}&page={{plus curPage -1}}"><i
+                    href="/search?keyword={{keyword}}&page={{plus curPage -1}}&minChapter={{minChapter}}&maxChapter={{maxChapter}}"><i
                         class="fa-solid fa-chevron-left"></i></a></li>
             {{/ifNotEqual}}
 
             {{#genPagination curPage totalPages}}
             <li class="page-item mx-2">
                 <a class="page-link {{#ifEqual this ../curPage}}page-active{{/ifEqual}}"
-                    href="/search?keyword={{../keyword}}&page={{this}}">{{this}}</a>
+                    href="/search?keyword={{../keyword}}&page={{this}}&minChapter={{../minChapter}}&maxChapter={{../maxChapter}}">{{this}}</a>
             </li>
             {{/genPagination}}
 
             {{#ifNotEqual curPage totalPages}}
             <li class="page-item mx-2"><a class="page-link"
-                    href="/search?keyword={{keyword}}&page={{plus curPage 1}}"><i
+                    href="/search?keyword={{keyword}}&page={{plus curPage 1}}&minChapter={{minChapter}}&maxChapter={{maxChapter}}"><i
                         class="fa-solid fa-chevron-right"></i></a></li>
-            <li class="page-item mx-2"><a class="page-link" href="/search?keyword={{keyword}}&page={{totalPages}}"><i
+            <li class="page-item mx-2"><a class="page-link" href="/search?keyword={{keyword}}&page={{totalPages}}&minChapter={{minChapter}}&maxChapter={{maxChapter}}"><i
                         class="fa-solid fa-forward-step"></i></a></li>
             {{/ifNotEqual}}
             <li></li>
@@ -42,4 +61,5 @@
 </div>
 <script>
     let unchangedServerId = "{{ curServer.id }}";
+    let unchangedServerName = "{{ curServer.name }}";
 </script>
