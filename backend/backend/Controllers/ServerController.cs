@@ -27,7 +27,7 @@ public class ServerController : Controller
     {
         try
         {
-            return Ok(_pluginsScannerService.GetExporterPluginInfos());
+            return Ok(_pluginsScannerService.GetCrawlerPluginInfos());
         }
         catch (Exception e)
         {

@@ -603,4 +603,9 @@ public class TrumTruyenCrawler : ICrawler
     {
         return GetTotalChap(storyId);
     }
+
+    public PagedList<Story> GetStoriesBySearchNameWithFilter(string storyName, int minChapNum, int maxChapNum, int page, int limit)
+    {
+        throw new NotImplementedException();
+    }
 }

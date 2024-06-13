@@ -85,6 +85,13 @@ public class CrawlingService : ICrawlingService
         return stories;
     }
 
+    public PagedList<StoryDTO> GetStoriesBySearchNameWithFilter(string serverId, string searchName, int minChapNum, int maxChapNum, int page, int limit)
+    {
+        var crawler = _pluginsScannerService.GetCrawlerScanner().UsePlugin(serverId);
+        var stories = crawler.GetStoriesBySearchNameWithFilter(searchName, minChapNum, maxChapNum, page, limit).ToDTOList(x => x.ToDTO());
+        return stories;
+    }
+
     // ====
 
     public StoryDetailDTO GetStoryDetail(string serverId, string storyId)

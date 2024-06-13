@@ -15,6 +15,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Content Include="plugins\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.6" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.13" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
@@ -43,7 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\backend.Application\backend.Application.csproj" />
+		<ProjectReference Include="..\backend.Application\backend.Application.csproj" />
 	</ItemGroup>
 
 </Project>
