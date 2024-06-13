@@ -15,7 +15,7 @@ namespace PRCExporter
 
         public string Extension => "prc";
 
-        public byte[] ExportStory(StoryDetail story, List<ChapterContent> chapters)
+        public byte[] ExportStory(StoryDetail story, IEnumerable<ChapterContent> chapters)
         {
             byte[] byteStream;
             using (var serve = new ExporterEPUBServe(story, chapters))
@@ -125,11 +125,6 @@ namespace PRCExporter
             {
                 throw new Exception($"Error during conversion: {error}");
             }
-        }
-
-        public byte[] ExportStory(StoryDetail story, IEnumerable<ChapterContent> chapteres)
-        {
-            throw new NotImplementedException();
         }
     }
 }

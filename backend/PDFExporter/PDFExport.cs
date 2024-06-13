@@ -20,8 +20,9 @@ namespace PDFExporter
 
         public string Extension => "pdf";
 
-        public byte[] ExportStory(StoryDetail storyDetail, List<ChapterContent> chapterContents)
+        public byte[] ExportStory(StoryDetail storyDetail, IEnumerable<ChapterContent> chapters)
         {
+            var chapterContents = chapters.ToList();
             var dest = $"{DESTDIR}story.pdf";
             CreatePDFDocumentOfStory(dest, storyDetail, chapterContents);
             byte[] bytes = File.ReadAllBytes(dest);
@@ -156,11 +157,6 @@ namespace PDFExporter
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
             return document;
-        }
-
-        public byte[] ExportStory(StoryDetail story, IEnumerable<ChapterContent> chapteres)
-        {
-            throw new NotImplementedException();
         }
     }
 }
