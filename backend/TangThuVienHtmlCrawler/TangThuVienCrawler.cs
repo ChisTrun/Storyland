@@ -318,6 +318,16 @@ public partial class TangThuVienCrawler : ICrawler
         return largestTitle;
     }
 
+    public PagedList<Story> GetStoriesBySearchNameWithFilter(string storyName, int minChapNum, int maxChapNum, int page, int limit)
+    {
+        var searchAllStories = GetStoriesBySearchName(storyName);
+        var filteredStories = searchAllStories.Where(s => s.NumberOfChapter >= minChapNum && (s.NumberOfChapter <= maxChapNum || maxChapNum == -1));
+        int startIndex = (page - 1) * limit;
+        int totalRecord = filteredStories.Count();
+        int totalPage = (totalRecord / limit) + (totalRecord % limit == 0 ? 0 : 1);
+        return new PagedList<Story>(page, limit, totalPage, filteredStories.Skip(startIndex).Take(limit));
+    }
+
     // ================= End Interface ====================
     // ================= End Interface ====================
     // ================= End Interface ====================
@@ -504,6 +514,7 @@ public partial class TangThuVienCrawler : ICrawler
             var aTagSelector = "div.book-mid-info > h4 > a";
             var imageSelector = "div.book-img-box > a > img";
             var authorNameSelector = @"div.book-mid-info > p.author > a.name";
+            var chapNumSelector = @"div.book-mid-info > p.author > span:last-child > span";
             var liTags = doc.QuerySelectorAll(lisSelector);
             var stories = new List<Story>();
             foreach (var li in liTags)
@@ -522,7 +533,9 @@ public partial class TangThuVienCrawler : ICrawler
                 var name = aTag.GetDirectInnerTextDecoded();
                 var imageUrl = image.GetAttributeValue("src", null);
                 var authorName = li.QuerySelector(authorNameSelector).GetDirectInnerTextDecoded();
-                stories.Add(new Story(name, ModelExtension.GetIDFromUrl(ModelType.Story, url), imageUrl, authorName));
+                var chapterNumStr = li.QuerySelector(chapNumSelector).GetDirectInnerTextDecoded();
+                int chapterNum = int.TryParse(chapterNumStr, out int x) ? x : 0;
+                stories.Add(new Story(name, ModelExtension.GetIDFromUrl(ModelType.Story, url), imageUrl, authorName, chapterNum));
             }
             return stories;
         }
@@ -536,9 +549,4 @@ public partial class TangThuVienCrawler : ICrawler
 
     [GeneratedRegex(@"ctg=\d+")]
     private static partial Regex GetCTG();
-
-    public PagedList<Story> GetStoriesBySearchNameWithFilter(string storyName, int minChapNum, int maxChapNum, int page, int limit)
-    {
-        throw new NotImplementedException();
-    }
 }
