@@ -168,7 +168,6 @@ public class TrumTruyenCrawler : ICrawler
     {
         HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/{storyId}/chuong-{chapterIndex + 1}");
         string name = doc.QuerySelector(".chapter-title").InnerText;
-        Console.WriteLine(name);
         string content = doc.QuerySelector("#chapter-c").InnerHtml.Replace("<br>", "\n");
         string nextChapterUrl = doc.QuerySelector(".btn-group").QuerySelectorAll("a")[1].GetAttributeValue("href", "");
         string prevChapterUrl = doc.QuerySelector(".btn-group").QuerySelectorAll("a")[0].GetAttributeValue("href", "");
@@ -273,7 +272,8 @@ public class TrumTruyenCrawler : ICrawler
                     var name = $"{node.QuerySelector("h3").InnerText}";
                     var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
                     var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                    stories.Add(new Story(name, id, imageLink, authorName));
+                    var numberOfChapter = GetTotalChap(id);
+                    stories.Add(new Story(name, id, imageLink, authorName,numberOfChapter));
                 }
                 return stories;
             }));
@@ -300,11 +300,10 @@ public class TrumTruyenCrawler : ICrawler
         int count = 0;
         while (count < limit)
         {
+            if (startPage >= totalPage) break;
             HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={WebUtility.UrlEncode(searchContent)}&page={startPage + 1}");
             var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
-            if (startIndex >= nodes.Count())
-                break;
-            for (; startIndex < DEFAULT_SEARCH_SIZE; startIndex++)
+            for (; startIndex < nodes.Count; startIndex++)
             {
                 count++;
                 if (count > limit || count > totalStory || startIndex >= nodes.Count())
@@ -384,12 +383,13 @@ public class TrumTruyenCrawler : ICrawler
         int count = 0;
         while (count < limit)
         {
+            if (startPage >= totalPage) break;
             HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tac-gia/{authorId}/trang-{startPage + 1}");
             ;
             var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
             if (startIndex >= nodes.Count())
                 break;
-            for (; startIndex < DEFAULT_SEARCH_SIZE; startIndex++)
+            for (; startIndex < nodes.Count; startIndex++)
             {
                 count++;
                 if (count > limit || count > totalStory || startIndex >= nodes.Count())
@@ -469,12 +469,13 @@ public class TrumTruyenCrawler : ICrawler
         int count = 0;
         while (count < limit)
         {
+            if (startPage >= totalPage) break;
             HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/the-loai/{categoryId}/trang-{startPage + 1}");
             ;
             var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
             if (startIndex >= nodes.Count())
                 break;
-            for (; startIndex < DEFAULT_SEARCH_SIZE; startIndex++)
+            for (; startIndex < nodes.Count; startIndex++)
             {
                 count++;
                 if (count > limit || count > totalStory || startIndex >= nodes.Count())
@@ -578,11 +579,12 @@ public class TrumTruyenCrawler : ICrawler
         int count = 0;
         while (count < limit)
         {
+            if (startPage >= totalPage) break;
             HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={WebUtility.UrlEncode(searchContent)}&page={startPage + 1}");
             var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
             if (startIndex >= nodes.Count())
                 break;
-            for (; startIndex < DEFAULT_SEARCH_SIZE; startIndex++)
+            for (; startIndex < nodes.Count; startIndex++)
             {
                 count++;
                 if (count > limit || count > totalStory || startIndex >= nodes.Count())
@@ -606,6 +608,11 @@ public class TrumTruyenCrawler : ICrawler
 
     public PagedList<Story> GetStoriesBySearchNameWithFilter(string storyName, int minChapNum, int maxChapNum, int page, int limit)
     {
-        throw new NotImplementedException();
+        var stories = GetStoriesBySearchName(storyName);
+        var filterStories = stories.Where(story => story.NumberOfChapter >= minChapNum && story.NumberOfChapter <= maxChapNum).ToList();
+        int totalStory = filterStories.Count;
+        int totalPage = (int)Math.Ceiling((double)totalStory / limit);
+        filterStories = filterStories.Skip((page - 1) * limit).Take(limit).ToList();
+        return new PagedList<Story>(page, limit, totalPage, filterStories);
     }
 }
