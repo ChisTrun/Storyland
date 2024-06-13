@@ -1,4 +1,119 @@
 ﻿[*.cs]
 
-# IDE0008: Use explicit type
-csharp_style_var_elsewhere = true
+indent_size = 4
+indent_tyle = space
+tab_width = 4
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+end_of_line = crlf
+
+# Language Conventions
+# Framework and Language
+dotnet_style_predefined_type_for_locals_parameters_members = true:error
+dotnet_style_prefer_auto_properties = true:error
+dotnet_style_object_initializer = true:error
+dotnet_style_collection_initializer = true:error
+dotnet_style_require_accessibility_modifiers = always
+dotnet_style_require_accessibility_modifiers = for_non_interface_members
+dotnet_style_explicit_tuple_names = true:error
+dotnet_diagnostic.IDE0005.severity = error
+# Combined operators and keywords
+dotnet_style_prefer_conditional_expression_over_assignment = true:error
+dotnet_style_prefer_compound_assignment = true:error
+dotnet_style_coalesce_expression = true:error
+dotnet_style_null_propagation = true:error
+csharp_style_var_for_built_in_types = true:error
+csharp_style_var_when_type_is_apparent = true:error
+csharp_style_var_elsewhere = true:error
+csharp_style_pattern_matching_over_is_with_cast_check = true:error
+csharp_style_expression_bodied_lambdas = true:suggestion
+csharp_style_expression_bodied_local_functions = true:suggestion
+csharp_style_expression_bodied_constructors = true:suggestion
+csharp_style_expression_bodied_methods = true:suggestion
+csharp_style_expression_bodied_operators = true:suggestion
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_expression_bodied_indexers = true:suggestion
+csharp_style_expression_bodied_accessors = true:suggestion
+
+# Formatting Conventions
+# New line
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true:error
+csharp_new_line_before_catch = true:error
+csharp_new_line_before_finally = true:error
+csharp_new_line_before_members_in_object_initializers = true:error
+csharp_new_line_before_members_in_anonymous_types = true:error
+csharp_new_line_between_query_expression_clauses = true:error
+csharp_preserve_single_line_statements = false:error
+csharp_blank_lines_around_region = 1
+csharp_blank_lines_around_namespace = 1
+csharp_blank_lines_around_type = 1
+csharp_blank_lines_around_invocable = 1
+# Space
+csharp_space_around_declaration_statements = false:error
+csharp_space_after_comma = true:error
+csharp_space_before_comma = false:error
+csharp_space_after_semicolon_in_for_statement = true:error
+csharp_space_before_semicolon_in_for_statement = false:error
+
+# Naming Conventions
+# Style Definitions
+dotnet_naming_style.prefix_type_parameters_with_t_style.required_prefix = T
+dotnet_naming_style.prefix_type_parameters_with_t_style.capitalization = pascal_case
+dotnet_naming_style.I_prefix_style.required_prefix = I
+dotnet_naming_style.I_prefix_style.capitalization = pascal_case
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+dotnet_naming_style.camel_case_style.capitalization = camel_case
+dotnet_naming_style.upper_case_style.capitalization = all_upper
+dotnet_naming_style.upper_case_style.word_separator = _
+dotnet_naming_style.camel_case_with_prefix_style.capitalization = camel_case
+dotnet_naming_style.camel_case_with_prefix_style.required_prefix = _
+# Use _camelCase for private and protected class fields
+dotnet_naming_rule.private_protected_field_symbols.severity = error
+dotnet_naming_rule.private_protected_field_symbols.symbols = private_protected_fields
+dotnet_naming_rule.private_protected_field_symbols.style = camel_case_with_prefix_style
+dotnet_naming_symbols.private_protected_fields.applicable_kinds = field
+dotnet_naming_symbols.private_protected_fields.applicable_accessibilities = private, protected
+# Use PascalCase for constant fields
+dotnet_naming_rule.constant_fields_should_be_upper_case.severity = error
+dotnet_naming_rule.constant_fields_should_be_upper_case.symbols = constant_fields
+dotnet_naming_rule.constant_fields_should_be_upper_case.style = upper_case_style
+dotnet_naming_symbols.constant_fields.applicable_kinds = field
+dotnet_naming_symbols.constant_fields.applicable_accessibilities = *
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+# Classes, structs, methods, enums, events, properties, namespaces, delegates must be PascalCase
+dotnet_naming_rule.general_naming.severity = error
+dotnet_naming_rule.general_naming.symbols = general
+dotnet_naming_rule.general_naming.style = pascal_case_style
+dotnet_naming_symbols.general.applicable_kinds = class, struct, enum, property, method, event, namespace, delegate
+dotnet_naming_symbols.general.applicable_accessibilities = *
+# Interfaces must be PascalCase and have an I prefix
+dotnet_naming_rule.interfaces_start_with_i.severity = error
+dotnet_naming_rule.interfaces_start_with_I.symbols = any_interface
+dotnet_naming_rule.interfaces_start_with_i.style = I_prefix_style
+dotnet_naming_symbols.any_interface.applicable_accessibilities = *
+dotnet_naming_symbols.any_interface.applicable_kinds = interface
+# Generics Type Parameters use PascalCase and are prefixed with uppercase 'T'
+dotnet_naming_symbols.type_parameter_group.applicable_kinds = type_parameter
+dotnet_naming_rule.type_parameter_rule.symbols = type_parameter_group
+dotnet_naming_rule.type_parameter_rule.style = prefix_type_parameters_with_t_style
+dotnet_naming_rule.type_parameter_rule.severity = error
+# Everything else is camelCase
+dotnet_naming_rule.everything_else_naming.severity = error
+dotnet_naming_rule.everything_else_naming.symbols = everything_else
+dotnet_naming_rule.everything_else_naming.style = camel_case_style
+dotnet_naming_symbols.everything_else.applicable_kinds = *
+dotnet_naming_symbols.everything_else.applicable_accessibilities = *
+csharp_indent_labels = one_less_than_current
+csharp_using_directive_placement = outside_namespace
+dotnet_sort_system_directives_first = true:error
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_prefer_braces = true
+csharp_style_prefer_method_group_conversion = true
+csharp_style_prefer_top_level_statements = true
+csharp_style_prefer_primary_constructors = true:suggestion
+
+# File
+dotnet_naming_rule.file_names_should_use_pascal_case.severity = error
+dotnet_naming_rule.file_names_should_use_pascal_case.symbols = files
+dotnet_naming_rule.file_names_should_use_pascal_case.style = pascal_case_style
+csharp_style_namespace_declarations = block_scoped
