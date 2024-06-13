@@ -1,8 +1,6 @@
 ﻿using backend.Application.DTO;
-using backend.Application.Queries.Abstract;
 using backend.Application.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace backend.Controllers
 {

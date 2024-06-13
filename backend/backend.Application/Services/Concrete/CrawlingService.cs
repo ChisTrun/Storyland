@@ -1,8 +1,7 @@
-﻿using backend.Application.DLLScanner.Contract;
-using backend.Application.DTO;
+﻿using backend.Application.DTO;
 using backend.Application.Mapper;
+using backend.Application.Queries;
 using backend.Application.Services.Abstract;
-using backend.Domain.Contract;
 using backend.Domain.Objects;
 
 namespace backend.Application.Services.Concrete;
@@ -126,6 +125,15 @@ public class CrawlingService : ICrawlingService
     {
         var crawler = _pluginsScannerService.GetCrawlerScanner().UsePlugin(serverId);
         var stories = crawler.GetChapterContent(storyId, chapterIndex).ToDTO();
+        return stories;
+    }
+
+    // ====
+
+    public List<StoryDTO> GetStoriesWithPriorities(IEnumerable<string> idsWithPriority, string storyId)
+    {
+        var query = new StorySearchQuery(_pluginsScannerService.GetCrawlerScanner());
+        var stories = query.SearchAllStroy(storyId, idsWithPriority);
         return stories;
     }
 }

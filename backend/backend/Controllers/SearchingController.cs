@@ -100,7 +100,6 @@ namespace backend.Controllers
             }
         }
 
-
         /// <summary>
         /// Get stories by searching with paging.
         /// </summary>
@@ -165,6 +164,29 @@ namespace backend.Controllers
             catch (Exception e)
             {
                 return StatusCode(500, $"Fail to get stories at page {page} of the category with id {categoryId}: {e.Message}.");
+            }
+        }
+
+
+        /// <summary>
+        /// Get all stories with server priority.
+        /// </summary>
+        /// <param name="idsWithPriority"> List of strings.
+        /// <exmaple>["1", "2", "3"]</exmaple>
+        /// </param>
+        /// <param name="storyName" example="kiem lai">Story name's searching keyword.</param>
+        [ProducesResponseType(typeof(StoryDTO[]), 200)]
+        [HttpPost]
+        [Route("all/truyen/{storyName}/all")]
+        public IActionResult GetStoriesBySearchName([FromBody] IEnumerable<string> idsWithPriority, string storyName)
+        {
+            try
+            {
+                return Ok(_crawlingService.GetStoriesWithPriorities(idsWithPriority, storyName));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories by searching with keyword {storyName}: {e.Message}.");
             }
         }
     }

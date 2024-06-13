@@ -1,5 +1,6 @@
 ﻿using backend.Application.DTO;
 using backend.Application.Services.Abstract;
+using backend.Domain.Entities;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
@@ -70,6 +71,21 @@ public class ServerController : Controller
         catch (Exception e)
         {
             return StatusCode(500, $"Fail to get servers: {e.Message}.");
+        }
+    }
+
+
+    [HttpGet]
+    [Route("a/test")]
+    public IActionResult Test()
+    {
+        try
+        {
+            return Ok(_pluginsScannerService.GetCrawlerPluginInfos().Select(x => x.ID));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, $"Fail: {e.Message}.");
         }
     }
 }
