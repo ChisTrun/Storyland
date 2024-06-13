@@ -21,7 +21,7 @@ public class ChapterQuery : IChapterQuery
         var chapterContents = new List<ChapterContent>();
         foreach (var chapter in chapters)
         {
-            var chapterContent = _crawler.GetChapterContent(chapter.Name, chapter.Index);
+            var chapterContent = _crawler.GetChapterContent(chapter.StoryID, chapter.Index);
             chapterContents.Add(chapterContent);
         }
         return chapterContents;
