@@ -1,5 +1,4 @@
 ﻿using backend.Application.DTO;
-using backend.Application.Queries.Abstract;
 using backend.Application.Services.Abstract;
 using backend.Domain.Objects;
 using Microsoft.AspNetCore.Mvc;

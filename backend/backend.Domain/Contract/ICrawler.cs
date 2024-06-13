@@ -14,6 +14,7 @@ public interface ICrawler : IPlugin
 
     public List<Story> GetStoriesBySearchName(string storyName);
     public PagedList<Story> GetStoriesBySearchName(string storyName, int page, int limit);
+    public PagedList<Story> GetStoriesBySearchNameWithFilter(string storyName, int minChapNum, int maxChapNum, int page, int limit);
 
     public List<Story> GetStoriesOfAuthor(string authorId);
     public PagedList<Story> GetStoriesOfAuthor(string authorId, int page, int limit);

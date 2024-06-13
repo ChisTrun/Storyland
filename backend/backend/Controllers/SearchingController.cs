@@ -100,9 +100,30 @@ namespace backend.Controllers
             }
         }
 
-        // API CHANGED: /api/category => /api/story
-        // API CHANGED: /api/category => /api/story
-        // API CHANGED: /api/category => /api/story
+
+        /// <summary>
+        /// Get stories by searching with paging.
+        /// </summary>
+        /// <param name="serverId">ID of the server.</param>
+        /// <param name="storyName" example="Đỉnh">Story name's searching keyword.</param>
+        /// <param name="minChapNum" example="1">Min number of chapter (-1 for no minimum)</param>
+        /// <param name="maxChapNum" example="100">(-1 for no maximum)</param>
+        /// <param name="page" example="2">Current page (starts from 1).</param>
+        /// <param name="limit" example="5">Records per page.</param>
+        [ProducesResponseType(typeof(PagedList<StoryDTO>), 200)]
+        [HttpGet]
+        [Route("{serverId}/truyen/{storyName}/{minChapNum}/{maxChapNum}")]
+        public IActionResult GetStoriesBySearchNameWithFilter(string serverId, string storyName, int minChapNum, int maxChapNum, [FromQuery(Name = "page")] int page, [FromQuery(Name = "limit")] int limit)
+        {
+            try
+            {
+                return Ok(_crawlingService.GetStoriesBySearchNameWithFilter(serverId, storyName, minChapNum, maxChapNum, page, limit));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories at page {page} by searching with keyword {storyName}: {e.Message}.");
+            }
+        }
 
         /// <summary>
         /// Get all stories by category.

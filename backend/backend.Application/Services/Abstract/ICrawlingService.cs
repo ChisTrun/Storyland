@@ -19,4 +19,5 @@ public interface ICrawlingService
     List<ChapterDTO> GetChaptersOfStory(string serverId, string storyId);
     StoryDetailDTO GetStoryDetail(string serverId, string storyId);
     int GetChaptersCount(string serverId, string storyId);
+    PagedList<StoryDTO> GetStoriesBySearchNameWithFilter(string serverId, string searchName, int minChapNum, int maxChapNum, int page, int limit);
 }

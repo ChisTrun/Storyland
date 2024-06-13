@@ -536,4 +536,9 @@ public partial class TangThuVienCrawler : ICrawler
 
     [GeneratedRegex(@"ctg=\d+")]
     private static partial Regex GetCTG();
+
+    public PagedList<Story> GetStoriesBySearchNameWithFilter(string storyName, int minChapNum, int maxChapNum, int page, int limit)
+    {
+        throw new NotImplementedException();
+    }
 }
