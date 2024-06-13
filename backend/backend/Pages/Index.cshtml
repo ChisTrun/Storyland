@@ -168,7 +168,7 @@
                 .then(data => {
                     document.getElementById('storySourceMessage').innerText = `${data.message}`;
                 }).catch(error => {
-                    document.getElementById('storySourceMessage').innerText = 'Error uploading files.';
+                    document.getElementById('storySourceMessage').innerText = `${data.message}`;
                 });
         });
 
@@ -198,7 +198,7 @@
                 .then(data => {
                     document.getElementById('exporterMessage').innerText = `${data.message}`;
                 }).catch(error => {
-                    document.getElementById('exporterMessage').innerText = 'Error uploading files.';
+                    document.getElementById('exporterMessage').innerText = `${data.message}`;
                 });
         });
     </script>

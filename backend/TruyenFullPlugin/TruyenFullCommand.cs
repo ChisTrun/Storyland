@@ -128,22 +128,6 @@ public class TruyenFullCommand : ICrawler
         return GetChapterContentWithURL(ref text, ref pre, ref next, ref chapterName, chapterID, path, storyId, chapterIndex);
     }
 
-
-    //public ChapterContent GetChapterContent(string chapterID)
-    //{
-    //    var text = "";
-    //    var pre = "";
-    //    var next = "";
-    //    var chapterName = "";
-    //    var path = $"{Domain}/{chapterID}";
-    //    return GetChapterContentWithURL(ref text, ref pre, ref next, ref chapterName, chapterID, path);
-    //}
-
-    //==========================================
-    //=============Private Function================
-    //==========================================
-
-
     private Tuple<string, string> GetNameUrlFromATag(HtmlNode aTag)
     {
         var url = aTag.GetAttributeValue("href", null) ?? throw new Exception();
@@ -168,8 +152,9 @@ public class TruyenFullCommand : ICrawler
         var authorATag = document.QuerySelector(".col-info-desc .info").FirstChild.QuerySelector("a");
         var tupleAuthor = GetNameUrlFromATag(authorATag);
         var author = new Author(tupleAuthor.Item2, ModelExtension.GetIDFromUrl(ModelType.Author, tupleAuthor.Item1));
-        var statusSpan = document.QuerySelector(".col-info-desc .info").ChildNodes[2];
-        var tmp = statusSpan.QuerySelector("span");
+        var statusSpan = document.QuerySelector(".col-info-desc .info").ChildNodes;
+        var t = statusSpan.LastOrDefault();
+        var tmp = t.QuerySelector("span");
         string status = tmp.GetDirectInnerTextDecoded();
         var categories = new List<Category>();
         var categoryTags = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[1].QuerySelectorAll("a");
