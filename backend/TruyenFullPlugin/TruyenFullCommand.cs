@@ -152,9 +152,8 @@ public class TruyenFullCommand : ICrawler
         var authorATag = document.QuerySelector(".col-info-desc .info").FirstChild.QuerySelector("a");
         var tupleAuthor = GetNameUrlFromATag(authorATag);
         var author = new Author(tupleAuthor.Item2, ModelExtension.GetIDFromUrl(ModelType.Author, tupleAuthor.Item1));
-        var statusSpan = document.QuerySelector(".col-info-desc .info").ChildNodes;
-        var t = statusSpan.LastOrDefault();
-        var tmp = t.QuerySelector("span");
+        var statusSpan = document.QuerySelector(".col-info-desc .info").ChildNodes.LastOrDefault();
+        var tmp = statusSpan.QuerySelector("span");
         string status = tmp.GetDirectInnerTextDecoded();
         var categories = new List<Category>();
         var categoryTags = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[1].QuerySelectorAll("a");
@@ -276,7 +275,10 @@ public class TruyenFullCommand : ICrawler
                 }
                 var authorName = row.QuerySelector(".author").InnerText;
 
-                listOfStories.Add(new Story(name, id, img, authorName));
+                var a = row.QuerySelector(".text-info a").GetAttributeValue("title", null);
+                var numberOfChapterStr = StringProblem.GetChapterNumber(a);
+                var numberOfChapter = int.TryParse(numberOfChapterStr, out int x) ? x : 0;
+                listOfStories.Add(new Story(name, id, img, authorName, numberOfChapter));
                 needRemain--;
             }
             catch (Exception)
@@ -552,6 +554,30 @@ public class TruyenFullCommand : ICrawler
 
     public PagedList<Story> GetStoriesBySearchNameWithFilter(string storyName, int minChapNum, int maxChapNum, int page, int limit)
     {
-        throw new NotImplementedException();
+        var storySearched = GetStoriesBySearchName(storyName).ToList();
+        if (minChapNum == -1 || maxChapNum == -1)
+        {
+            if (minChapNum == -1)
+            {
+                storySearched = storySearched.Where(story => story.NumberOfChapter <= maxChapNum).ToList();
+            }
+            if (maxChapNum == -1)
+            {
+                storySearched = storySearched.Where(story => story.NumberOfChapter >= minChapNum).ToList();
+            }
+        }
+        else
+        {
+            storySearched = storySearched.Where(story => story.NumberOfChapter >= minChapNum && story.NumberOfChapter <= maxChapNum).ToList();
+        }
+        var storySeatchedCount = storySearched.Count();
+        var totalPage = (storySeatchedCount / limit) + (storySeatchedCount % limit == 0 ? 0 : 1);
+        if (page > totalPage)
+        {
+            return new PagedList<Story>(page, limit, -1, new List<Story>());
+        }
+        List<Story> res = new List<Story>();
+        res = storySearched.GetRange((page - 1) * limit, page != totalPage ? limit : storySeatchedCount % limit);
+        return new PagedList<Story>(page, limit, totalPage, res);
     }
 }
