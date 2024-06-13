@@ -4,204 +4,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<title>Manage Plugins</title>
-	<style>
-		table {
-			width: 100%;
-			border-collapse: collapse;
-		}
-		th, td {
-			border: 1px solid black;
-			padding: 8px;
-			text-align: left;
-		}
-	</style>
+    <meta charset="utf-8" />
+    <title>Manage Plugins</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-	<div style="color:red" id="storySourceMessage"></div>
-	<h2>Story Source Plugins</h2>
-	<h5>Manage Status</h5>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Status</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var dicEle in Model.StoryPlugin)
-			{
-				var pluginName = dicEle.Value.Plugin.Name;
-				var pluginStatus = dicEle.Value.Status.ToCustomString();
-				var pluginID = dicEle.Key;
-				@if (pluginStatus == "used")
-				{
-									<tr style="background-color:lightgreen;">
-										<td>@pluginName</td>
-										<td>@pluginStatus</td>
-										<td>
-							@if (pluginStatus == "used")
-							{
-														<button onclick="changeStatus('@pluginID')">Remove</button>
-							}
-							else if (pluginStatus == "removed")
-							{
-														<button onclick="changeStatus('@pluginID')">Unremove</button>
-							}
-										</td>
-									</tr>
-				}
-				else if (pluginStatus == "removed")
-				{
-									<tr style="background-color:lightcoral">
-										<td>@pluginName</td>
-										<td>@pluginStatus</td>
-										<td>
-							@if (pluginStatus == "used")
-							{
-														<button onclick="changeStorySourceStatus('@pluginID',)">Remove</button>
-							}
-							else if (pluginStatus == "removed")
-							{
-														<button onclick="changeStorySourceStatus('@pluginID', )">Unremove</button>
-							}
-										</td>
-									</tr>
-				}
-			}
-		</tbody>
-	</table>
-	<h5>Upload Plugins</h5>
-	<form id="storySourceUploadForm" enctype="multipart/form-data" method="post" action="/api/server/upload">
-		<input type="file" name="files" multiple />
-		<button type="submit">Upload Plugins</button>
-	</form>
+    <div style="color:red" id="storySourceMessage"></div>
+    <h2>Story Source Plugins</h2>
+    <h5>Manage Status</h5>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dicEle in Model.StoryPlugin)
+            {
+                var pluginName = dicEle.Value.Plugin.Name;
+                var pluginStatus = dicEle.Value.Status.ToCustomString();
+                var pluginID = dicEle.Key;
+                @if (pluginStatus == "used")
+                {
+                    <tr style="background-color:lightgreen;">
+                        <td>@pluginName</td>
+                        <td>@pluginStatus</td>
+                        <td>
+                            @if (pluginStatus == "used")
+                            {
+                                <button onclick="changeStorySourceStatus('@pluginID')">Remove</button>
+                            }
+                            else if (pluginStatus == "removed")
+                            {
+                                <button onclick="changeStorySourceStatus('@pluginID')">Unremove</button>
+                            }
+                        </td>
+                    </tr>
+                }
+                else if (pluginStatus == "removed")
+                {
+                    <tr style="background-color:lightcoral">
+                        <td>@pluginName</td>
+                        <td>@pluginStatus</td>
+                        <td>
+                            @if (pluginStatus == "used")
+                            {
+                                <button onclick="changeStorySourceStatus('@pluginID',)">Remove</button>
+                            }
+                            else if (pluginStatus == "removed")
+                            {
+                                <button onclick="changeStorySourceStatus('@pluginID', )">Unremove</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <h5>Upload Plugins</h5>
+    <form id="storySourceUploadForm" enctype="multipart/form-data" method="post" action="/api/server/upload">
+        <input type="file" name="files" multiple />
+        <button type="submit">Upload Plugins</button>
+    </form>
 
 
-	<div style="color:red" id="exporterMessage"></div>
-	<h2>Exporter Plugins</h2>
-	<h5>Manage Status</h5>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Status</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var dicEle in Model.ExporterPlugin)
-			{
-				var pluginName = dicEle.Value.Plugin.Name;
-				var pluginStatus = dicEle.Value.Status.ToCustomString();
-				var pluginID = dicEle.Key;
-				@if (pluginStatus == "used")
-				{
-									<tr style="background-color:lightgreen;">
-										<td>@pluginName</td>
-										<td>@pluginStatus</td>
-										<td>
-							@if (pluginStatus == "used")
-							{
-														<button onclick="changeExporterStatus('@pluginID')">Remove</button>
-							}
-							else if (pluginStatus == "removed")
-							{
-														<button onclick="changeExporterStatus('@pluginID')">Unremove</button>
-							}
-										</td>
-									</tr>
-				}
-				else if (pluginStatus == "removed")
-				{
-									<tr style="background-color:lightcoral">
-										<td>@pluginName</td>
-										<td>@pluginStatus</td>
-										<td>
-							@if (pluginStatus == "used")
-							{
-														<button onclick="changeExporterStatus('@pluginID',)">Remove</button>
-							}
-							else if (pluginStatus == "removed")
-							{
-														<button onclick="changeExporterStatus('@pluginID', )">Unremove</button>
-							}
-										</td>
-									</tr>
-				}
-			}
-		</tbody>
-	</table>
-	<h5>Upload Plugins</h5>
-	<form id="exporterUploadForm" enctype="multipart/form-data" method="post" action="/api/server/upload">
-		<input type="file" name="files" multiple />
-		<button type="submit">Upload Plugins</button>
-	</form>
+    <div style="color:red" id="exporterMessage"></div>
+    <h2>Exporter Plugins</h2>
+    <h5>Manage Status</h5>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dicEle in Model.ExporterPlugin)
+            {
+                var pluginName = dicEle.Value.Plugin.Name;
+                var pluginStatus = dicEle.Value.Status.ToCustomString();
+                var pluginID = dicEle.Key;
+                @if (pluginStatus == "used")
+                {
+                    <tr style="background-color:lightgreen;">
+                        <td>@pluginName</td>
+                        <td>@pluginStatus</td>
+                        <td>
+                            @if (pluginStatus == "used")
+                            {
+                                <button onclick="changeExporterStatus('@pluginID')">Remove</button>
+                            }
+                            else if (pluginStatus == "removed")
+                            {
+                                <button onclick="changeExporterStatus('@pluginID')">Unremove</button>
+                            }
+                        </td>
+                    </tr>
+                }
+                else if (pluginStatus == "removed")
+                {
+                    <tr style="background-color:lightcoral">
+                        <td>@pluginName</td>
+                        <td>@pluginStatus</td>
+                        <td>
+                            @if (pluginStatus == "used")
+                            {
+                                <button onclick="changeExporterStatus('@pluginID',)">Remove</button>
+                            }
+                            else if (pluginStatus == "removed")
+                            {
+                                <button onclick="changeExporterStatus('@pluginID', )">Unremove</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <h5>Upload Plugins</h5>
+    <form id="exporterUploadForm" enctype="multipart/form-data" method="post" action="/api/server/upload">
+        <input type="file" name="files" multiple />
+        <button type="submit">Upload Plugins</button>
+    </form>
 
-	<script>
-		function changeStorySourceStatus(pluginID) {
-			// Gửi yêu cầu AJAX để thay đổi trạng thái của plugin
-			fetch(`/api/server/changestatus`, {
-				method: 'POST',
-				body: JSON.stringify(pluginID),
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			}).then(response => {
-				if (response.ok) {
-					location.reload();
-				} else {
-					alert('Error changing status');
-				}
-			});
-		}
+    <script>
+        function changeStorySourceStatus(pluginID) {
+            fetch(`/api/server/changestatus`, {
+                method: 'POST',
+                body: JSON.stringify(pluginID),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Error changing status');
+                }
+            });
+        }
 
-		document.getElementById('storySourceUploadForm').addEventListener('submit', function (event) {
-			event.preventDefault();
-			var formData = new FormData(this);
-			fetch('/api/server/upload', {
-				method: 'POST',
-				body: formData
-			}).then(response => response.json())
-				.then(data => {
-					document.getElementById('storySourceMessage').innerText = `${data.message}`;
-				}).catch(error => {
-					document.getElementById('storySourceMessage').innerText = 'Error uploading files.';
-				});
-		});
+        document.getElementById('storySourceUploadForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            fetch('/api/server/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+                .then(data => {
+                    document.getElementById('storySourceMessage').innerText = `${data.message}`;
+                }).catch(error => {
+                    document.getElementById('storySourceMessage').innerText = 'Error uploading files.';
+                });
+        });
 
-		function changeExporterStatus(pluginID) {
-			// Gửi yêu cầu AJAX để thay đổi trạng thái của plugin
-			fetch(`/api/export/changestatus`, {
-				method: 'POST',
-				body: JSON.stringify(pluginID),
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			}).then(response => {
-				if (response.ok) {
-					location.reload();
-				} else {
-					alert('Error changing status');
-				}
-			});
-		}
+        function changeExporterStatus(pluginID) {
+            fetch(`/api/export/changestatus`, {
+                method: 'POST',
+                body: JSON.stringify(pluginID),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Error changing status');
+                }
+            });
+        }
 
-		document.getElementById('exporterUploadForm').addEventListener('submit', function (event) {
-			event.preventDefault();
-			var formData = new FormData(this);
-			fetch('/api/export/upload', {
-				method: 'POST',
-				body: formData
-			}).then(response => response.json())
-				.then(data => {
-					document.getElementById('exporterMessage').innerText = `${data.message}`;
-				}).catch(error => {
-					document.getElementById('exporterMessage').innerText = 'Error uploading files.';
-				});
-		});
-	</script>
+        document.getElementById('exporterUploadForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            fetch('/api/export/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+                .then(data => {
+                    document.getElementById('exporterMessage').innerText = `${data.message}`;
+                }).catch(error => {
+                    document.getElementById('exporterMessage').innerText = 'Error uploading files.';
+                });
+        });
+    </script>
 </body>
 </html>
