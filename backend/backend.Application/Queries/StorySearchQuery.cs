@@ -19,15 +19,22 @@ public class StorySearchQuery
     {
         var storiesList = Algorithm.CrawlMultipleSources(_scanner, ids, (crawler) =>
         {
-            var stories = crawler.GetStoriesBySearchName(storyId).Where(x =>
+            try
             {
-                return
-                (minChapNum == -1 || x.NumberOfChapter >= minChapNum) &&
-                (maxChapNum == -1 || x.NumberOfChapter <= maxChapNum);
-            }).ToDTOList(x => x.ToDTO())
-            .OrderBy(x => x.Id)
-            .ToList();
-            return stories;
+                var stories = crawler.GetStoriesBySearchName(storyId).Where(x =>
+                {
+                    return
+                    (minChapNum == -1 || x.NumberOfChapter >= minChapNum) &&
+                    (maxChapNum == -1 || x.NumberOfChapter <= maxChapNum);
+                }).ToDTOList(x => x.ToDTO())
+                .OrderBy(x => x.Id)
+                .ToList();
+                return stories;
+            }
+            catch (Exception)
+            {
+                return new List<StoryDTO>();
+            }
         });
         var storiesDtoPriority = Algorithm.PriorityMergeLists(storiesList, s => s.Id);
         return storiesDtoPriority;
@@ -37,10 +44,17 @@ public class StorySearchQuery
     {
         var storiesList = Algorithm.CrawlMultipleSources(_scanner, ids, (crawler) =>
         {
-            var stories = crawler.GetStoriesOfCategory(categoryId).ToDTOList(x => x.ToDTO())
-            .OrderBy(x => x.Id)
-            .ToList();
-            return stories;
+            try
+            {
+                var stories = crawler.GetStoriesOfCategory(categoryId).ToDTOList(x => x.ToDTO())
+                .OrderBy(x => x.Id)
+                .ToList();
+                return stories;
+            }
+            catch (Exception)
+            {
+                return new List<StoryDTO>();
+            }
         });
         var storiesDtoPriority = Algorithm.PriorityMergeLists(storiesList, s => s.Id);
         return storiesDtoPriority;
