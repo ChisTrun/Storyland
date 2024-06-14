@@ -10,6 +10,7 @@ using backend.Domain.Entities;
 using backend.Domain.Objects;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using backend.Domain.Utils;
+using System.Xml.Linq;
 
 namespace TrumTruyenHtmlCrawler;
 
@@ -165,7 +166,7 @@ public class TrumTruyenCrawler : ICrawler
         doc.LoadHtml(data);
         foreach (var node in doc.QuerySelectorAll("option"))
         {
-            if (node.InnerText == "Tất cả") continue;
+            if (node.InnerText == "Tất cả" || node.InnerText == "Khác") continue;
             categories.Add(new Category(node.InnerText, RemoveVietnameseCharsAndReplaceSpaces(node.InnerText)));
         }
         return categories;
@@ -520,6 +521,7 @@ public class TrumTruyenCrawler : ICrawler
         List<Category> categories = new List<Category>();
         foreach (var category in categoriesNode)
         {
+            if (category.InnerText == "Tất cả" || category.InnerText == "Khác") continue;
             categories.Add(new Category(category.InnerText, _regex01.Match(category.GetAttributeValue("href", "")).Groups[1].Value));
         }
         string status = infoNodes[infoNodes.Count - 1].QuerySelector("span").InnerText;
