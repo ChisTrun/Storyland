@@ -160,15 +160,24 @@
 
         document.getElementById('storySourceUploadForm').addEventListener('submit', function (event) {
             event.preventDefault();
+
             var formData = new FormData(this);
+
             fetch('/api/server/upload', {
                 method: 'POST',
                 body: formData
-            }).then(response => response.json())
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    document.getElementById('storySourceMessage').innerText = `${data.message}`;
-                }).catch(error => {
-                    document.getElementById('storySourceMessage').innerText = `${data.message}`;
+                    document.getElementById('storySourceMessage').innerText = data.message;
+                })
+                .catch(error => {
+                    document.getElementById('storySourceMessage').innerText = `${error.message}`;
                 });
         });
 
@@ -194,11 +203,17 @@
             fetch('/api/export/upload', {
                 method: 'POST',
                 body: formData
-            }).then(response => response.json())
+            }).then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
+                }
+                return response.json();
+            })
                 .then(data => {
-                    document.getElementById('exporterMessage').innerText = `${data.message}`;
-                }).catch(error => {
-                    document.getElementById('exporterMessage').innerText = `${data.message}`;
+                    document.getElementById('exporterMessage').innerText = data.message;
+                })
+                .catch(error => {
+                    document.getElementById('exporterMessage').innerText = `: ${error.message}`;
                 });
         });
     </script>

@@ -88,11 +88,11 @@ public class ExportController : Controller
         try
         {
             var message = PluginFile.UploadFiles(_pluginsScannerService.GetExporterScanner(), files);
-            return Ok(message);
+            return Ok(new { message });
         }
         catch (Exception e)
         {
-            return StatusCode(500, $"Fail to get servers: {e.Message}.");
+            return StatusCode(500, new { message = $"{e.Message}" });
         }
     }
 }
