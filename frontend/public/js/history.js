@@ -1,10 +1,9 @@
-const deleteHistory = (storyId, storyServer) => {
+const deleteHistory = (storyId) => {
     $.ajax({
         url: '/history/delete',
         method: 'POST',
         data: {
-            "storyId": storyId,
-            "storyServer": storyServer
+            "storyId": storyId
         },
         success: function (data) {
             location.reload();

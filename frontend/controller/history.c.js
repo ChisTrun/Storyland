@@ -13,15 +13,7 @@ const render = {
 module.exports = {
     render(req, res, next) {
         const sortedServerIds = req.session.sortedServerIds;
-        let history = req.session.history;
-
-        const entries = Object.entries(history);
-        const filteredEntries = entries.filter(([key, value]) => {
-            const storyServer = (key.split('-server-'))[1];
-            return sortedServerIds.includes(storyServer);
-        });
-        history = Object.fromEntries(filteredEntries);
-        req.session.history = history;
+        const history = req.session.history;
 
         render.stories = history;
         render.sortedServerIds = sortedServerIds;
@@ -32,8 +24,7 @@ module.exports = {
     },
     delete(req, res, next) {
         const storyId = decodeURIComponent(req.body.storyId);
-        const storyServer = req.body.storyServer;
-        delete req.session.history[`${storyId}-server-${storyServer}`];
+        delete req.session.history[storyId];
         res.end();
     },
 };

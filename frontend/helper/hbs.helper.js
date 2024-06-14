@@ -54,6 +54,15 @@ module.exports = {
     isLess: function (a, b) {
         return (parseFloat(a) < parseFloat(b));
     },
+    ifAnd: function (a, b, block) {
+        if (a === true && b === true) {
+            return block.fn(this);
+        }
+        return block.inverse(this);
+    },
+    isEqual: function (a, b) {
+        return (parseInt(a) === parseInt(b));
+    },
     genPagination: function (curPage, totalPages, block) {
         const pagination = [];
         const startPage = Math.max(1, curPage - 2);

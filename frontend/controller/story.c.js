@@ -16,29 +16,40 @@ module.exports = {
     async render(req, res, next) {
         try {
             const sortedServerIds = req.session.sortedServerIds;
-            const storyServer = req.params.storyServer;
             const storyId = decodeURIComponent(req.params.storyId);
 
             const results = await Promise.allSettled([
-                fetch(`${BE_HOST}/api/story/${storyServer}/${encodeURIComponent(storyId)}`),
                 getServerArr(),
                 getNumChaptersInStory(storyId, sortedServerIds),
+                ...sortedServerIds.map(serverId => fetch(`${BE_HOST}/api/story/${serverId}/${encodeURIComponent(storyId)}`))
             ]);
-            const [responseResult, serverArrResult, chapterCountResult] = results;
-            // responseResult
-            if (responseResult.status !== 'fulfilled') {
-                throw Error(`Error fetching request: ${responseResult.hasOwnProperty("reason") ? responseResult.reason : "pending"}`);
-            }
-            const response = responseResult.value;
-            if (!response.ok) {
-                const errorMessage = await response.text();
-                next(new ErrorDisplay("Xem thông tin truyện thất bại!", response.status, errorMessage));
-            }
-            const resBody = await response.json();
+            const [serverArrResult, chapterCountResult, ...responseResults] = results;
             // serverArrResult
             const serverArr = serverArrResult.status === 'fulfilled' ? serverArrResult.value : [];
             // chapterCountResult
             const chapterCount = chapterCountResult.status === 'fulfilled' ? chapterCountResult.value : 0;
+            // responseResults
+            let resBody = null;
+            let storyServer = null;
+            for (let index = 0; index < responseResults.length; index++) {
+                const result = responseResults[index];
+                if (result.status === 'fulfilled') {
+                    const serverId = sortedServerIds[index];
+                    const response = result.value;
+                    if (response.ok) {
+                        resBody = await response.json();
+                        storyServer = serverId;
+                        break;
+                    }
+                }
+            }
+            if (resBody == null) {
+                req.session.errorMessage = "Truyện không còn khả thi!";
+                if (req.session.history[storyId]) {
+                    delete req.session.history[storyId];
+                };
+                res.redirect('/home');
+            }
 
             let desc = resBody.description.replace(/\r\n\r\n/g, '<br>')
                 .replace(/\r\n/g, '<br>')
@@ -51,10 +62,9 @@ module.exports = {
             });
             render.storyId = storyId;
             render.storyFirstIndex = (chapterCount > 0 ? 0 : null);
-            if (req.session.history[`${storyId}-server-${storyServer}`]) {
-                render.storyConIndex = (req.session.history[`${storyId}-server-${storyServer}`]).chapterIndex;
+            if (req.session.history[storyId]) {
+                render.storyConIndex = (req.session.history[storyId]).chapterIndex;
             }
-
             render.chapterCount = chapterCount;
             render.curServer = serverArr.find(server => server.id === storyServer);
             render.sortedServerIds = sortedServerIds;

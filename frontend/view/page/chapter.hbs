@@ -4,7 +4,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
-                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}/s{{curServerId}}">{{storyName}}</a>
+                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}">{{storyName}}</a>
                 </li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item" aria-current="page">Chương {{plus chapterIndex 1}}</li>
@@ -13,7 +13,7 @@
     </div>
     <div class="row">
         <div class="text-center">
-            <a href="/story/{{encodeUrl storyId}}/s{{curServerId}}" class="chapter-title fw-bold fs-3">{{toLoud
+            <a href="/story/{{encodeUrl storyId}}" class="chapter-title fw-bold fs-3">{{toLoud
                 storyName}}</a>
         </div>
         <div class="text-center mt-1" id="chapter-title">
@@ -32,13 +32,13 @@
         <div class="d-flex align-items-center justify-content-center mt-4">
             <a type="button"
                 class="text-center next-pre-button pre-chapter-btn {{#ifEqual chapterIndex 0}}d-none{{/ifEqual}}"
-                href="/story/{{encodeUrl storyId}}/s{{curServerId}}/chapter/{{plus chapterIndex -1}}">
+                href="/story/{{encodeUrl storyId}}/chapter/{{plus chapterIndex -1}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </a>
             <a type="button"
                 class="text-center next-pre-button next-chapter-btn {{#ifEqual chapterIndex (plus chapterCount -1)}}d-none{{/ifEqual}}"
-                href="/story/{{encodeUrl storyId}}/s{{curServerId}}/chapter/{{plus chapterIndex 1}}">
+                href="/story/{{encodeUrl storyId}}/chapter/{{plus chapterIndex 1}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </a>
@@ -59,7 +59,7 @@
                 {{#loop 1 chapterCount}}
                 <a class="chapter-item truncate text-center {{#ifEqual this (plus ../chapterIndex 1)}}active-chapter{{/ifEqual}}"
                     id="chapter-index-{{plus this -1}}"
-                    href="/story/{{encodeUrl ../storyId}}/s{{../curServerId}}/chapter/{{plus this -1}}">Chương
+                    href="/story/{{encodeUrl ../storyId}}/chapter/{{plus this -1}}">Chương
                     {{this}}</a>
                 {{/loop}}
             </div>
@@ -156,13 +156,13 @@
         <div class="d-flex align-items-center justify-content-center my-4">
             <a type="button"
                 class="text-center next-pre-button pre-chapter-btn {{#ifEqual chapterIndex 0}}d-none{{/ifEqual}}"
-                href="/story/{{encodeUrl storyId}}/s{{curServerId}}/chapter/{{plus chapterIndex -1}}">
+                href="/story/{{encodeUrl storyId}}/chapter/{{plus chapterIndex -1}}">
                 <i class="fa-solid fa-less-than"></i>
                 Chương trước
             </a>
             <a type="button"
                 class="text-center next-pre-button next-chapter-btn {{#ifEqual chapterIndex (plus chapterCount -1)}}d-none{{/ifEqual}}"
-                href="/story/{{encodeUrl storyId}}/s{{curServerId}}/chapter/{{plus chapterIndex 1}}">
+                href="/story/{{encodeUrl storyId}}/chapter/{{plus chapterIndex 1}}">
                 Chương tiếp
                 <i class="fa-solid fa-greater-than"></i>
             </a>
@@ -173,7 +173,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
-                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}/s{{curServerId}}">{{storyName}}</a>
+                <li class="breadcrumb-item"><a href="/story/{{encodeUrl storyId}}">{{storyName}}</a>
                 </li>
                 &nbsp;<li class="mx-2">/</li>&nbsp;
                 <li class="breadcrumb-item" aria-current="page">Chương {{plus chapterIndex 1}}</li>
@@ -182,7 +182,5 @@
     </div>
 </div>
 <script>
-    let unchangedServerId = "{{ curServerId }}";
-    let unchangedServerName = "{{ curServer.name }}";
     let chapterContents = {{{ json chapterContents }}};
 </script>

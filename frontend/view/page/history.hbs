@@ -11,17 +11,17 @@
                 {{#each stories}}
                 <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 p-relative">
                     <button class="btn history-delete-btn"
-                        onclick="deleteHistory('{{storyId}}','{{storyServer}}')">x</button>
-                    <a class="story-card-image" href="/story/{{encodeUrl storyId}}/s{{storyServer}}">
+                        onclick="deleteHistory('{{storyId}}')">x</button>
+                    <a class="story-card-image" href="/story/{{encodeUrl storyId}}">
                         <img {{#if storyImageUrl}} src="{{storyImageUrl}}" {{else}} src="/assets/naimage.jpg" {{/if}}
                             loading="lazy" alt="{{storyName}}" title="{{storyName}}" />
                     </a>
                     <a class="story-card-name text-center mt-2 mb-1 fw-bold truncate"
-                        href="/story/{{encodeUrl storyId}}/s{{storyServer}}" title="{{storyName}}">
+                        href="/story/{{encodeUrl storyId}}" title="{{storyName}}">
                         {{storyName}}
                     </a>
                     <a class="story-card-chapter text-center mt-1 mb-1 fw-bold truncate"
-                        href="/story/{{encodeUrl storyId}}/s{{storyServer}}/chapter/{{chapterIndex}}"
+                        href="/story/{{encodeUrl storyId}}/chapter/{{chapterIndex}}"
                         title="{{chapterName}}">
                         Đọc tiếp {{chapterName}}
                     </a>

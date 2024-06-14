@@ -16,39 +16,48 @@ const perPage = 24;
 module.exports = {
     async render(req, res, next) {
         try {
-            const minChapter = req.query.minChapter || -1;
-            const maxChapter = req.query.maxChapter || -1;
+            const minChapter = req.query.minChapter || 0;
+            const maxChapter = req.query.maxChapter || 10000;
             const sortedServerIds = req.session.sortedServerIds;
             const keyword = req.query.keyword || ' ';
-            const curPage = parseInt(req.query.page) || 1;
-            let url = null;
-            if (minChapter == -1) {
-                url = `${BE_HOST}/api/search/${sortedServerIds[0]}/truyen/${encodeURIComponent(keyword)}?page=${curPage}&limit=${perPage}`;
-            }
-            else {
-                url = `${BE_HOST}/api/search/${sortedServerIds[0]}/truyen/${encodeURIComponent(keyword)}/${minChapter}/${maxChapter}?page=${curPage}&limit=${perPage}`
-            }
+            let curPage = parseInt(req.query.page) || 1;
+            
+            const url = `${BE_HOST}/api/search/all/truyen/${encodeURIComponent(keyword)}/all`;        
             const [responseResult, serverArrResult] = await Promise.allSettled([
-                fetch(url),
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(sortedServerIds)
+                }),
                 getServerArr()
             ]);
-            let resBody = {};
+            let resBody = [];
             if (responseResult.status === 'fulfilled' && responseResult.value.ok) {
                 resBody = await responseResult.value.json();
             }
             else if (responseResult.status === 'fulfilled' && !responseResult.value.ok) {
-                resBody.data = [];
+                resBody = [];
                 const errorMessage = await responseResult.value.text();
                 console.error(`Error fetching api to get stories of the keyword ${keyword}: ${responseResult.value.status} - ${errorMessage}`);
             }
             else {
-                resBody.data = [];
+                resBody = [];
                 console.error(`Error fetching request: ${responseResult.hasOwnProperty("reason") ? responseResult.reason : "pending"}`);
             }
             const serverArr = serverArrResult.status === 'fulfilled' ? serverArrResult.value : [];
-            const totalPages = resBody.totalPages && resBody.totalPages > 0 ? resBody.totalPages : 1;
+            
+            const filteredStories = resBody.filter(story => story.numberOfChapter >= minChapter && story.numberOfChapter <= maxChapter);
 
-            render.stories = resBody.data;
+            const totalStories = filteredStories.length;
+            const totalPages = totalStories !== 0 ? Math.ceil(totalStories / perPage) : 1;
+            curPage = curPage > totalPages ? totalPages : curPage;
+            const startIndex = (curPage - 1) * perPage;
+            const endIndex = startIndex + perPage;
+            const paginatedStories = filteredStories.slice(startIndex, endIndex);
+
+            render.stories = paginatedStories;
             render.keyword = keyword;
             render.curPage = curPage;
             render.totalPages = totalPages;

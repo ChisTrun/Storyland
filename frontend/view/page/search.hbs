@@ -5,12 +5,15 @@
             Kết quả tìm kiếm với từ khoá:
             <span class="ms-2 flex-grow-1">
                 {{keyword}}
-                {{#if (isLess -1 maxChapter)}}
-                ({{minChapter}} - {{maxChapter}} chương)
-                {{/if}}
+                ( Số chương: 
+                {{#ifAnd (isEqual minChapter 0) (isEqual maxChapter 10000)}}
+                All
+                {{else}}
+                {{minChapter}} - {{maxChapter}}
+                {{/ifAnd}}
+                )
             </span>
-            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn: {{#if
-                curServer}}{{curServer.name}}{{else}}n/a{{/if}}]</span>
+            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn: Tất cả]</span>
         </div>
     </div>
 
@@ -28,7 +31,7 @@
         </div>
     </div>
 
-    {{> storiesList server=curServer.id }}
+    {{> storiesList }}
 
     <div class="row mt-3 mb-4">
         <ul class="pagination d-flex align-items-center justify-content-center">
@@ -59,7 +62,3 @@
         </ul>
     </div>
 </div>
-<script>
-    let unchangedServerId = "{{ curServer.id }}";
-    let unchangedServerName = "{{ curServer.name }}";
-</script>

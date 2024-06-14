@@ -21,7 +21,7 @@ $('#download-btn').on('click', async () => {
                     $('#cancel-btn').removeClass('disabled');
                     $('.btn-close').removeClass('disabled');
                 });
-            }, 3000);
+            }, 2000);
         },
         error: function (xhr, status, error) {
             console.error('Error downloading ebook: ', error);
@@ -47,4 +47,4 @@ const getExportType = async () => {
 };
 
 getExportType();
-setInterval(getExportType, 2000);
+setInterval(getExportType, 1000);

@@ -3,12 +3,12 @@
         <div class="row">
             {{#each stories}}
             <div class="py-3 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                <a class="story-card-image" href="/story/{{encodeUrl id}}/s{{../server}}">
+                <a class="story-card-image" href="/story/{{encodeUrl id}}">
                     <img {{#if imageUrl}} src="{{imageUrl}}" {{else}} src="/assets/naimage.jpg" {{/if}} loading="lazy"
                         alt="{{name}}" title="{{name}}" />
                 </a>
                 <a class="story-card-name text-center mt-2 mb-1 fw-bold truncate"
-                    href="/story/{{encodeUrl id}}/s{{../server}}" title="{{name}}">
+                    href="/story/{{encodeUrl id}}" title="{{name}}">
                     {{name}}
                 </a>
             </div>
