@@ -206,7 +206,7 @@ public partial class TangThuVienCrawler : ICrawler
     {
         var currentChapterIndex = index + 1;
         var ttvStoryId = GetTTVStoryId(storyId);
-        string chaptersUrl = DomainStoryChapters(ttvStoryId);
+        var chaptersUrl = DomainStoryChapters(ttvStoryId);
         var chaptersDoc = GetWebPageDocument(chaptersUrl);
         var total = chaptersDoc.QuerySelector(@"ul:last-child > li:last-child").GetAttributeValue("title", -1);
         if (currentChapterIndex < 1 || currentChapterIndex > total)
@@ -214,11 +214,10 @@ public partial class TangThuVienCrawler : ICrawler
             throw new Exception();
         }
         var chapterUrl = chaptersDoc.QuerySelector($"a.link-chap-{currentChapterIndex}").GetAttributeValue("href", null);
-        var chapterId = ModelExtension.GetIDFromUrl(ModelType.Chapter, chapterUrl);
         var chapterDoc = GetWebPageDocument(chapterUrl);
         GetNameContentStoryOfChapter(chapterDoc, out string chapterName, out string content, out Story story);
         PrevNextChapId(chaptersDoc, currentChapterIndex, out string? prevChapId, out string? nextChapId);
-        return new ChapterContent(WebUtility.HtmlEncode(content), chapterName, currentChapterIndex - 1, story.ID);
+        return new ChapterContent(content, chapterName, currentChapterIndex - 1, story.ID);
     }
 
     // storyId + index => chapterId (90% accurate)
