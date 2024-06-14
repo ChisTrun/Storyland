@@ -106,7 +106,7 @@ namespace backend.Controllers
         /// <param name="serverId">ID of the server.</param>
         /// <param name="storyName" example="Đỉnh">Story name's searching keyword.</param>
         /// <param name="minChapNum" example="1">Min number of chapter (-1 for no minimum)</param>
-        /// <param name="maxChapNum" example="100">(-1 for no maximum)</param>
+        /// <param name="maxChapNum" example="100">Max number of chapter (-1 for no maximum)</param>
         /// <param name="page" example="2">Current page (starts from 1).</param>
         /// <param name="limit" example="5">Records per page.</param>
         [ProducesResponseType(typeof(PagedList<StoryDTO>), 200)]
@@ -175,14 +175,16 @@ namespace backend.Controllers
         /// <exmaple>["1", "2", "3"]</exmaple>
         /// </param>
         /// <param name="storyName" example="kiem lai">Story name's searching keyword.</param>
+        /// <param name="minChapNum" example="1">Min number of chapter (-1 for no minimum)</param>
+        /// <param name="maxChapNum" example="100">Max number of chapter (-1 for no maximum)</param>
         [ProducesResponseType(typeof(StoryDTO[]), 200)]
         [HttpPost]
-        [Route("all/truyen/{storyName}/all")]
-        public IActionResult GetStoriesBySearchName([FromBody] IEnumerable<string> idsWithPriority, string storyName)
+        [Route("all/truyen/{storyName}/{minChapNum}/{maxChapNum}/all")]
+        public IActionResult GetStoriesBySearchName([FromBody] IEnumerable<string> idsWithPriority, string storyName, int minChapNum, int maxChapNum)
         {
             try
             {
-                return Ok(_crawlingService.GetStoriesWithPriorities(idsWithPriority, storyName));
+                return Ok(_crawlingService.GetStoriesWithPriorities(idsWithPriority, storyName, minChapNum, maxChapNum));
             }
             catch (Exception e)
             {

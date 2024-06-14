@@ -14,7 +14,7 @@ public class StorySearchQuery
         _scanner = scanner;
     }
 
-    public List<StoryDTO> SearchAllStroy(string storyId, IEnumerable<string> ids)
+    public List<StoryDTO> SearchAllStroy(string storyId, IEnumerable<string> ids, int minChapNum, int maxChapNum)
     {
         var tasks = new List<Task<List<StoryDTO>>>();
         foreach (var id in ids)
@@ -22,7 +22,12 @@ public class StorySearchQuery
             tasks.Add(Task.Run(() =>
             {
                 var plugin = _scanner.GetAllPlugins()[id].Plugin;
-                var stories = plugin.GetStoriesBySearchName(storyId).ToDTOList(x => x.ToDTO())
+                var stories = plugin.GetStoriesBySearchName(storyId).Where(x =>
+                {
+                    return
+                    (minChapNum == -1 || x.NumberOfChapter >= minChapNum) &&
+                    (maxChapNum == -1 || x.NumberOfChapter <= maxChapNum);
+                }).ToDTOList(x => x.ToDTO())
                 .OrderBy(x => x.Id)
                 .ToList();
                 return stories;
