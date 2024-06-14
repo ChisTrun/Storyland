@@ -1,4 +1,4 @@
-﻿using backend.Domain.Contract;
+using backend.Domain.Contract;
 using plugin.tests.Crawler;
 using TrumTruyenHtmlCrawler;
 
