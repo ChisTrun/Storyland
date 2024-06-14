@@ -2,6 +2,7 @@
 using backend.Application.Mapper;
 using backend.Application.Queries;
 using backend.Application.Services.Abstract;
+using backend.Domain.Entities;
 using backend.Domain.Objects;
 
 namespace backend.Application.Services.Concrete;
@@ -130,10 +131,24 @@ public class CrawlingService : ICrawlingService
 
     // ====
 
-    public List<StoryDTO> GetStoriesWithPriorities(IEnumerable<string> idsWithPriority, string storyId, int minChapNum, int maxChapNum)
+    public List<StoryDTO> GetStoriesWithPriority(IEnumerable<string> idsWithPriority, string storyId, int minChapNum, int maxChapNum)
     {
         var query = new StorySearchQuery(_pluginsScannerService.GetCrawlerScanner());
-        var stories = query.SearchAllStroy(storyId, idsWithPriority, minChapNum, maxChapNum);
+        var stories = query.SearchAllStoriesWithPriority(storyId, idsWithPriority, minChapNum, maxChapNum);
         return stories;
+    }
+
+    public List<StoryDTO> GetStoriesOfCategoryWithPriority(IEnumerable<string> idsWithPriority, string categoryId)
+    {
+        var query = new StorySearchQuery(_pluginsScannerService.GetCrawlerScanner());
+        var stories = query.OfCategoryWithPriority(categoryId, idsWithPriority);
+        return stories;
+    }
+
+    public List<DisplayDTO> GetCategoriesWithPriority(IEnumerable<string> idsWithPriority)
+    {
+        var query = new CategoryQuery(_pluginsScannerService.GetCrawlerScanner());
+        var categories = query.AllCategoriesWithPriority(idsWithPriority);
+        return categories;
     }
 }

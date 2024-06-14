@@ -21,11 +21,31 @@ namespace backend.Controllers
         [ProducesResponseType(typeof(DisplayDTO[]), 200)]
         [HttpGet]
         [Route("{serverId}/")]
-        public IActionResult GetAllCategories(string serverId)
+        public IActionResult GetCategories(string serverId)
         {
             try
             {
                 return Ok(_crawlingService.GetCategories(serverId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get all categories: {e.Message}.");
+            }
+        }
+
+        /// <summary>
+        /// Get all categories with priority.
+        /// </summary>
+        /// <param name="idsWithPriority"></param>
+        /// <returns></returns>
+        [ProducesResponseType(typeof(DisplayDTO[]), 200)]
+        [HttpPost]
+        [Route("all/")]
+        public IActionResult GetCategoriesWithPriority([FromBody] IEnumerable<string> idsWithPriority)
+        {
+            try
+            {
+                return Ok(_crawlingService.GetCategoriesWithPriority(idsWithPriority));
             }
             catch (Exception e)
             {
