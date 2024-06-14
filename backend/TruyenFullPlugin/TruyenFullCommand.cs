@@ -487,6 +487,10 @@ public class TruyenFullCommand : ICrawler
 
     public List<Author> GetAuthorsBySearchName(string authorName)
     {
+        if (string.IsNullOrEmpty(authorName))
+        {
+            throw new ArgumentNullException();
+        }
         var storySearched = GetStoryWithPageAndLimit(ModelType.Story, $"{DomainTimKiem}{WebUtility.UrlEncode(authorName)}", -1, -1).Item2;
         var searchNameNorm = StringProblem.ConvertVietnameseToNormalizationForm(authorName);
 
