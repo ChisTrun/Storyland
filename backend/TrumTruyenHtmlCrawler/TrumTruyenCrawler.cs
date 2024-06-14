@@ -31,6 +31,7 @@ public class TrumTruyenCrawler : ICrawler
     const string REGEX_06 = @"trang-(\d+)";
     const string REGEX_07 = @"https://trumtruyen\.vn/tac-gia/([^/]+)";
     const string REGEX_08 = @"https://trumtruyen\.vn/(.*)";
+    const string REGEX_09 = @"\d+";
 
     const string USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
     const int DEFAULT_PAGE_SIZE = 50;
@@ -45,6 +46,7 @@ public class TrumTruyenCrawler : ICrawler
     private Regex _regex06 = new Regex(REGEX_06);
     private Regex _regex07 = new Regex(REGEX_07);
     private Regex _regex08 = new Regex(REGEX_08);
+    private Regex _regex09 = new Regex(REGEX_09);
     private HtmlDocument LoadHtmlDocument(string url)
     {
         var web = new HtmlWeb { UserAgent = USER_AGENT };
@@ -293,26 +295,26 @@ public class TrumTruyenCrawler : ICrawler
                 var iCopy = i;
                 tasks.Add(Task.Run(() =>
                 {
-                    List<Story> stories = new List<Story>();
+                    List<Task<Story>> nodeTasks = new List<Task<Story>>();
                     HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={iCopy}");
                     foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
                     {
-                        string imageLink = "";
-                        if (node.QuerySelectorAll("img").Count() != 0)
+                        var nodeCopy = node;
+                        nodeTasks.Add(Task.Run(() =>
                         {
-                            imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
-                        }
-                        else
-                        {
-                            imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
-                        }
-                        var name = $"{node.QuerySelector("h3").InnerText}";
-                        var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
-                        var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                        var numberOfChapter = GetTotalChap(id);
-                        stories.Add(new Story(name, id, imageLink, authorName, numberOfChapter));
+                            string imageLink = nodeCopy.QuerySelectorAll("img").Count() != 0
+                                ? nodeCopy.QuerySelector("img").GetAttributeValue("src", "")
+                                : nodeCopy.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
+
+                            var name = $"{nodeCopy.QuerySelector("h3").InnerText}";
+                            var authorName = nodeCopy.QuerySelector("span[class=\"author\"]").InnerText;
+                            var id = $"{_regex05.Match(nodeCopy.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                            var numberOfChapter = int.Parse(_regex09.Match(nodeCopy.QuerySelectorAll(".author")[^1].InnerText).Groups[0].Value);
+                            return new Story(name, id, imageLink, authorName, numberOfChapter);
+                        }));
                     }
-                    return stories;
+                    Task.WaitAll(nodeTasks.ToArray());
+                    return nodeTasks.Select(nt => nt.Result).ToList();
                 }));
             }
             Task.WaitAll(tasks.ToArray());
@@ -392,25 +394,26 @@ public class TrumTruyenCrawler : ICrawler
                 var iCopy = i;
                 tasks.Add(Task.Run(() =>
                 {
-                    List<Story> stories = new List<Story>();
+                    List<Task<Story>> nodeTasks = new List<Task<Story>>();
                     HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tac-gia/{authorId}/trang-{iCopy}");
                     foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
                     {
-                        string imageLink = "";
-                        if (node.QuerySelectorAll("img").Count() != 0)
+                        var nodeCopy = node;
+                        nodeTasks.Add(Task.Run(() =>
                         {
-                            imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
-                        }
-                        else
-                        {
-                            imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
-                        }
-                        var name = $"{node.QuerySelector("h3").InnerText}";
-                        var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
-                        var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                        stories.Add(new Story(name, id, imageLink, authorName));
+                            string imageLink = nodeCopy.QuerySelectorAll("img").Count() != 0
+                                ? nodeCopy.QuerySelector("img").GetAttributeValue("src", "")
+                                : nodeCopy.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
+
+                            var name = $"{nodeCopy.QuerySelector("h3").InnerText}";
+                            var authorName = nodeCopy.QuerySelector("span[class=\"author\"]").InnerText;
+                            var id = $"{_regex05.Match(nodeCopy.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                            var numberOfChapter = int.Parse(_regex09.Match(nodeCopy.QuerySelectorAll(".author")[^1].InnerText).Groups[0].Value);
+                            return new Story(name, id, imageLink, authorName, numberOfChapter);
+                        }));
                     }
-                    return stories;
+                    Task.WaitAll(nodeTasks.ToArray());
+                    return nodeTasks.Select(nt => nt.Result).ToList();
                 }));
             }
             Task.WaitAll(tasks.ToArray());
@@ -490,25 +493,26 @@ public class TrumTruyenCrawler : ICrawler
                 var iCopy = i;
                 tasks.Add(Task.Run(() =>
                 {
-                    List<Story> stories = new List<Story>();
+                    List<Task<Story>> nodeTasks = new List<Task<Story>>();
                     HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/the-loai/{categoryId}/trang-{iCopy}");
                     foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
                     {
-                        string imageLink = "";
-                        if (node.QuerySelectorAll("img").Count() != 0)
+                        var nodeCopy = node;
+                        nodeTasks.Add(Task.Run(() =>
                         {
-                            imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
-                        }
-                        else
-                        {
-                            imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
-                        }
-                        var name = $"{node.QuerySelector("h3").InnerText}";
-                        var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
-                        var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                        stories.Add(new Story(name, id, imageLink, authorName));
+                            string imageLink = nodeCopy.QuerySelectorAll("img").Count() != 0
+                                ? nodeCopy.QuerySelector("img").GetAttributeValue("src", "")
+                                : nodeCopy.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
+
+                            var name = $"{nodeCopy.QuerySelector("h3").InnerText}";
+                            var authorName = nodeCopy.QuerySelector("span[class=\"author\"]").InnerText;
+                            var id = $"{_regex05.Match(nodeCopy.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                            var numberOfChapter = int.Parse(_regex09.Match(nodeCopy.QuerySelectorAll(".author")[^1].InnerText).Groups[0].Value);
+                            return new Story(name, id, imageLink, authorName, numberOfChapter);
+                        }));
                     }
-                    return stories;
+                    Task.WaitAll(nodeTasks.ToArray());
+                    return nodeTasks.Select(nt => nt.Result).ToList();
                 }));
             }
             Task.WaitAll(tasks.ToArray());
