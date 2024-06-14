@@ -12,10 +12,7 @@ public class IndexModel : PageModel
     public Dictionary<string, PluginInfo<ICrawler>> StoryPlugin => _pluginsScannerService.GetCrawlerScanner().GetAllPlugins();
     public Dictionary<string, PluginInfo<IExporter>> ExporterPlugin => _pluginsScannerService.GetExporterScanner().GetAllPlugins();
 
-    public IndexModel(IPluginsScannerService pluginsScannerService)
-    {
-        _pluginsScannerService = pluginsScannerService;
-    }
+    public IndexModel(IPluginsScannerService pluginsScannerService) => _pluginsScannerService = pluginsScannerService;
 
     public void OnGet()
     {

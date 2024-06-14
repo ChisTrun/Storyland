@@ -1,5 +1,4 @@
 ﻿using backend.Application.DLLScanner.Contract;
-using backend.Application.Services.Abstract;
 using backend.Domain.Contract;
 using System.Reflection;
 
@@ -9,8 +8,8 @@ public class PluginFile
 {
     public static string UploadFiles<T>(IScanner<T> scanner, List<IFormFile> files) where T : IPlugin
     {
-        string message = string.Empty;
-        int numberSuccess = 0;
+        var message = string.Empty;
+        var numberSuccess = 0;
         foreach (var formFile in files)
         {
             if (formFile.Length > 0)

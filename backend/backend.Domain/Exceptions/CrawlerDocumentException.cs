@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace backend.Domain.Exceptions;
+﻿namespace backend.Domain.Exceptions;
 
 public class CrawlerDocumentException : Exception
 {

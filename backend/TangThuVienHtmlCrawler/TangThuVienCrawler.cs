@@ -24,11 +24,7 @@ public partial class TangThuVienCrawler : ICrawler
         };
         var document = web.Load(sourceURL);
         var title = document.QuerySelector("title");
-        if (title != null && title.GetDirectInnerTextDecoded() == "Site Maintenance")
-        {
-            throw new CrawlerDocumentException();
-        }
-        return document;
+        return title != null && title.GetDirectInnerTextDecoded() == "Site Maintenance" ? throw new CrawlerDocumentException() : document;
     }
 
     // authorUrl: https://truyen.tangthuvien.vn/tac-gia?author=65
@@ -74,8 +70,8 @@ public partial class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/tong-hop?ctg=1&limit=100000
     public List<Story> GetStoriesOfCategory(string categoryId)
     {
-        string castId = CategoryIDCast(categoryId);
-        string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, castId);
+        var castId = CategoryIDCast(categoryId);
+        var categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, castId);
         var baseUrl = $"{categoryUrl}&limit=10000";
         var document = GetWebPageDocument(baseUrl);
         var stories = RankViewListFormat.CrawlStoriesFromAPage(document);
@@ -85,12 +81,12 @@ public partial class TangThuVienCrawler : ICrawler
     // https://truyen.tangthuvien.vn/tong-hop?ctg=1&page=800&limit=2
     public PagedList<Story> GetStoriesOfCategory(string categoryId, int page, int limit)
     {
-        string categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, CategoryIDCast(categoryId));
+        var categoryUrl = ModelExtension.GetUrlFromID(ModelType.Category, CategoryIDCast(categoryId));
         var baseUrl = $"{categoryUrl}&limit={limit}&page={page}";
         var document = GetWebPageDocument(baseUrl);
         var stories = RankViewListFormat.CrawlStoriesFromAPage(document);
         var lastLiTag = document.QuerySelector("body > div.rank-box.box-center.cf > div.main-content-wrap.fl > div.page-box.cf > div > ul > li:last-child");
-        int totalPage = 0;
+        var totalPage = 0;
         if (lastLiTag == null)
         {
             if (stories.Any())
@@ -178,7 +174,7 @@ public partial class TangThuVienCrawler : ICrawler
         var story = GetStory(storyId);
         var ttvStoryId = GetTTVStoryId(storyId);
         var chapters = new List<Chapter>();
-        string chaptersUrl = DomainStoryChaptersPage(page, limit, ttvStoryId);
+        var chaptersUrl = DomainStoryChaptersPage(page, limit, ttvStoryId);
         // watch it content, it not always return the same as browser render
         var chaptersSelector = @"ul > li > a";
         var document = GetWebPageDocument(chaptersUrl);
@@ -215,8 +211,8 @@ public partial class TangThuVienCrawler : ICrawler
         }
         var chapterUrl = chaptersDoc.QuerySelector($"a.link-chap-{currentChapterIndex}").GetAttributeValue("href", null);
         var chapterDoc = GetWebPageDocument(chapterUrl);
-        GetNameContentStoryOfChapter(chapterDoc, out string chapterName, out string content, out Story story);
-        PrevNextChapId(chaptersDoc, currentChapterIndex, out string? prevChapId, out string? nextChapId);
+        GetNameContentStoryOfChapter(chapterDoc, out var chapterName, out var content, out var story);
+        PrevNextChapId(chaptersDoc, currentChapterIndex, out var prevChapId, out var nextChapId);
         return new ChapterContent(content, chapterName, currentChapterIndex - 1, story.ID);
     }
 
@@ -232,8 +228,8 @@ public partial class TangThuVienCrawler : ICrawler
         var ttvChapterUrl = Regex.Match(script, @"https:\/\/truyen\.tangthuvien\.vn\/story\/chapters\?story_id=37297&chapter_id=\d+").Value;
         var docChaptersWithActive = GetWebPageDocument(ttvChapterUrl);
         var currentChapterIndex = docChaptersWithActive.QuerySelector(@"li.active").GetAttributeValue("title", -1);
-        GetNameContentStoryOfChapter(chapterDoc, out string chapterName, out string content, out var story);
-        PrevNextChapId(docChaptersWithActive, currentChapterIndex, out string? prevChapId, out string? nextChapId);
+        GetNameContentStoryOfChapter(chapterDoc, out var chapterName, out var content, out var story);
+        PrevNextChapId(docChaptersWithActive, currentChapterIndex, out var prevChapId, out var nextChapId);
         return new ChapterContent(WebUtility.HtmlEncode(content), chapterName, currentChapterIndex - 1, story.ID);
     }
 
@@ -269,7 +265,7 @@ public partial class TangThuVienCrawler : ICrawler
             {
                 var response = await client.GetAsync(domainTimKiemWithKey);
                 response.EnsureSuccessStatusCode();
-                string jsonData = await response.Content.ReadAsStringAsync();
+                var jsonData = await response.Content.ReadAsStringAsync();
                 var jsonTypeList = new[] { new { id = 0, name = "", url = "", type = "", story_type = 0 } };
                 var resArray = JsonConvert.DeserializeAnonymousType(jsonData, jsonTypeList) ?? throw new Exception("Null response");
                 foreach (var res in resArray)
@@ -296,7 +292,7 @@ public partial class TangThuVienCrawler : ICrawler
         var offset = (page - 1) * limit;
         var totalPage = authors.Count / limit;
         var authorsRes = new List<Author>();
-        for (int i = offset; i < authors.Count && i + offset < limit; ++i)
+        for (var i = offset; i < authors.Count && i + offset < limit; ++i)
         {
             authorsRes.Add(authors[i]);
         }
@@ -321,9 +317,9 @@ public partial class TangThuVienCrawler : ICrawler
     {
         var searchAllStories = GetStoriesBySearchName(storyName);
         var filteredStories = searchAllStories.Where(s => s.NumberOfChapter >= minChapNum && (s.NumberOfChapter <= maxChapNum || maxChapNum == -1));
-        int startIndex = (page - 1) * limit;
-        int totalRecord = filteredStories.Count();
-        int totalPage = (totalRecord / limit) + (totalRecord % limit == 0 ? 0 : 1);
+        var startIndex = (page - 1) * limit;
+        var totalRecord = filteredStories.Count();
+        var totalPage = (totalRecord / limit) + (totalRecord % limit == 0 ? 0 : 1);
         return new PagedList<Story>(page, limit, totalPage, filteredStories.Skip(startIndex).Take(limit));
     }
 
@@ -405,7 +401,7 @@ public partial class TangThuVienCrawler : ICrawler
             systemPageEnd = (offsetEnd / systemLimit) + 1;
             systemOffsetEnd = offsetEnd % systemLimit;
         }
-        int systemCurrentPage = systemPageStart;
+        var systemCurrentPage = systemPageStart;
         var results = new List<T>();
         while (systemCurrentPage <= systemPageEnd)
         {
@@ -533,7 +529,7 @@ public partial class TangThuVienCrawler : ICrawler
                 var imageUrl = image.GetAttributeValue("src", null);
                 var authorName = li.QuerySelector(authorNameSelector).GetDirectInnerTextDecoded();
                 var chapterNumStr = li.QuerySelector(chapNumSelector).GetDirectInnerTextDecoded();
-                int chapterNum = int.TryParse(chapterNumStr, out int x) ? x : 0;
+                var chapterNum = int.TryParse(chapterNumStr, out var x) ? x : 0;
                 stories.Add(new Story(name, ModelExtension.GetIDFromUrl(ModelType.Story, url), imageUrl, authorName, chapterNum));
             }
             return stories;

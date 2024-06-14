@@ -20,18 +20,18 @@ public class FileGenerator
         {
             throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
         }
-        DirectoryInfo[] dirs = dir.GetDirectories();
+        var dirs = dir.GetDirectories();
         Directory.CreateDirectory(destinationDir);
-        foreach (FileInfo file in dir.GetFiles())
+        foreach (var file in dir.GetFiles())
         {
-            string targetFilePath = Path.Combine(destinationDir, file.Name);
+            var targetFilePath = Path.Combine(destinationDir, file.Name);
             file.CopyTo(targetFilePath);
         }
         if (recursive)
         {
-            foreach (DirectoryInfo subDir in dirs)
+            foreach (var subDir in dirs)
             {
-                string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                var newDestinationDir = Path.Combine(destinationDir, subDir.Name);
                 CopyDirectory(subDir.FullName, newDestinationDir, true);
             }
         }

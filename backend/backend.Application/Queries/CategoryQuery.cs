@@ -3,7 +3,6 @@ using backend.Application.DTO;
 using backend.Application.Mapper;
 using backend.Application.Utils;
 using backend.Domain.Contract;
-using backend.Domain.Entities;
 
 namespace backend.Application.Queries;
 

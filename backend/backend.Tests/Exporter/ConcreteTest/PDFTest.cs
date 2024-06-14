@@ -5,9 +5,6 @@ namespace backend.Tests.Exporter.ConcreteTest
 {
     public class PDFTest : ExporterTestBase
     {
-        protected override IExporter GetExporter()
-        {
-            return new PDFExport();
-        }
+        protected override IExporter GetExporter() => new PDFExport();
     }
 }

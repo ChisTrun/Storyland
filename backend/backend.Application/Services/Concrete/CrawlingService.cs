@@ -2,7 +2,6 @@
 using backend.Application.Mapper;
 using backend.Application.Queries;
 using backend.Application.Services.Abstract;
-using backend.Domain.Entities;
 using backend.Domain.Objects;
 
 namespace backend.Application.Services.Concrete;

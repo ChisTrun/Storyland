@@ -10,10 +10,7 @@ namespace backend.Controllers
     {
         private readonly ICrawlingService _crawlingService;
 
-        public AuthorController(ICrawlingService crawlingService)
-        {
-            _crawlingService = crawlingService;
-        }
+        public AuthorController(ICrawlingService crawlingService) => _crawlingService = crawlingService;
 
         /// <summary>
         /// Get all authors by search.

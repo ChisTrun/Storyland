@@ -10,10 +10,7 @@ namespace backend.Controllers
     {
         private readonly ICrawlingService _crawlingService;
 
-        public StoryController(ICrawlingService crawlingService)
-        {
-            _crawlingService = crawlingService;
-        }
+        public StoryController(ICrawlingService crawlingService) => _crawlingService = crawlingService;
 
         /// <summary>
         /// Get detail of a Story.

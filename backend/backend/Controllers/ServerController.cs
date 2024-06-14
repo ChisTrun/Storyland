@@ -1,9 +1,7 @@
 ﻿using backend.Application.DTO;
 using backend.Application.Services.Abstract;
-using backend.Domain.Entities;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
 
 
 namespace backend.Controllers;
@@ -14,10 +12,7 @@ public class ServerController : Controller
 {
     private readonly IPluginsScannerService _pluginsScannerService;
 
-    public ServerController(IPluginsScannerService pluginsScannerService)
-    {
-        _pluginsScannerService = pluginsScannerService;
-    }
+    public ServerController(IPluginsScannerService pluginsScannerService) => _pluginsScannerService = pluginsScannerService;
 
     /// <summary>
     /// Get servers.

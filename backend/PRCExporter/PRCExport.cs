@@ -29,20 +29,20 @@ namespace PRCExporter
             }
 
             // Create temporary files
-            string tempEpubPath = Path.Combine(tempDir, fileName + ".epub");
+            var tempEpubPath = Path.Combine(tempDir, fileName + ".epub");
             File.WriteAllBytes(tempEpubPath, byteStream);
-            string outputPath = Path.Combine(tempDir, fileName + ".mobi");
+            var outputPath = Path.Combine(tempDir, fileName + ".mobi");
 
             // Convert epub to mobi using Calibre
-            string calibrePath = GetCalibrePath();
+            var calibrePath = GetCalibrePath();
             ConvertToMobi(calibrePath, tempEpubPath, outputPath);
 
             // Change Extension to .prc
-            string tempPrcPath = Path.ChangeExtension(outputPath, ".prc");
+            var tempPrcPath = Path.ChangeExtension(outputPath, ".prc");
             File.Move(outputPath, tempPrcPath);
 
             // Read converted prc file as byte stream
-            byte[] outputByteStream = File.ReadAllBytes(tempPrcPath);
+            var outputByteStream = File.ReadAllBytes(tempPrcPath);
 
             CleanTempFile(tempEpubPath, tempPrcPath);
 
@@ -63,20 +63,20 @@ namespace PRCExporter
             }
 
             // Create temporary files
-            string tempEpubPath = Path.Combine(tempDir, fileName + ".epub");
+            var tempEpubPath = Path.Combine(tempDir, fileName + ".epub");
             File.WriteAllBytes(tempEpubPath, byteStream);
-            string outputPath = Path.Combine(tempDir, fileName + ".mobi");
+            var outputPath = Path.Combine(tempDir, fileName + ".mobi");
 
             // Convert epub to mobi using Calibre
-            string calibrePath = GetCalibrePath();
+            var calibrePath = GetCalibrePath();
             ConvertToMobi(calibrePath, tempEpubPath, outputPath);
 
             // Change Extension to .prc
-            string tempPrcPath = Path.ChangeExtension(outputPath, ".prc");
+            var tempPrcPath = Path.ChangeExtension(outputPath, ".prc");
             File.Move(outputPath, tempPrcPath);
 
             // Read converted prc file as byte stream
-            byte[] outputByteStream = File.ReadAllBytes(tempPrcPath);
+            var outputByteStream = File.ReadAllBytes(tempPrcPath);
 
             CleanTempFile(tempEpubPath, tempPrcPath);
 
@@ -85,13 +85,13 @@ namespace PRCExporter
 
         public static string GetCalibrePath()
         {
-            string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Calibre/config.json");
+            var configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Calibre/config.json");
             if (!File.Exists(configFilePath))
             {
                 throw new Exception("Configuration file not found!");
             }
 
-            string configJson = File.ReadAllText(configFilePath);
+            var configJson = File.ReadAllText(configFilePath);
             var config = JsonConvert.DeserializeObject<Dictionary<string, string>>(configJson);
             return config == null ? throw new Exception("Configuration path not found!") : config["calibrePath"];
         }
@@ -118,7 +118,7 @@ namespace PRCExporter
 
             process.Start();
             process.StandardOutput.ReadToEnd(); // Read and ignore the standard output
-            string error = process.StandardError.ReadToEnd();
+            var error = process.StandardError.ReadToEnd();
             process.WaitForExit();
 
             if (process.ExitCode != 0)

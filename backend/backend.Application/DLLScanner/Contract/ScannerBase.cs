@@ -13,11 +13,7 @@ public abstract class ScannerBase<T> : IScanner<T> where T : IPlugin
     public T UsePlugin(string uuid)
     {
         var pluginInfo = Plugins[uuid];
-        if (pluginInfo == null || pluginInfo.Status == PluginStatus.Removed)
-        {
-            throw new PluginNotFoundException();
-        }
-        return pluginInfo.Plugin;
+        return pluginInfo == null || pluginInfo.Status == PluginStatus.Removed ? throw new PluginNotFoundException() : pluginInfo.Plugin;
     }
 
     public Dictionary<string, PluginInfo<T>> GetUsedPlugins() => Plugins.Where(x => x.Value.Status == PluginStatus.Used).ToDictionary();

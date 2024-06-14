@@ -1,14 +1,14 @@
-﻿using iText.IO.Image;
-using iText.Layout.Properties;
+﻿using backend.Domain.Contract;
+using backend.Domain.Entities;
+using iText.IO.Font;
+using iText.IO.Image;
+using iText.Kernel.Colors;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Action;
 using iText.Layout;
 using iText.Layout.Element;
-using iText.Kernel.Colors;
-using iText.IO.Font;
-using backend.Domain.Contract;
-using backend.Domain.Entities;
+using iText.Layout.Properties;
 
 namespace PDFExporter
 {
@@ -25,7 +25,7 @@ namespace PDFExporter
             var chapterContents = chapters.ToList();
             var dest = $"{DESTDIR}story.pdf";
             CreatePDFDocumentOfStory(dest, storyDetail, chapterContents);
-            byte[] bytes = File.ReadAllBytes(dest);
+            var bytes = File.ReadAllBytes(dest);
             File.Delete(dest);
             return bytes;
         }
@@ -34,7 +34,7 @@ namespace PDFExporter
         {
             var dest = $"{DESTDIR}chapter.pdf";
             CreatePDFDocumentOfChapter(dest, storyDetail, chapterContent);
-            byte[] bytes = System.IO.File.ReadAllBytes(dest);
+            var bytes = System.IO.File.ReadAllBytes(dest);
             File.Delete(dest);
             return bytes;
         }
@@ -42,8 +42,8 @@ namespace PDFExporter
         {
             var document = CreateDocument(path);
             SetDefaultFont(ref document);
-            ImageData imageData = ImageDataFactory.Create(storyDetail.ImageURL);
-            Image cover = new Image(imageData).SetAutoScale(true).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+            var imageData = ImageDataFactory.Create(storyDetail.ImageURL);
+            var cover = new Image(imageData).SetAutoScale(true).SetHorizontalAlignment(HorizontalAlignment.CENTER);
             document.Add(cover);
             SetStoryName(storyDetail.Name, ref document);
             SetAuthor(storyDetail.Author.Name, ref document);
@@ -58,11 +58,11 @@ namespace PDFExporter
 
         private static void AddChapterContent(ChapterContent chapterContent, ref Document document)
         {
-            Paragraph chapterName = new Paragraph(chapterContent.Name).SetBold().SetFontSize(18).SetDestination($"chuong{chapterContent.Index}");
+            var chapterName = new Paragraph(chapterContent.Name).SetBold().SetFontSize(18).SetDestination($"chuong{chapterContent.Index}");
             document.Add(chapterName);
 
             var content = chapterContent.Content.Replace("\n\n\n", "\n\n");
-            Paragraph mainContent = new Paragraph(content == null ? "" : content);
+            var mainContent = new Paragraph(content ?? "");
             document.Add(mainContent);
         }
 
@@ -70,8 +70,8 @@ namespace PDFExporter
         {
             var document = CreateDocument(path);
             SetDefaultFont(ref document);
-            ImageData imageData = ImageDataFactory.Create(storyDetail.ImageURL);
-            Image cover = new Image(imageData).SetAutoScale(true).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+            var imageData = ImageDataFactory.Create(storyDetail.ImageURL);
+            var cover = new Image(imageData).SetAutoScale(true).SetHorizontalAlignment(HorizontalAlignment.CENTER);
             document.Add(cover);
             SetStoryName(storyDetail.Name, ref document);
             SetAuthor(storyDetail.Author.Name, ref document);
@@ -82,7 +82,7 @@ namespace PDFExporter
             SetChapterTable(ref document);
             AddChaptersTable(chapterContents, ref document);
             document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-            for (int i = 0; i < chapterContents.Count; i++)
+            for (var i = 0; i < chapterContents.Count; i++)
             {
                 AddChapterContent(chapterContents[i], ref document);
                 if (i != chapterContents.Count - 1)
@@ -95,46 +95,46 @@ namespace PDFExporter
 
         private static void AddChaptersTable(List<ChapterContent> chapterContents, ref Document document)
         {
-            for (int i = 0; i < chapterContents.Count; i++)
+            for (var i = 0; i < chapterContents.Count; i++)
             {
-                Paragraph chapterName = new Paragraph($"{chapterContents[i].Name}").SetMarginLeft(50).SetAction(PdfAction.CreateGoTo($"chuong{chapterContents[i].Index}")).SetUnderline();
+                var chapterName = new Paragraph($"{chapterContents[i].Name}").SetMarginLeft(50).SetAction(PdfAction.CreateGoTo($"chuong{chapterContents[i].Index}")).SetUnderline();
                 document.Add(chapterName);
             }
         }
 
         private static void SetChapterTable(ref Document document)
         {
-            Paragraph chapterTable = new Paragraph("Danh sách các chương").SetBold().SetFontSize(20).SetMaxWidth(250).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+            var chapterTable = new Paragraph("Danh sách các chương").SetBold().SetFontSize(20).SetMaxWidth(250).SetHorizontalAlignment(HorizontalAlignment.CENTER);
             document.Add(chapterTable);
         }
 
         private static void SetCategories(Category[] categories, ref Document document)
         {
-            Paragraph category = new Paragraph("Thể loại: " + string.Join(", ", categories.Select(x => x.Name).ToList()));
+            var category = new Paragraph("Thể loại: " + string.Join(", ", categories.Select(x => x.Name).ToList()));
             document.Add(category);
         }
 
         private static void SetStatus(string statusStr, ref Document document)
         {
-            Paragraph status = new Paragraph("Trạng thái: " + statusStr);
+            var status = new Paragraph("Trạng thái: " + statusStr);
             document.Add(status);
         }
 
         private static void SetDescription(string descriptionStr, ref Document document)
         {
-            Paragraph description = new Paragraph("Mô tả: " + descriptionStr);
+            var description = new Paragraph("Mô tả: " + descriptionStr);
             document.Add(description);
         }
 
         private static void SetAuthor(string authorName, ref Document document)
         {
-            Paragraph author = new Paragraph(authorName).SetFontColor(new DeviceRgb(50, 50, 50)).SetFontSize(20).SetHorizontalAlignment(HorizontalAlignment.RIGHT).SetHorizontalAlignment(HorizontalAlignment.RIGHT);
+            var author = new Paragraph(authorName).SetFontColor(new DeviceRgb(50, 50, 50)).SetFontSize(20).SetHorizontalAlignment(HorizontalAlignment.RIGHT).SetHorizontalAlignment(HorizontalAlignment.RIGHT);
             document.Add(author);
         }
 
         private static void SetStoryName(string storyNameStr, ref Document document)
         {
-            Paragraph storyName = new Paragraph(storyNameStr).SetFontSize(40).SetFontColor(new DeviceRgb(255, 100, 20)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+            var storyName = new Paragraph(storyNameStr).SetFontSize(40).SetFontColor(new DeviceRgb(255, 100, 20)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
             document.Add(storyName);
         }
 
@@ -143,19 +143,21 @@ namespace PDFExporter
             var fontPath = "./fonts/vuArial.ttf";
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
             fontPath = Path.Combine(baseDir, fontPath);
-            PdfFont font = PdfFontFactory.CreateFont(fontPath, PdfEncodings.IDENTITY_H);
+            var font = PdfFontFactory.CreateFont(fontPath, PdfEncodings.IDENTITY_H);
             document.SetFont(font);
         }
 
         private static Document CreateDocument(string path)
         {
-            FileInfo file = new FileInfo(path);
+            var file = new FileInfo(path);
             if (!file.Directory!.Exists)
+            {
                 file.Directory.Create();
+            }
 
-            PdfWriter writer = new PdfWriter(path);
-            PdfDocument pdf = new PdfDocument(writer);
-            Document document = new Document(pdf);
+            var writer = new PdfWriter(path);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
             return document;
         }
     }
