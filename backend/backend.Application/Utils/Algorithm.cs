@@ -1,5 +1,7 @@
 ﻿using backend.Application.DLLScanner.Contract;
 using backend.Domain.Contract;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace backend.Application.Utils;
 
@@ -44,5 +46,13 @@ public class Algorithm
         }
         var superList = Task.WhenAll(tasks).Result.ToList();
         return superList;
+    }
+
+    public static string ConvertToUnsign(string str)
+    {
+        Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+        string temp = str.Normalize(NormalizationForm.FormD);
+        return regex.Replace(temp, string.Empty)
+                    .Replace('\u0111', 'd').Replace('\u0110', 'D');
     }
 }
