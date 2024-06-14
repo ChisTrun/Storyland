@@ -41,6 +41,11 @@
 		</ContentWithTargetPath>
 		<None Include="Resources\**" />
 	</ItemGroup>
+	<ItemGroup>
+		<Content Include="plugins\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\backend.Application\backend.Application.csproj" />
