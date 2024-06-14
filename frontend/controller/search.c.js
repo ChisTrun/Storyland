@@ -22,7 +22,7 @@ module.exports = {
             const keyword = req.query.keyword || ' ';
             let curPage = parseInt(req.query.page) || 1;
             
-            const url = `${BE_HOST}/api/search/all/truyen/${encodeURIComponent(keyword)}/all`;        
+            const url = `${BE_HOST}/api/search/all/truyen/${encodeURIComponent(keyword)}/${minChapter === 0 ? -1 : minChapter}/${maxChapter === 10000 ? -1 : maxChapter}/all`;        
             const [responseResult, serverArrResult] = await Promise.allSettled([
                 fetch(url, {
                     method: 'POST',
