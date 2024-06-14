@@ -1,9 +1,7 @@
 ﻿using backend.Application.Commands.Concrete;
-using backend.Application.DLLScanner.Contract;
 using backend.Application.DTO;
-using backend.Application.Queries.Concrete;
+using backend.Application.Queries;
 using backend.Application.Services.Abstract;
-using backend.Domain.Contract;
 
 namespace backend.Application.Services.Concrete;
 

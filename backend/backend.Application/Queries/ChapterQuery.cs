@@ -1,12 +1,9 @@
-﻿using backend.Application.DTO;
-using backend.Application.Mapper;
-using backend.Application.Queries.Abstract;
-using backend.Domain.Contract;
+﻿using backend.Domain.Contract;
 using backend.Domain.Entities;
 
-namespace backend.Application.Queries.Concrete;
+namespace backend.Application.Queries;
 
-public class ChapterQuery : IChapterQuery
+public class ChapterQuery
 {
     private readonly ICrawler _crawler;
 
