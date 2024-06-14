@@ -113,11 +113,11 @@ public class TrumTruyenCrawler : ICrawler
     private int GetTotalStorySearch(string name)
     {
         var searchContent = WebUtility.UrlEncode(name);
-        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}tim-kiem/?tukhoa={searchContent}");
+        var doc = LoadHtmlDocument($"{HOME_URL}tim-kiem/?tukhoa={searchContent}");
         if (doc.Text.Contains("Error 404 (Not Found)!!")) throw new System.Exception("invalid id");
         var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
         var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex04.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
-        HtmlDocument lastPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={lastIndex}");
+        var lastPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={lastIndex}");
         return (lastIndex - 1) * DEFAULT_SEARCH_SIZE + lastPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").Count();
     }
 
