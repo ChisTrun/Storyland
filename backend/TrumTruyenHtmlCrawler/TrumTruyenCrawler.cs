@@ -279,6 +279,7 @@ public class TrumTruyenCrawler : ICrawler
 
     public List<Story> GetStoriesBySearchName(string storyName)
     {
+        if (storyName.Length == 0) throw new System.Exception("invalid name");
         try {
             List<Task<List<Story>>> tasks = new List<Task<List<Story>>>();
             List<Story> result = new List<Story>();
@@ -328,6 +329,7 @@ public class TrumTruyenCrawler : ICrawler
 
     public PagedList<Story> GetStoriesBySearchName(string storyName, int page, int limit)
     {
+        if (storyName.Length == 0) throw new System.Exception("invalid name");
         if (page < 1 || limit < 0) throw new System.Exception("invalid paging data");
         try {
             var searchContent = WebUtility.UrlEncode(storyName);
@@ -378,6 +380,7 @@ public class TrumTruyenCrawler : ICrawler
     public List<Story> GetStoriesOfAuthor(string authorId)
     {
         try {
+            
             List<Task<List<Story>>> tasks = new List<Task<List<Story>>>();
             List<Story> result = new List<Story>();
             HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tac-gia/{authorId}");
@@ -698,6 +701,10 @@ public class TrumTruyenCrawler : ICrawler
 
     public PagedList<Story> GetStoriesBySearchNameWithFilter(string storyName, int minChapNum, int maxChapNum, int page, int limit)
     {
+        if (storyName.Length == 0)
+        {
+            throw new System.Exception("Invalid author name");
+        }
         var stories = GetStoriesBySearchName(storyName);
         var filterStories = stories.Where(story => story.NumberOfChapter >= minChapNum && story.NumberOfChapter <= maxChapNum).ToList();
         int totalStory = filterStories.Count;
