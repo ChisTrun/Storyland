@@ -20,5 +20,7 @@ public interface ICrawlingService
     StoryDetailDTO GetStoryDetail(string serverId, string storyId);
     int GetChaptersCount(string serverId, string storyId);
     PagedList<StoryDTO> GetStoriesBySearchNameWithFilter(string serverId, string searchName, int minChapNum, int maxChapNum, int page, int limit);
-    List<StoryDTO> GetStoriesWithPriorities(IEnumerable<string> idsWithPriority, string storyId, int minChapNum, int maxChapNum);
+    List<StoryDTO> GetStoriesWithPriority(IEnumerable<string> idsWithPriority, string storyId, int minChapNum, int maxChapNum);
+    List<StoryDTO> GetStoriesOfCategoryWithPriority(IEnumerable<string> idsWithPriority, string categoryId);
+    List<DisplayDTO> GetCategoriesWithPriority(IEnumerable<string> idsWithPriority);
 }

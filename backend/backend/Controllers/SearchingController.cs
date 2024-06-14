@@ -171,7 +171,7 @@ namespace backend.Controllers
         /// <summary>
         /// Get all stories with server priority.
         /// </summary>
-        /// <param name="idsWithPriority"> List of strings.
+        /// <param name="idsWithPriority"> List of string ids.
         /// <exmaple>["1", "2", "3"]</exmaple>
         /// </param>
         /// <param name="storyName" example="kiem lai">Story name's searching keyword.</param>
@@ -184,11 +184,34 @@ namespace backend.Controllers
         {
             try
             {
-                return Ok(_crawlingService.GetStoriesWithPriorities(idsWithPriority, storyName, minChapNum, maxChapNum));
+                return Ok(_crawlingService.GetStoriesWithPriority(idsWithPriority, storyName, minChapNum, maxChapNum));
             }
             catch (Exception e)
             {
                 return StatusCode(500, $"Fail to get stories by searching with keyword {storyName}: {e.Message}.");
+            }
+        }
+
+        /// <summary>
+        /// Get all stories by category with priority.
+        /// </summary>
+        /// <param name="idsWithPriority"> List of string ids.
+        /// <exmaple>["1", "2", "3"]</exmaple>
+        /// </param>
+        /// <param name="categoryId">ID of a category</param>
+        /// <returns></returns>
+        [ProducesResponseType(typeof(StoryDTO[]), 200)]
+        [HttpPost]
+        [Route("all/{categoryId}/all")]
+        public IActionResult GetAllStoriesOfCategory([FromBody] IEnumerable<string> idsWithPriority, string categoryId)
+        {
+            try
+            {
+                return Ok(_crawlingService.GetStoriesOfCategoryWithPriority(idsWithPriority, categoryId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Fail to get stories of the category with id {categoryId}: {e.Message}.");
             }
         }
     }
