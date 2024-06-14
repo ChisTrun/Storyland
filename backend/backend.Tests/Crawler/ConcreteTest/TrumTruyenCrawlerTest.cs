@@ -1,4 +1,4 @@
-﻿using backend.Domain.Contract;
+using backend.Domain.Contract;
 using plugin.tests.Crawler;
 using TrumTruyenHtmlCrawler;
 
@@ -47,7 +47,7 @@ public class TrumTruyenCrawlerTest : CrawlerTestBase
     }
 
     [Theory]
-    [InlineData("kiem-laiiii")]
+    [InlineData("")]
     public override void GetStoriesBySearchName_InvalidStoryName_ThrowsException(string storyName)
     {
         base.GetStoriesBySearchName_InvalidStoryName_ThrowsException(storyName);
@@ -68,7 +68,7 @@ public class TrumTruyenCrawlerTest : CrawlerTestBase
     }
 
     [Theory]
-    [InlineData("phong-hoa-hi-chu-hau")]
+    [InlineData("phong-hoa-hi-chu-hauaaaaa")]
     public override void GetStoriesOfAuthor_InvalidAuthorId_ThrowsException(string id)
     {
         base.GetStoriesOfAuthor_InvalidAuthorId_ThrowsException(id);

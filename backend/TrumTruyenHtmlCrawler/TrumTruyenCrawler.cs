@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Text;
@@ -114,6 +114,7 @@ public class TrumTruyenCrawler : ICrawler
     {
         var searchContent = WebUtility.UrlEncode(name);
         HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}tim-kiem/?tukhoa={searchContent}");
+        if (doc.Text.Contains("Error 404 (Not Found)!!")) throw new System.Exception("invalid id");
         var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
         var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex04.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
         HtmlDocument lastPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={lastIndex}");
@@ -122,16 +123,22 @@ public class TrumTruyenCrawler : ICrawler
 
     private int GetTotalStoryAuthor(string name)
     {
-        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tac-gia/{name}");
-        var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
-        var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex06.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
-        HtmlDocument lastPage = LoadHtmlDocument($"{HOME_URL}/tac-gia/{name}/trang-{lastIndex}");
-        return (lastIndex - 1) * DEFAULT_SEARCH_SIZE + lastPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").Count();
+        try {
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tac-gia/{name}");
+            if (doc.Text.Contains("Error 404 (Not Found)!!")) throw new System.Exception("invalid id");
+            var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
+            var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex06.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
+            HtmlDocument lastPage = LoadHtmlDocument($"{HOME_URL}/tac-gia/{name}/trang-{lastIndex}");
+            return (lastIndex - 1) * DEFAULT_SEARCH_SIZE + lastPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").Count();
+        } catch {
+            throw new System.Exception("some thing wrong");
+        }
     }
 
     private int GetTotalStoryCategory(string name)
     {
         HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/the-loai/{name}");
+         if (doc.Text.Contains("Error 404 (Not Found)!!")) throw new System.Exception("invalid id");
         var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
         var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex06.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
         HtmlDocument lastPage = LoadHtmlDocument($"{HOME_URL}/the-loai/{name}/trang-{lastIndex}");
@@ -174,271 +181,277 @@ public class TrumTruyenCrawler : ICrawler
 
     public ChapterContent GetChapterContent(string storyId, int chapterIndex)
     {
+        if (chapterIndex < 0) throw new System.Exception("invalid chapter index");
         HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/{storyId}/chuong-{chapterIndex + 1}");
-        string name = doc.QuerySelector(".chapter-title").InnerText;
-        string content = doc.QuerySelector("#chapter-c").InnerHtml.Replace("<br>", "\n");
-        string nextChapterUrl = doc.QuerySelector(".btn-group").QuerySelectorAll("a")[1].GetAttributeValue("href", "");
-        string prevChapterUrl = doc.QuerySelector(".btn-group").QuerySelectorAll("a")[0].GetAttributeValue("href", "");
-        return new ChapterContent(content, name, chapterIndex, storyId);
+        try
+        {
+            string name = doc.QuerySelector(".chapter-title").InnerText;
+            string content = doc.QuerySelector("#chapter-c").InnerHtml.Replace("<br>", "\n");
+            string nextChapterUrl = doc.QuerySelector(".btn-group").QuerySelectorAll("a")[1].GetAttributeValue("href", "");
+            string prevChapterUrl = doc.QuerySelector(".btn-group").QuerySelectorAll("a")[0].GetAttributeValue("href", "");
+            return new ChapterContent(content, name, chapterIndex, storyId);
+        } catch
+        {
+            throw new System.Exception("invalid story id");
+        }
+
     }
 
     public List<Chapter> GetChaptersOfStory(string storyId)
     {
-        Story story = GetExactStory(storyId);
-        List<Chapter> chapters = new List<Chapter>();
-        HtmlDocument firstPage = LoadHtmlDocument($"{HOME_URL}/{storyId}");
-        string name = firstPage.QuerySelector("h3[itemprop=\"name\"]").InnerText;
-        string storyCode = firstPage.QuerySelector("#truyen-id").GetAttributeValue("value", "");
-        int totalPage = int.Parse(firstPage.QuerySelector("#total-page").GetAttributeValue("value", ""));
-        if (totalPage == 1)
+        try
         {
-            foreach (var node in firstPage.QuerySelectorAll(".list-chapter li a"))
+            Story story = GetExactStory(storyId);
+            List<Chapter> chapters = new List<Chapter>();
+            HtmlDocument firstPage = LoadHtmlDocument($"{HOME_URL}/{storyId}");
+            string name = firstPage.QuerySelector("h3[itemprop=\"name\"]").InnerText;
+            string storyCode = firstPage.QuerySelector("#truyen-id").GetAttributeValue("value", "");
+            int totalPage = int.Parse(firstPage.QuerySelector("#total-page").GetAttributeValue("value", ""));
+            if (totalPage == 1)
             {
-                chapters.Add(new Chapter(node.InnerText, storyId, int.Parse(_regex03.Match(node.GetAttributeValue("href", "")).Groups[1].Value) - 1));
+                foreach (var node in firstPage.QuerySelectorAll(".list-chapter li a"))
+                {
+                    chapters.Add(new Chapter(node.InnerText, storyId, int.Parse(_regex03.Match(node.GetAttributeValue("href", "")).Groups[1].Value) - 1));
+                }
+                return chapters;
+            }
+            for (int i = 1; i <= totalPage; i++)
+            {
+                HtmlDocument targetPage = new HtmlDocument();
+                var url = string.Format(GET_CHAPTER_URL, storyCode, storyId, WebUtility.UrlEncode(name), i, totalPage);
+                var data = FetchData(url) as string;
+                var jsonData = JObject.Parse(data);
+                targetPage.LoadHtml(((string?)jsonData["chap_list"]));
+                foreach (var node in targetPage.QuerySelectorAll("li a"))
+                {
+                    chapters.Add(new Chapter(node.InnerText, storyId, int.Parse(_regex03.Match(node.GetAttributeValue("href", "")).Groups[1].Value) - 1));
+                }
             }
             return chapters;
-        }
-        for (int i = 1; i <= totalPage; i++)
+        } catch
         {
-            HtmlDocument targetPage = new HtmlDocument();
-            var url = string.Format(GET_CHAPTER_URL, storyCode, storyId, WebUtility.UrlEncode(name), i, totalPage);
-            var data = FetchData(url) as string;
-            var jsonData = JObject.Parse(data);
-            targetPage.LoadHtml(((string?)jsonData["chap_list"]));
-            foreach (var node in targetPage.QuerySelectorAll("li a"))
-            {
-                chapters.Add(new Chapter(node.InnerText, storyId, int.Parse(_regex03.Match(node.GetAttributeValue("href", "")).Groups[1].Value) - 1));
-            }
+            throw new System.Exception("some thing wrong");
         }
-        return chapters;
     }
 
     public PagedList<Chapter> GetChaptersOfStory(string storyId, int page, int limit)
     {
-        Story story = GetExactStory(storyId);
-        int skippedElements = limit * (page - 1);
-        int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_PAGE_SIZE);
-        int startIndex = skippedElements % DEFAULT_PAGE_SIZE;
-        int totalChap = GetTotalChap(storyId);
-        int totalPage = (int)Math.Ceiling((double)totalChap / limit);
-        List<Chapter> chapters = new List<Chapter>();
-        if (skippedElements > totalChap)
-            return new PagedList<Chapter>(page, limit, totalPage, chapters);
-        int count = 0;
-        HtmlDocument firstPage = LoadHtmlDocument($"{HOME_URL}/{storyId}");
-        string name = firstPage.QuerySelector("h3[itemprop=\"name\"]").InnerText;
-        string storyCode = firstPage.QuerySelector("#truyen-id").GetAttributeValue("value", "");
-        while (count < limit)
-        {
-            HtmlDocument targetPage = new HtmlDocument();
-            var url = string.Format(GET_CHAPTER_URL, storyCode, storyId, WebUtility.UrlEncode(name), startPage + 1, totalPage);
-            var data = FetchData(url) as string;
-            var jsonData = JObject.Parse(data);
-            targetPage.LoadHtml(((string?)jsonData["chap_list"]));
-            var nodes = targetPage.QuerySelectorAll(".list-chapter li a");
-            if (startIndex >= nodes.Count)
-                break;
-            for (; startIndex < DEFAULT_PAGE_SIZE; startIndex++)
+        try {
+            if (page < 1 || limit < 0) throw new System.Exception("invalid paging data");
+            Story story = GetExactStory(storyId);
+            int skippedElements = limit * (page - 1);
+            int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_PAGE_SIZE);
+            int startIndex = skippedElements % DEFAULT_PAGE_SIZE;
+            int totalChap = GetTotalChap(storyId);
+            int totalPage = (int)Math.Ceiling((double)totalChap / limit);
+            List<Chapter> chapters = new List<Chapter>();
+            if (skippedElements > totalChap)
+                return new PagedList<Chapter>(page, limit, totalPage, chapters);
+            int count = 0;
+            HtmlDocument firstPage = LoadHtmlDocument($"{HOME_URL}/{storyId}");
+            string name = firstPage.QuerySelector("h3[itemprop=\"name\"]").InnerText;
+            string storyCode = firstPage.QuerySelector("#truyen-id").GetAttributeValue("value", "");
+            while (count < limit)
             {
-                count++;
-                if (count > limit || startIndex >= nodes.Count)
+                HtmlDocument targetPage = new HtmlDocument();
+                var url = string.Format(GET_CHAPTER_URL, storyCode, storyId, WebUtility.UrlEncode(name), startPage + 1, totalPage);
+                var data = FetchData(url) as string;
+                var jsonData = JObject.Parse(data);
+                targetPage.LoadHtml(((string?)jsonData["chap_list"]));
+                var nodes = targetPage.QuerySelectorAll(".list-chapter li a");
+                if (startIndex >= nodes.Count)
                     break;
-                chapters.Add(new Chapter(nodes[startIndex].InnerText, storyId, int.Parse(_regex03.Match(nodes[startIndex].GetAttributeValue("href", "")).Groups[1].Value) - 1));
+                for (; startIndex < DEFAULT_PAGE_SIZE; startIndex++)
+                {
+                    count++;
+                    if (count > limit || startIndex >= nodes.Count)
+                        break;
+                    chapters.Add(new Chapter(nodes[startIndex].InnerText, storyId, int.Parse(_regex03.Match(nodes[startIndex].GetAttributeValue("href", "")).Groups[1].Value) - 1));
+                }
+                startIndex = 0;
+                startPage += 1;
             }
-            startIndex = 0;
-            startPage += 1;
+            return new PagedList<Chapter>(page, limit, totalPage, chapters);
+        } catch {
+            throw new System.Exception("some thing wrong");
         }
-        return new PagedList<Chapter>(page, limit, totalPage, chapters);
     }
 
     public List<Story> GetStoriesBySearchName(string storyName)
     {
-        List<Task<List<Story>>> tasks = new List<Task<List<Story>>>();
-        List<Story> result = new List<Story>();
-        var searchContent = WebUtility.UrlEncode(storyName);
-        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}");
-        var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
-        var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex04.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
-        for (int i = 1; i <= lastIndex; i++)
-        {
-            var iCopy = i;
-            tasks.Add(Task.Run(() =>
+        if (storyName.Length == 0) throw new System.Exception("invalid name");
+        try {
+            List<Task<List<Story>>> tasks = new List<Task<List<Story>>>();
+            List<Story> result = new List<Story>();
+            var searchContent = WebUtility.UrlEncode(storyName);
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}");
+            if (doc.Text.Contains("Error 404 (Not Found)!!")) throw new System.Exception("invalid id");
+            var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
+            var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex04.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
+            for (int i = 1; i <= lastIndex; i++)
             {
-                List<Story> stories = new List<Story>();
-                HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={iCopy}");
-                foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
+                var iCopy = i;
+                tasks.Add(Task.Run(() =>
                 {
-                    string imageLink = "";
-                    if (node.QuerySelectorAll("img").Count() != 0)
+                    List<Story> stories = new List<Story>();
+                    HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={iCopy}");
+                    foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
                     {
-                        imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
+                        string imageLink = "";
+                        if (node.QuerySelectorAll("img").Count() != 0)
+                        {
+                            imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
+                        }
+                        else
+                        {
+                            imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
+                        }
+                        var name = $"{node.QuerySelector("h3").InnerText}";
+                        var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
+                        var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                        var numberOfChapter = GetTotalChap(id);
+                        stories.Add(new Story(name, id, imageLink, authorName, numberOfChapter));
                     }
-                    else
-                    {
-                        imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
-                    }
-                    var name = $"{node.QuerySelector("h3").InnerText}";
-                    var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
-                    var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                    var numberOfChapter = GetTotalChap(id);
-                    stories.Add(new Story(name, id, imageLink, authorName,numberOfChapter));
-                }
-                return stories;
-            }));
-        }
-        Task.WaitAll(tasks.ToArray());
-        foreach (var task in tasks)
+                    return stories;
+                }));
+            }
+            Task.WaitAll(tasks.ToArray());
+            foreach (var task in tasks)
+            {
+                result.AddRange(task.Result);
+            }
+            return result;
+        } catch
         {
-            result.AddRange(task.Result);
+            throw new System.Exception("some thing wrong");
         }
-        return result;
     }
 
     public PagedList<Story> GetStoriesBySearchName(string storyName, int page, int limit)
     {
-        var searchContent = WebUtility.UrlEncode(storyName);
-        int skippedElements = limit * (page - 1);
-        int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_SEARCH_SIZE);
-        int startIndex = skippedElements % DEFAULT_SEARCH_SIZE;
-        int totalStory = GetTotalStorySearch(storyName);
-        int totalPage = (int)Math.Ceiling((double)totalStory / limit);
-        List<Story> stories = new List<Story>();
-        if (skippedElements > totalStory)
-            return new PagedList<Story>(page, limit, totalPage, stories);
-        int count = 0;
-        while (count < limit)
-        {
-            if (startPage >= totalPage) break;
-            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}tim-kiem/?tukhoa={searchContent}&page={startPage + 1}");
-            var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
-            for (; startIndex < nodes.Count; startIndex++)
+        if (storyName.Length == 0) throw new System.Exception("invalid name");
+        if (page < 1 || limit < 0) throw new System.Exception("invalid paging data");
+        try {
+            var searchContent = WebUtility.UrlEncode(storyName);
+            int skippedElements = limit * (page - 1);
+            int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_SEARCH_SIZE);
+            int startIndex = skippedElements % DEFAULT_SEARCH_SIZE;
+            int totalStory = GetTotalStorySearch(storyName);
+            int totalPage = (int)Math.Ceiling((double)totalStory / limit);
+            List<Story> stories = new List<Story>();
+            if (skippedElements > totalStory)
+                return new PagedList<Story>(page, limit, totalPage, stories);
+            int count = 0;
+            while (count < limit)
             {
-                count++;
-                if (count > limit || count > totalStory || startIndex >= nodes.Count())
-                    break;
-                HtmlNode node = nodes[startIndex];
-                string imageLink = "";
-                if (node.QuerySelectorAll("img").Count() != 0)
+                if (startPage >= totalPage) break;
+                HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}tim-kiem/?tukhoa={searchContent}&page={startPage + 1}");
+                var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
+                for (; startIndex < nodes.Count; startIndex++)
                 {
-                    imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
+                    count++;
+                    if (count > limit || count > totalStory || startIndex >= nodes.Count())
+                        break;
+                    HtmlNode node = nodes[startIndex];
+                    string imageLink = "";
+                    if (node.QuerySelectorAll("img").Count() != 0)
+                    {
+                        imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
+                    }
+                    else
+                    {
+                        imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
+                    }
+                    var name = $"{node.QuerySelector("h3").InnerText}";
+                    var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
+                    var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                    stories.Add(new Story(name, id, imageLink, authorName));
                 }
-                else
-                {
-                    imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
-                }
-                var name = $"{node.QuerySelector("h3").InnerText}";
-                var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
-                var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                stories.Add(new Story(name, id, imageLink, authorName));
+                startIndex = 0;
+                startPage += 1;
             }
-            startIndex = 0;
-            startPage += 1;
+            return new PagedList<Story>(page, limit, totalPage, stories);
+        } catch
+        {
+            throw new System.Exception("some thing wrong");
         }
-        return new PagedList<Story>(page, limit, totalPage, stories);
     }
 
     public List<Story> GetStoriesOfAuthor(string authorId)
     {
-        List<Task<List<Story>>> tasks = new List<Task<List<Story>>>();
-        List<Story> result = new List<Story>();
-        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tac-gia/{authorId}");
-        var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
-        var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex06.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
-        for (int i = 1; i <= lastIndex; i++)
-        {
-            var iCopy = i;
-            tasks.Add(Task.Run(() =>
+        try {
+            
+            List<Task<List<Story>>> tasks = new List<Task<List<Story>>>();
+            List<Story> result = new List<Story>();
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tac-gia/{authorId}");
+            if (doc.Text.Contains("Error 404 (Not Found)!!")) throw new System.Exception("invalid id");
+            var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
+            var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex06.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
+            for (int i = 1; i <= lastIndex; i++)
             {
-                List<Story> stories = new List<Story>();
-                HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tac-gia/{authorId}/trang-{iCopy}");
-                foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
+                var iCopy = i;
+                tasks.Add(Task.Run(() =>
                 {
-                    string imageLink = "";
-                    if (node.QuerySelectorAll("img").Count() != 0)
+                    List<Story> stories = new List<Story>();
+                    HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tac-gia/{authorId}/trang-{iCopy}");
+                    foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
                     {
-                        imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
+                        string imageLink = "";
+                        if (node.QuerySelectorAll("img").Count() != 0)
+                        {
+                            imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
+                        }
+                        else
+                        {
+                            imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
+                        }
+                        var name = $"{node.QuerySelector("h3").InnerText}";
+                        var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
+                        var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                        stories.Add(new Story(name, id, imageLink, authorName));
                     }
-                    else
-                    {
-                        imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
-                    }
-                    var name = $"{node.QuerySelector("h3").InnerText}";
-                    var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
-                    var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                    stories.Add(new Story(name, id, imageLink, authorName));
-                }
-                return stories;
-            }));
+                    return stories;
+                }));
+            }
+            Task.WaitAll(tasks.ToArray());
+            foreach (var task in tasks)
+            {
+                result.AddRange(task.Result);
+            }
+            return result;
+        } catch {
+            throw new System.Exception("some thing wrong");
         }
-        Task.WaitAll(tasks.ToArray());
-        foreach (var task in tasks)
-        {
-            result.AddRange(task.Result);
-        }
-        return result;
     }
 
     public PagedList<Story> GetStoriesOfAuthor(string authorId, int page, int limit)
     {
-        int skippedElements = limit * (page - 1);
-        int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_SEARCH_SIZE);
-        int startIndex = skippedElements % DEFAULT_SEARCH_SIZE;
-        int totalStory = GetTotalStoryAuthor(authorId);
-        int totalPage = (int)Math.Ceiling((double)totalStory / limit);
-        List<Story> stories = new List<Story>();
-        if (skippedElements > totalStory)
-            return new PagedList<Story>(page, limit, totalPage, stories);
-        int count = 0;
-        while (count < limit)
+        if (page < 1 || limit < 0) throw new System.Exception("invalid paging data");
+        try
         {
-            if (startPage >= totalPage) break;
-            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tac-gia/{authorId}/trang-{startPage + 1}");
-            ;
-            var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
-            if (startIndex >= nodes.Count())
-                break;
-            for (; startIndex < nodes.Count; startIndex++)
+            int skippedElements = limit * (page - 1);
+            int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_SEARCH_SIZE);
+            int startIndex = skippedElements % DEFAULT_SEARCH_SIZE;
+            int totalStory = GetTotalStoryAuthor(authorId);
+            int totalPage = (int)Math.Ceiling((double)totalStory / limit);
+            List<Story> stories = new List<Story>();
+            if (skippedElements > totalStory)
+                return new PagedList<Story>(page, limit, totalPage, stories);
+            int count = 0;
+            while (count < limit)
             {
-                count++;
-                if (count > limit || count > totalStory || startIndex >= nodes.Count())
+                if (startPage >= totalPage) break;
+                HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tac-gia/{authorId}/trang-{startPage + 1}");
+                ;
+                var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
+                if (startIndex >= nodes.Count())
                     break;
-                HtmlNode node = nodes[startIndex];
-                string imageLink = "";
-                if (node.QuerySelectorAll("img").Count() != 0)
+                for (; startIndex < nodes.Count; startIndex++)
                 {
-                    imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
-                }
-                else
-                {
-                    imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
-                }
-                var name = $"{node.QuerySelector("h3").InnerText}";
-                var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
-                var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                stories.Add(new Story(name, id, imageLink, authorName));
-            }
-            startIndex = 0;
-            startPage += 1;
-        }
-        return new PagedList<Story>(page, limit, totalPage, stories);
-    }
-
-    public List<Story> GetStoriesOfCategory(string categoryId)
-    {
-        List<Task<List<Story>>> tasks = new List<Task<List<Story>>>();
-        List<Story> result = new List<Story>();
-        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/the-loai/{categoryId}");
-        var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
-        var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex06.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
-        for (int i = 1; i <= lastIndex; i++)
-        {
-            var iCopy = i;
-            tasks.Add(Task.Run(() =>
-            {
-                List<Story> stories = new List<Story>();
-                HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/the-loai/{categoryId}/trang-{iCopy}");
-                foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
-                {
+                    count++;
+                    if (count > limit || count > totalStory || startIndex >= nodes.Count())
+                        break;
+                    HtmlNode node = nodes[startIndex];
                     string imageLink = "";
                     if (node.QuerySelectorAll("img").Count() != 0)
                     {
@@ -453,80 +466,140 @@ public class TrumTruyenCrawler : ICrawler
                     var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
                     stories.Add(new Story(name, id, imageLink, authorName));
                 }
-                return stories;
-            }));
+                startIndex = 0;
+                startPage += 1;
+            }
+            return new PagedList<Story>(page, limit, totalPage, stories);
+        } catch { 
+            throw new System.Exception("some thing wrong");
         }
-        Task.WaitAll(tasks.ToArray());
-        foreach (var task in tasks)
+    }
+
+    public List<Story> GetStoriesOfCategory(string categoryId)
+    {
+        try
         {
-            result.AddRange(task.Result);
+            List<Task<List<Story>>> tasks = new List<Task<List<Story>>>();
+            List<Story> result = new List<Story>();
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/the-loai/{categoryId}");
+            if (doc.Text.Contains("Error 404 (Not Found)!!")) throw new System.Exception("invalid id");
+            var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
+            var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex06.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
+            for (int i = 1; i <= lastIndex; i++)
+            {
+                var iCopy = i;
+                tasks.Add(Task.Run(() =>
+                {
+                    List<Story> stories = new List<Story>();
+                    HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/the-loai/{categoryId}/trang-{iCopy}");
+                    foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
+                    {
+                        string imageLink = "";
+                        if (node.QuerySelectorAll("img").Count() != 0)
+                        {
+                            imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
+                        }
+                        else
+                        {
+                            imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
+                        }
+                        var name = $"{node.QuerySelector("h3").InnerText}";
+                        var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
+                        var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                        stories.Add(new Story(name, id, imageLink, authorName));
+                    }
+                    return stories;
+                }));
+            }
+            Task.WaitAll(tasks.ToArray());
+            foreach (var task in tasks)
+            {
+                result.AddRange(task.Result);
+            }
+            return result;
         }
-        return result;
+        catch {
+            throw new System.Exception("some thing wrong");
+        }
     }
 
     public PagedList<Story> GetStoriesOfCategory(string categoryId, int page, int limit)
     {
-        int skippedElements = limit * (page - 1);
-        int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_SEARCH_SIZE);
-        int startIndex = skippedElements % DEFAULT_SEARCH_SIZE;
-        int totalStory = GetTotalStoryCategory(categoryId);
-        int totalPage = (int)Math.Ceiling((double)totalStory / limit);
-        List<Story> stories = new List<Story>();
-        if (skippedElements > totalStory)
-            return new PagedList<Story>(page, limit, totalPage, stories);
-        int count = 0;
-        while (count < limit)
-        {
-            if (startPage >= totalPage) break;
-            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/the-loai/{categoryId}/trang-{startPage + 1}");
-            ;
-            var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
-            if (startIndex >= nodes.Count())
-                break;
-            for (; startIndex < nodes.Count; startIndex++)
+        if (page < 1 || limit < 0) throw new System.Exception("invalid paging data");
+        try {
+            int skippedElements = limit * (page - 1);
+            int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_SEARCH_SIZE);
+            int startIndex = skippedElements % DEFAULT_SEARCH_SIZE;
+            int totalStory = GetTotalStoryCategory(categoryId);
+            int totalPage = (int)Math.Ceiling((double)totalStory / limit);
+            List<Story> stories = new List<Story>();
+            if (skippedElements > totalStory)
+                return new PagedList<Story>(page, limit, totalPage, stories);
+            int count = 0;
+            while (count < limit)
             {
-                count++;
-                if (count > limit || count > totalStory || startIndex >= nodes.Count())
+                if (startPage >= totalPage) break;
+                HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/the-loai/{categoryId}/trang-{startPage + 1}");
+                var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
+                if (startIndex >= nodes.Count())
                     break;
-                HtmlNode node = nodes[startIndex];
-                string imageLink = "";
-                if (node.QuerySelectorAll("img").Count() != 0)
+                for (; startIndex < nodes.Count; startIndex++)
                 {
-                    imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
+                    count++;
+                    if (count > limit || count > totalStory || startIndex >= nodes.Count())
+                        break;
+                    HtmlNode node = nodes[startIndex];
+                    string imageLink = "";
+                    if (node.QuerySelectorAll("img").Count() != 0)
+                    {
+                        imageLink = node.QuerySelector("img").GetAttributeValue("src", "");
+                    }
+                    else
+                    {
+                        imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
+                    }
+                    var name = $"{node.QuerySelector("h3").InnerText}";
+                    var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
+                    var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
+                    stories.Add(new Story(name, id, imageLink, authorName));
                 }
-                else
-                {
-                    imageLink = node.QuerySelector(".lazyimg").GetAttributeValue("data-image", "");
-                }
-                var name = $"{node.QuerySelector("h3").InnerText}";
-                var authorName = node.QuerySelector("span[class=\"author\"]").InnerText;
-                var id = $"{_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value}";
-                stories.Add(new Story(name, id, imageLink, authorName));
+                startIndex = 0;
+                startPage += 1;
             }
-            startIndex = 0;
-            startPage += 1;
+            return new PagedList<Story>(page, limit, totalPage, stories);
+
+        } catch
+        {
+            throw new System.Exception("some thing wrong");
+
         }
-        return new PagedList<Story>(page, limit, totalPage, stories);
     }
 
     public StoryDetail GetStoryDetail(string storyId)
     {
-        var story = GetExactStory(storyId);
-        var doc = LoadHtmlDocument($"{HOME_URL}{storyId}");
-        var dataNode = doc.QuerySelector(".text-base");
-        var authorNode = doc.QuerySelector("a[itemprop=\"author\"]");
-        Author author = new Author(authorNode.InnerText, _regex07.Match(authorNode.GetAttributeValue("href", "")).Groups[1].Value);
-        var infoNodes = doc.QuerySelectorAll(".info > div");
-        var categoriesNode = infoNodes[1].QuerySelectorAll("a");
-        List<Category> categories = new List<Category>();
-        foreach (var category in categoriesNode)
+       try
         {
-            if (category.InnerText == "Tất cả" || category.InnerText == "Khác") continue;
-            categories.Add(new Category(category.InnerText, _regex01.Match(category.GetAttributeValue("href", "")).Groups[1].Value));
+            var story = GetExactStory(storyId);
+            var doc = LoadHtmlDocument($"{HOME_URL}{storyId}");
+            var dataNode = doc.QuerySelector(".text-base");
+            var authorNode = doc.QuerySelector("a[itemprop=\"author\"]");
+            Author author = new Author(authorNode.InnerText, _regex07.Match(authorNode.GetAttributeValue("href", "")).Groups[1].Value);
+            var infoNodes = doc.QuerySelectorAll(".info > div");
+            var categoriesNode = infoNodes[1].QuerySelectorAll("a");
+            List<Category> categories = new List<Category>();
+            foreach (var category in categoriesNode)
+            {
+                if (category.InnerText == "Tất cả" || category.InnerText == "Khác") continue;
+                categories.Add(new Category(category.InnerText, _regex01.Match(category.GetAttributeValue("href", "")).Groups[1].Value));
+            }
+            string status = infoNodes[infoNodes.Count - 1].QuerySelector("span").InnerText;
+            string description = doc.QuerySelector("div[itemprop=\"description\"]").InnerHtml.Replace("<br>", "\n");
+            return new StoryDetail(story, author, status, categories.ToArray(), description);
         }
-        string status = infoNodes[infoNodes.Count - 1].QuerySelector("span").InnerText;
-        string description = doc.QuerySelector("div[itemprop=\"description\"]").InnerHtml.Replace("<br>", "\n");
-        return new StoryDetail(story, author, status, categories.ToArray(), description);
+        catch {
+            throw new System.Exception("some thing wrong");
+        }
+
     }
 
     //public ChapterContent GetChapterContent(string chapterId)
@@ -545,7 +618,11 @@ public class TrumTruyenCrawler : ICrawler
     //}
 
     public List<Author> GetAuthorsBySearchName(string authorName)
-    {
+    {   
+        if (authorName.Length == 0)
+        {
+            throw new System.Exception("Invalid author name");
+        }
         List<Task<List<Author>>> tasks = new List<Task<List<Author>>>();
         List<Author> result = new List<Author>();
         var searchContent = WebUtility.UrlDecode(authorName);
@@ -577,6 +654,10 @@ public class TrumTruyenCrawler : ICrawler
 
     public PagedList<Author> GetAuthorsBySearchName(string authorName, int page, int limit)
     {
+        if (authorName.Length == 0)
+        {
+            throw new System.Exception("Invalid author name");
+        }
         var searchContent = WebUtility.UrlDecode(authorName);
         int skippedElements = limit * (page - 1);
         int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_SEARCH_SIZE);
@@ -613,11 +694,17 @@ public class TrumTruyenCrawler : ICrawler
 
     public int GetChaptersCount(string storyId)
     {
-        return GetTotalChap(storyId);
+        var count = GetTotalChap(storyId);
+        if (count == -1) throw new System.Exception("invalid story id");
+        return count;
     }
 
     public PagedList<Story> GetStoriesBySearchNameWithFilter(string storyName, int minChapNum, int maxChapNum, int page, int limit)
     {
+        if (storyName.Length == 0)
+        {
+            throw new System.Exception("Invalid author name");
+        }
         var stories = GetStoriesBySearchName(storyName);
         var filterStories = stories.Where(story => story.NumberOfChapter >= minChapNum && story.NumberOfChapter <= maxChapNum).ToList();
         int totalStory = filterStories.Count;
