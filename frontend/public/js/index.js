@@ -151,7 +151,7 @@ $('#save-btn').click(async () => {
         params.delete('page');
         url.search = params.toString();
     }
-    location.href = url.toString();
+    window.location.href = url.toString();
 });
 
 const toggleCtgDropdown = () => {
