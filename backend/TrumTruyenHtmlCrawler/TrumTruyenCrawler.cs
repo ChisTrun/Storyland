@@ -9,6 +9,7 @@ using backend.Domain.Contract;
 using backend.Domain.Entities;
 using backend.Domain.Objects;
 using HtmlAgilityPack.CssSelectors.NetCore;
+using backend.Domain.Utils;
 
 namespace TrumTruyenHtmlCrawler;
 
@@ -91,25 +92,30 @@ public class TrumTruyenCrawler : ICrawler
 
     public int GetTotalChap(string id)
     {
-        HtmlDocument firstPage = LoadHtmlDocument($"{HOME_URL}/{id}");
-        string name = firstPage.QuerySelector("h3[itemprop=\"name\"]").InnerText;
-        string storyId = firstPage.QuerySelector("#truyen-id").GetAttributeValue("value", "");
-        int totalPage = int.Parse(firstPage.QuerySelector("#total-page").GetAttributeValue("value", ""));
-        HtmlDocument targetPage = new HtmlDocument();
-        var url = string.Format(GET_CHAPTER_URL, storyId, id, HttpUtility.UrlEncode(name), totalPage, totalPage);
-        string data = FetchData(url);
-        var jsonData = JObject.Parse(data);
-        targetPage.LoadHtml(((string?)jsonData["chap_list"]));
-        return (totalPage - 1) * DEFAULT_PAGE_SIZE + targetPage.QuerySelectorAll("li a").Count();
+        try {
+            HtmlDocument firstPage = LoadHtmlDocument($"{HOME_URL}{id}");
+            string name = firstPage.QuerySelector("h3[itemprop=\"name\"]").InnerText;
+            string storyId = firstPage.QuerySelector("#truyen-id").GetAttributeValue("value", "");
+            int totalPage = int.Parse(firstPage.QuerySelector("#total-page").GetAttributeValue("value", ""));
+            HtmlDocument targetPage = new HtmlDocument();
+            var url = string.Format(GET_CHAPTER_URL, storyId, id, WebUtility.UrlEncode(name), totalPage, totalPage);
+            string data = FetchData(url);
+            var jsonData = JObject.Parse(data);
+            targetPage.LoadHtml(((string?)jsonData["chap_list"]));
+            return (totalPage - 1) * DEFAULT_PAGE_SIZE + targetPage.QuerySelectorAll("li a").Count();
+        } catch
+        {
+            return -1;
+        }
     }
 
     private int GetTotalStorySearch(string name)
     {
-        var searchContent = WebUtility.UrlDecode(name);
-        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={searchContent}");
+        var searchContent = WebUtility.UrlEncode(name);
+        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}tim-kiem/?tukhoa={searchContent}");
         var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
         var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex04.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
-        HtmlDocument lastPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={HttpUtility.UrlEncode(name)}&page={lastIndex}");
+        HtmlDocument lastPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={lastIndex}");
         return (lastIndex - 1) * DEFAULT_SEARCH_SIZE + lastPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").Count();
     }
 
@@ -193,7 +199,7 @@ public class TrumTruyenCrawler : ICrawler
         for (int i = 1; i <= totalPage; i++)
         {
             HtmlDocument targetPage = new HtmlDocument();
-            var url = string.Format(GET_CHAPTER_URL, storyCode, storyId, HttpUtility.UrlEncode(name), i, totalPage);
+            var url = string.Format(GET_CHAPTER_URL, storyCode, storyId, WebUtility.UrlEncode(name), i, totalPage);
             var data = FetchData(url) as string;
             var jsonData = JObject.Parse(data);
             targetPage.LoadHtml(((string?)jsonData["chap_list"]));
@@ -223,7 +229,7 @@ public class TrumTruyenCrawler : ICrawler
         while (count < limit)
         {
             HtmlDocument targetPage = new HtmlDocument();
-            var url = string.Format(GET_CHAPTER_URL, storyCode, storyId, HttpUtility.UrlEncode(name), startPage + 1, totalPage);
+            var url = string.Format(GET_CHAPTER_URL, storyCode, storyId, WebUtility.UrlEncode(name), startPage + 1, totalPage);
             var data = FetchData(url) as string;
             var jsonData = JObject.Parse(data);
             targetPage.LoadHtml(((string?)jsonData["chap_list"]));
@@ -247,8 +253,8 @@ public class TrumTruyenCrawler : ICrawler
     {
         List<Task<List<Story>>> tasks = new List<Task<List<Story>>>();
         List<Story> result = new List<Story>();
-        var searchContent = WebUtility.UrlDecode(storyName);
-        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={searchContent}");
+        var searchContent = WebUtility.UrlEncode(storyName);
+        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}");
         var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
         var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex04.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
         for (int i = 1; i <= lastIndex; i++)
@@ -257,7 +263,7 @@ public class TrumTruyenCrawler : ICrawler
             tasks.Add(Task.Run(() =>
             {
                 List<Story> stories = new List<Story>();
-                HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={WebUtility.UrlEncode(searchContent)}&page={iCopy}");
+                HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={iCopy}");
                 foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
                 {
                     string imageLink = "";
@@ -288,11 +294,11 @@ public class TrumTruyenCrawler : ICrawler
 
     public PagedList<Story> GetStoriesBySearchName(string storyName, int page, int limit)
     {
-        var searchContent = WebUtility.UrlDecode(storyName);
+        var searchContent = WebUtility.UrlEncode(storyName);
         int skippedElements = limit * (page - 1);
         int startPage = (int)Math.Floor((double)skippedElements / DEFAULT_SEARCH_SIZE);
         int startIndex = skippedElements % DEFAULT_SEARCH_SIZE;
-        int totalStory = GetTotalStorySearch(searchContent);
+        int totalStory = GetTotalStorySearch(storyName);
         int totalPage = (int)Math.Ceiling((double)totalStory / limit);
         List<Story> stories = new List<Story>();
         if (skippedElements > totalStory)
@@ -301,7 +307,7 @@ public class TrumTruyenCrawler : ICrawler
         while (count < limit)
         {
             if (startPage >= totalPage) break;
-            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={WebUtility.UrlEncode(searchContent)}&page={startPage + 1}");
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}tim-kiem/?tukhoa={searchContent}&page={startPage + 1}");
             var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
             for (; startIndex < nodes.Count; startIndex++)
             {
@@ -539,7 +545,7 @@ public class TrumTruyenCrawler : ICrawler
         List<Task<List<Author>>> tasks = new List<Task<List<Author>>>();
         List<Author> result = new List<Author>();
         var searchContent = WebUtility.UrlDecode(authorName);
-        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={searchContent}");
+        HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}");
         var pagingBtn = doc.QuerySelectorAll(".pagination > li > a");
         var lastIndex = pagingBtn.Count > 0 ? int.Parse(_regex04.Match(pagingBtn[pagingBtn.Count - 1].GetAttributeValue("href", "")).Groups[1].Value) : 1;
         for (int i = 1; i <= lastIndex; i++)
@@ -548,7 +554,7 @@ public class TrumTruyenCrawler : ICrawler
             tasks.Add(Task.Run(() =>
             {
                 List<Author> authors = new List<Author>();
-                HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={WebUtility.UrlEncode(searchContent)}&page={iCopy}");
+                HtmlDocument curPage = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={iCopy}");
                 foreach (var node in curPage.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]"))
                 {
                     var authorInfo = GetAuthorInfo(_regex05.Match(node.QuerySelector("h3 > a").GetAttributeValue("href", "")).Groups[1].Value);
@@ -580,7 +586,7 @@ public class TrumTruyenCrawler : ICrawler
         while (count < limit)
         {
             if (startPage >= totalPage) break;
-            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem?tukhoa={WebUtility.UrlEncode(searchContent)}&page={startPage + 1}");
+            HtmlDocument doc = LoadHtmlDocument($"{HOME_URL}/tim-kiem/?tukhoa={searchContent}&page={startPage + 1}");
             var nodes = doc.QuerySelectorAll("div[itemtype=\"https://schema.org/Book\"]").ToList();
             if (startIndex >= nodes.Count())
                 break;
