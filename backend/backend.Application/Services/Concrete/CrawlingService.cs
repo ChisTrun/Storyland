@@ -130,10 +130,10 @@ public class CrawlingService : ICrawlingService
 
     // ====
 
-    public List<StoryDTO> GetStoriesWithPriorities(IEnumerable<string> idsWithPriority, string storyId)
+    public List<StoryDTO> GetStoriesWithPriorities(IEnumerable<string> idsWithPriority, string storyId, int minChapNum, int maxChapNum)
     {
         var query = new StorySearchQuery(_pluginsScannerService.GetCrawlerScanner());
-        var stories = query.SearchAllStroy(storyId, idsWithPriority);
+        var stories = query.SearchAllStroy(storyId, idsWithPriority, minChapNum, maxChapNum);
         return stories;
     }
 }

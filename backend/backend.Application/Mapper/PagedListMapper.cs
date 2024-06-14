@@ -13,7 +13,7 @@ public static class PagedListMapper
 
 public static class ListMapper
 {
-    public static List<TDto> ToDTOList<TEntity, TDto>(this List<TEntity> pagedList, Func<TEntity, TDto> Cast) where TEntity : class where TDto : class
+    public static List<TDto> ToDTOList<TEntity, TDto>(this IEnumerable<TEntity> pagedList, Func<TEntity, TDto> Cast) where TEntity : class where TDto : class
     {
         return pagedList.Select(x => Cast(x)).ToList();
     }

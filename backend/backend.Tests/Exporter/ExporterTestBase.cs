@@ -1,10 +1,5 @@
-﻿using backend.Application.Commands.Abstract;
-using backend.Application.Commands.Concrete;
-using backend.Application.Queries.Concrete;
-using backend.Application.Services.Concrete;
+﻿using backend.Application.Queries;
 using backend.Domain.Contract;
-using backend.Domain.Entities;
-using TrumTruyenHtmlCrawler;
 using TruyenFullPlugin;
 
 namespace backend.Tests.Exporter;
