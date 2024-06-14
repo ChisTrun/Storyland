@@ -20,9 +20,9 @@ public class CategoryQuery
     {
         var categoriesList = Algorithm.CrawlMultipleSources(_scanner, ids, (crawler) =>
         {
-            return crawler.GetCategories().ToDTOList(x => x.ToDTO()).OrderBy(x => x.Id).ToList();
+            return crawler.GetCategories().ToDTOList(x => x.ToDTO()).OrderBy(x => Algorithm.ConvertToUnsign(x.Id)).ToList();
         });
-        var categoryDtoPriority = Algorithm.PriorityMergeLists(categoriesList, x => x.Id);
+        var categoryDtoPriority = Algorithm.PriorityMergeLists(categoriesList, x => Algorithm.ConvertToUnsign(x.Id));
         return categoryDtoPriority;
     }
 }
