@@ -4,8 +4,7 @@
             <i class="fa-solid fa-flag pe-1"></i>
             Truyện thể loại: 
             <span class="ms-2 flex-grow-1">{{categoryName}}</span> 
-            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn: {{#if
-                curServer}}{{curServer.name}}{{else}}n/a{{/if}}]</span>
+            <span class="ms-2 me-1 fst-italic opacity-75">[ Nguồn: Tất cả]</span>
         </div>
     </div>
 
@@ -42,7 +41,3 @@
         </ul>
     </div>
 </div>
-<script>
-    let unchangedServerId = "{{ curServer.id }}";
-    let unchangedServerName = "{{ curServer.name }}";
-</script>

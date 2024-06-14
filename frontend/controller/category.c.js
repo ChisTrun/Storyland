@@ -1,6 +1,5 @@
 const { ErrorDisplay } = require('../middleware/error');
 const { BE_HOST, HOST, PORT } = require('../global/env');
-const { getServerArr } = require('../utils/utils');
 
 const view = 'category';
 const render = {
@@ -19,36 +18,38 @@ module.exports = {
             const sortedServerIds = req.session.sortedServerIds;
             const categoryName = req.params.categoryName;
             const categoryId = decodeURIComponent(req.query.id);
-            const curPage = parseInt(req.query.page) || 1;
+            let curPage = parseInt(req.query.page) || 1;
 
-            const url = `${BE_HOST}/api/search/${sortedServerIds[0]}/${encodeURIComponent(categoryId)}?page=${curPage}&limit=${perPage}`;
-            const [responseResult, serverArrResult] = await Promise.allSettled([
-                fetch(url),
-                getServerArr()
-            ]);
-            let resBody = {};
-            if (responseResult.status === 'fulfilled' && responseResult.value.ok) {
-                resBody = await responseResult.value.json();
-            }
-            else if (responseResult.status === 'fulfilled' && !responseResult.value.ok) {
-                resBody.data = [];
-                const errorMessage = await responseResult.value.text();
-                console.error(`Error fetching api to get stories of the category ${categoryId}: ${responseResult.value.status} - ${errorMessage}`);
+            const url = `${BE_HOST}/api/search/all/${encodeURIComponent(categoryId)}/all`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sortedServerIds)
+            });
+            let resBody = [];
+            if (response.ok) {
+                resBody = await response.json();
             }
             else {
-                resBody.data = [];
-                console.error(`Error fetching request: ${responseResult.hasOwnProperty("reason") ? responseResult.reason : "pending"}`);
+                resBody = [];
+                const errorMessage = await response.text();
+                console.error(`Error fetching api to get stories of the category ${categoryId}: ${response.status} - ${errorMessage}`);
             }
-            const serverArr = serverArrResult.status === 'fulfilled' ? serverArrResult.value : [];
-            const totalPages = resBody.totalPages && resBody.totalPages > 0 ? resBody.totalPages : 1;
+            const totalStories = resBody.length;
+            const totalPages = totalStories !== 0 ? Math.ceil(totalStories / perPage) : 1;
+            curPage = curPage > totalPages ? totalPages : curPage;
+            const startIndex = (curPage - 1) * perPage;
+            const endIndex = startIndex + perPage;
+            const paginatedStories = resBody.slice(startIndex, endIndex);
 
-            render.stories = resBody.data;
+            render.stories = paginatedStories;
             render.categoryName = categoryName;
             render.categoryId = categoryId;
             render.curPage = curPage;
             render.totalPages = totalPages;
 
-            render.curServer = serverArr.find(server => server.id === sortedServerIds[0]);
             render.sortedServerIds = sortedServerIds;
             render.isDark = req.session.isDark;
             render.title = `Thể loại ${categoryName} | StoryLand`;
@@ -62,7 +63,13 @@ module.exports = {
     async getAll(req, res, next) {
         try {
             const sortedServerIds = req.session.sortedServerIds;
-            const response = await fetch(`${BE_HOST}/api/category/${sortedServerIds[0]}`);
+            const response = await fetch(`${BE_HOST}/api/category/all`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sortedServerIds)
+            });
             if (!response.ok) {
                 throw Error();
             }

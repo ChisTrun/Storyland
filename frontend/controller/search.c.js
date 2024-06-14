@@ -1,6 +1,5 @@
 const { ErrorDisplay } = require('../middleware/error');
 const { BE_HOST, HOST, PORT } = require('../global/env');
-const { getServerArr } = require('../utils/utils');
 
 const view = 'search';
 const render = {
@@ -23,15 +22,14 @@ module.exports = {
             let curPage = parseInt(req.query.page) || 1;
             
             const url = `${BE_HOST}/api/search/all/truyen/${encodeURIComponent(keyword)}/${minChapter === 0 ? -1 : minChapter}/${maxChapter === 10000 ? -1 : maxChapter}/all`;        
-            const [responseResult, serverArrResult] = await Promise.allSettled([
+            const [responseResult] = await Promise.allSettled([
                 fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(sortedServerIds)
-                }),
-                getServerArr()
+                })
             ]);
             let resBody = [];
             if (responseResult.status === 'fulfilled' && responseResult.value.ok) {
@@ -45,9 +43,7 @@ module.exports = {
             else {
                 resBody = [];
                 console.error(`Error fetching request: ${responseResult.hasOwnProperty("reason") ? responseResult.reason : "pending"}`);
-            }
-            const serverArr = serverArrResult.status === 'fulfilled' ? serverArrResult.value : [];
-            
+            }            
             const filteredStories = resBody.filter(story => story.numberOfChapter >= minChapter && story.numberOfChapter <= maxChapter);
 
             const totalStories = filteredStories.length;
@@ -64,7 +60,6 @@ module.exports = {
             render.minChapter = minChapter;
             render.maxChapter = maxChapter;
 
-            render.curServer = serverArr.find(server => server.id === sortedServerIds[0]);
             render.sortedServerIds = sortedServerIds;
             render.isDark = req.session.isDark;
             render.title = "Kết quả tìm kiếm | StoryLand";
