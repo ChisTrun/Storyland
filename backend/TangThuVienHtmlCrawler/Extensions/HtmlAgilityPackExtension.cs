@@ -5,9 +5,6 @@ namespace TangThuVienHtmlCrawler.Extensions;
 
 public static class HtmlAgilityPackExtension
 {
-    public static string GetDirectInnerTextDecoded(this HtmlNode node)
-    {
-        return WebUtility.HtmlDecode(node.GetDirectInnerText());
-    }
+    public static string GetDirectInnerTextDecoded(this HtmlNode node) => WebUtility.HtmlDecode(node.GetDirectInnerText());
 
 }

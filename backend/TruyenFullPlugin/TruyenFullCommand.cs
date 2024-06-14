@@ -1,13 +1,13 @@
-﻿using HtmlAgilityPack;
-using System.Web;
-using HtmlAgilityPack.CssSelectors.NetCore;
-using System.Text.RegularExpressions;
-using System.Net;
-using TruyenFullPlugin.Extensions;
-using backend.Domain.Contract;
+﻿using backend.Domain.Contract;
 using backend.Domain.Entities;
 using backend.Domain.Objects;
 using backend.Domain.Utils;
+using HtmlAgilityPack;
+using HtmlAgilityPack.CssSelectors.NetCore;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Web;
+using TruyenFullPlugin.Extensions;
 
 namespace TruyenFullPlugin;
 
@@ -31,7 +31,7 @@ public class TruyenFullCommand : ICrawler
         var liTags = document.DocumentNode.QuerySelectorAll("ul.control.navbar-nav > li")[1];
         var lists = liTags.QuerySelectorAll("div a");
 
-        List<Category> listOfCategories = new List<Category>();
+        var listOfCategories = new List<Category>();
 
         foreach (var list in lists)
         {
@@ -44,9 +44,7 @@ public class TruyenFullCommand : ICrawler
     }
 
     public List<Story> GetStoriesOfCategory(string categoryId) //updated
-    {
-        return GetStoryWithPageAndLimit(ModelType.Category, ModelExtension.GetUrlFromID(ModelType.Category, categoryId), -1, -1).Item2;
-    }
+=> GetStoryWithPageAndLimit(ModelType.Category, ModelExtension.GetUrlFromID(ModelType.Category, categoryId), -1, -1).Item2;
 
     public PagedList<Story> GetStoriesOfCategory(string categoryId, int page, int limit) //updated
     {
@@ -58,7 +56,7 @@ public class TruyenFullCommand : ICrawler
     {
         var storySearched = GetStoryWithPageAndLimit(ModelType.Story, $"{DomainTimKiem}{WebUtility.UrlEncode(storyName)}", -1, -1).Item2;
         var searchNameNorm = StringProblem.ConvertVietnameseToNormalizationForm(storyName);
-        List<Story> res = storySearched.Where(story =>
+        var res = storySearched.Where(story =>
         {
             var storyNameNorm = StringProblem.ConvertVietnameseToNormalizationForm(story.Name);
             storyNameNorm = Regex.Replace(storyNameNorm, @"[^A-Za-z\d\s]", "");
@@ -79,7 +77,7 @@ public class TruyenFullCommand : ICrawler
         {
             return new PagedList<Story>(page, limit, -1, new List<Story>());
         }
-        List<Story> res = new List<Story>();
+        var res = new List<Story>();
         res = storySearched.GetRange((page - 1) * limit, page != totalPage ? limit : storySeatchedCount % limit);
         return new PagedList<Story>(page, limit, totalPage, res);
     }
@@ -100,15 +98,13 @@ public class TruyenFullCommand : ICrawler
             return new PagedList<Story>(page, limit, totalPage, new List<Story>());
         }
 
-        List<Story> res = new List<Story>();
+        var res = new List<Story>();
         res = storySearched.GetRange((page - 1) * limit, page != totalPage ? limit : (storySeatchedCount % limit == 0 ? limit : storySeatchedCount % limit));
         return new PagedList<Story>(page, limit, totalPage, res);
     }
 
     public List<Chapter> GetChaptersOfStory(string storyId)//updated
-    {
-        return GetChapterWithPageAndLimit(storyId, -1, -1).Item2;
-    }
+=> GetChapterWithPageAndLimit(storyId, -1, -1).Item2;
 
     public PagedList<Chapter> GetChaptersOfStory(string storyId, int page, int limit)
     {
@@ -154,7 +150,7 @@ public class TruyenFullCommand : ICrawler
         var author = new Author(tupleAuthor.Item2, ModelExtension.GetIDFromUrl(ModelType.Author, tupleAuthor.Item1));
         var statusSpan = document.QuerySelector(".col-info-desc .info").ChildNodes.LastOrDefault();
         var tmp = statusSpan.QuerySelector("span");
-        string status = tmp.GetDirectInnerTextDecoded();
+        var status = tmp.GetDirectInnerTextDecoded();
         var categories = new List<Category>();
         var categoryTags = document.QuerySelector(".col-info-desc  .info").ChildNodes.QuerySelectorAll("div")[1].QuerySelectorAll("a");
         foreach (var categoryTag in categoryTags)
@@ -165,15 +161,15 @@ public class TruyenFullCommand : ICrawler
             categories.Add(new Category(catName, catID));
         }
         var descriptionPTag = document.QuerySelector(".col-info-desc .desc-text");
-        string description = descriptionPTag.GetDirectInnerTextDecoded();
+        var description = descriptionPTag.GetDirectInnerTextDecoded();
         return new StoryDetail(story, author, status, categories.ToArray(), description);
     }
 
     private Tuple<int, int> CalculatePageAndLimit(int systemLimit, int page, int limit) //updated
     {
         var offsetStart = (page - 1) * limit;
-        int systemPageStart = offsetStart / systemLimit + 1;
-        int systemOffsetStart = offsetStart % systemLimit;
+        var systemPageStart = offsetStart / systemLimit + 1;
+        var systemOffsetStart = offsetStart % systemLimit;
 
         return new Tuple<int, int>(systemPageStart, systemOffsetStart);
     }
@@ -182,8 +178,10 @@ public class TruyenFullCommand : ICrawler
     {
         sourceURL = HttpUtility.UrlDecode(sourceURL);
 
-        var web = new HtmlWeb();
-        web.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
+        var web = new HtmlWeb
+        {
+            UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+        };
         var document = web.Load(sourceURL);
         return document;
     }
@@ -277,7 +275,7 @@ public class TruyenFullCommand : ICrawler
 
                 var a = row.QuerySelector(".text-info a").GetAttributeValue("title", null);
                 var numberOfChapterStr = StringProblem.GetChapterNumber(a);
-                var numberOfChapter = int.TryParse(numberOfChapterStr, out int x) ? x : 0;
+                var numberOfChapter = int.TryParse(numberOfChapterStr, out var x) ? x : 0;
                 listOfStories.Add(new Story(name, id, img, authorName, numberOfChapter));
                 needRemain--;
             }
@@ -329,7 +327,7 @@ public class TruyenFullCommand : ICrawler
     {
         var story = GetExactStory(storyId);
         int systemLimit;
-        int totalPage = 0;
+        var totalPage = 0;
         int totalRecord;
         var systemPageStart = 1;
         var systemOffsetStart = 0;
@@ -380,9 +378,9 @@ public class TruyenFullCommand : ICrawler
         var pageToScrape = new Queue<string>();
         pageToScrape.Enqueue(ModelExtension.GetUrlFromID(ModelType.Story, storyId));
 
-        List<Chapter> listOfChapter = new List<Chapter>();
+        var listOfChapter = new List<Chapter>();
 
-        int index = 0;
+        var index = 0;
         while (pageToScrape.Count > 0 && limit != 0)
         {
             try
@@ -463,23 +461,9 @@ public class TruyenFullCommand : ICrawler
             text = text.Replace("<br>", "\n");
             text = Regex.Replace(text, @"<.*?>", string.Empty);
             next = document.QuerySelector("#next_chap").GetAttributeValue("href", null);
-            if (next.Contains(Domain))
-            {
-                next = next.Replace(Domain, "");
-            }
-            else
-            {
-                next = "";
-            }
+            next = next.Contains(Domain) ? next.Replace(Domain, "") : "";
             pre = document.QuerySelector("#prev_chap").GetAttributeValue("href", null);
-            if (pre.Contains(Domain))
-            {
-                pre = pre.Replace(Domain, "");
-            }
-            else
-            {
-                pre = "";
-            }
+            pre = pre.Contains(Domain) ? pre.Replace(Domain, "") : "";
         }
         catch { }
         return new ChapterContent(text, chapterName, chapterIndex, storyID);
@@ -494,7 +478,7 @@ public class TruyenFullCommand : ICrawler
         var storySearched = GetStoryWithPageAndLimit(ModelType.Story, $"{DomainTimKiem}{WebUtility.UrlEncode(authorName)}", -1, -1).Item2;
         var searchNameNorm = StringProblem.ConvertVietnameseToNormalizationForm(authorName);
 
-        List<Author> result = new List<Author>();
+        var result = new List<Author>();
         foreach (var story in storySearched)
         {
             var authorNameNorm = StringProblem.ConvertVietnameseToNormalizationForm(story.AuthorName!);
@@ -517,7 +501,7 @@ public class TruyenFullCommand : ICrawler
             return new PagedList<Author>(page, limit, totalPage, new List<Author>());
         }
 
-        List<Author> res = new List<Author>();
+        var res = new List<Author>();
         res = storySearched.GetRange((page - 1) * limit, page != totalPage ? limit : (storySeatchedCount % limit == 0 ? limit : storySeatchedCount % limit));
         return new PagedList<Author>(page, limit, totalPage, res);
     }
@@ -527,10 +511,10 @@ public class TruyenFullCommand : ICrawler
         var storyURL = ModelExtension.GetUrlFromID(ModelType.Story, storyId);
         var storyDocument = GetWebPageDocument(storyURL);
 
-        int numberOfChapters = 0;
+        var numberOfChapters = 0;
         TryCatch.Try(() =>
         {
-            string title = "";
+            var title = "";
             var paginEle = storyDocument.QuerySelector("ul.pagination");
             if (paginEle == null)
             {
@@ -540,10 +524,7 @@ public class TruyenFullCommand : ICrawler
             {
                 var allAElements = paginEle.QuerySelectorAll("li a");
                 var cuoiElement = allAElements.FirstOrDefault(x => x.InnerText.Contains("Cuối"));
-                if (cuoiElement == null)
-                {
-                    cuoiElement = allAElements.ElementAt(allAElements.Count - 2);
-                }
+                cuoiElement ??= allAElements.ElementAt(allAElements.Count - 2);
                 var cuoiUrl = cuoiElement.GetAttributeValue("href", null);
                 var lastChapterPageDocument = GetWebPageDocument(cuoiUrl);
                 var t = lastChapterPageDocument.QuerySelector("#list-chapter .row");
@@ -580,7 +561,7 @@ public class TruyenFullCommand : ICrawler
         {
             return new PagedList<Story>(page, limit, -1, new List<Story>());
         }
-        List<Story> res = new List<Story>();
+        var res = new List<Story>();
         res = storySearched.GetRange((page - 1) * limit, page != totalPage ? limit : storySeatchedCount % limit);
         return new PagedList<Story>(page, limit, totalPage, res);
     }

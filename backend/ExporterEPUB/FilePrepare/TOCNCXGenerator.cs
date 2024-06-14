@@ -66,7 +66,7 @@ namespace ExporterEPUB.FilePrepare
                 });
                 navMap.AddChild(NavPointGen(FolderStructure.ORIGIN, 1, "Origin", FolderStructure.ORIGIN));
                 navMap.AddChild(NavPointGen(FolderStructure.INTRO, 2, "Introduction", FolderStructure.INTRO));
-                int id = 3;
+                var id = 3;
                 foreach (var chapter in _chapters)
                 {
                     navMap.AddChild(NavPointGen($"nav{id}", id, chapter.Name, chapter.Path));

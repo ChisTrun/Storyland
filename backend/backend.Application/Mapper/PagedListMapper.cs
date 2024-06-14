@@ -1,5 +1,4 @@
-﻿using backend.Domain.Entities;
-using backend.Domain.Objects;
+﻿using backend.Domain.Objects;
 
 namespace backend.Application.Mapper;
 

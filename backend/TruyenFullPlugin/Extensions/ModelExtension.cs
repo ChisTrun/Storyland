@@ -49,18 +49,9 @@ public static class ModelExtension
         throw new NotImplementedException();
     }
 
-    public static string GetUrl(this Story representative)
-    {
-        return $"{TruyenFullCommand.Domain}{representative.Identity}";
-    }
-    public static string GetUrl(this Author representative)
-    {
-        return $"{TruyenFullCommand.DomainTacGia}{representative.Identity}";
-    }
-    public static string GetUrl(this Category representative)
-    {
-        return $"{TruyenFullCommand.DomainTheLoai}{representative.Identity}";
-    }
+    public static string GetUrl(this Story representative) => $"{TruyenFullCommand.Domain}{representative.Identity}";
+    public static string GetUrl(this Author representative) => $"{TruyenFullCommand.DomainTacGia}{representative.Identity}";
+    public static string GetUrl(this Category representative) => $"{TruyenFullCommand.DomainTheLoai}{representative.Identity}";
     //public static string GetUrl(this Chapter representative)
     //{
     //    return $"{TruyenFullCommand.Domain}{representative.Id}";
@@ -75,7 +66,8 @@ public static class ModelExtension
                 return $"trang-";
             case ModelType.Story:
                 return $"&paged=";
-            default: break;
+            default:
+                break;
         }
         throw new NotImplementedException();
     }
@@ -89,7 +81,8 @@ public static class ModelExtension
                 return new Regex(@"trang-(\d+)");
             case ModelType.Story:
                 return new Regex(@"&paged=(\d+)");
-            default: break;
+            default:
+                break;
         }
         throw new NotImplementedException();
     }

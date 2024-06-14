@@ -52,8 +52,5 @@ public static class ModelExtension
 
 public static class StringExtension
 {
-    public static string TakeLastParamURL(this string self)
-    {
-        return self.Substring(self.LastIndexOf('/') + 1);
-    }
+    public static string TakeLastParamURL(this string self) => self.Substring(self.LastIndexOf('/') + 1);
 }

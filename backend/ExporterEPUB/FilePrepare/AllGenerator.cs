@@ -38,7 +38,7 @@ public class AllGenerator
         WriteToFile(contentStructure.Origin, _structure.ABS_F_ORIGIN);
         WriteToFile(contentStructure.Intro, _structure.ABS_F_INTRO);
         var chapterLocal = new List<ChapterLocal>();
-        int index = 0;
+        var index = 0;
         foreach (var chapter in contentStructure.Chapters)
         {
             index += 1;

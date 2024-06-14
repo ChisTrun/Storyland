@@ -17,20 +17,12 @@ public abstract class EntityBase : IEquatable<EntityBase>
     public override bool Equals(object? obj)
     {
 
-        if (obj == null || obj.GetType() != GetType() || obj is not EntityBase entityBase)
-        {
-            return false;
-        }
-        return entityBase.Identity == Identity;
+        return obj == null || obj.GetType() != GetType() || obj is not EntityBase entityBase ? false : entityBase.Identity == Identity;
     }
 
     public bool Equals(EntityBase? other)
     {
-        if (other == null || other.GetType() != GetType())
-        {
-            return false;
-        }
-        return other.Identity == Identity;
+        return other == null || other.GetType() != GetType() ? false : other.Identity == Identity;
     }
 
     public override int GetHashCode()

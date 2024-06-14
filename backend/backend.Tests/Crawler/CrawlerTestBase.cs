@@ -24,20 +24,14 @@ namespace plugin.tests.Crawler;
 public abstract class CrawlerTestBase
 {
     private static bool ValidIdentity(EntityBase rep) => string.IsNullOrEmpty(rep.Identity) == false;
-    private static bool ValidChapterContent(ChapterContent chapterContent)
-    {
-        return string.IsNullOrEmpty(chapterContent.Content) == false
+    private static bool ValidChapterContent(ChapterContent chapterContent) => string.IsNullOrEmpty(chapterContent.Content) == false
             && string.IsNullOrEmpty(chapterContent.Name) == false
             && ValidIdentity(chapterContent) == true;
-    }
-    private static bool ValidStoryDetail(StoryDetail storyDetail)
-    {
-        return storyDetail.Author != null
+    private static bool ValidStoryDetail(StoryDetail storyDetail) => storyDetail.Author != null
             && storyDetail.Categories != null
             && string.IsNullOrEmpty(storyDetail.Status) == false
             && string.IsNullOrEmpty(storyDetail.Description) == false
             && ValidIdentity(storyDetail) == true;
-    }
 
     private void AssertPaging<T>(Func<int, int, PagedList<T>> getPage) where T : class
     {
@@ -59,11 +53,7 @@ public abstract class CrawlerTestBase
     {
         using HttpClient client = new();
         var checkingResponse = await client.GetAsync(url);
-        if (!checkingResponse.IsSuccessStatusCode)
-        {
-            return false;
-        }
-        return true;
+        return checkingResponse.IsSuccessStatusCode;
     }
 
     protected abstract ICrawler GetInstance();

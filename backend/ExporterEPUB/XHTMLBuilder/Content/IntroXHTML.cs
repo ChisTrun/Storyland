@@ -1,6 +1,4 @@
-﻿using ExporterEPUB.Helpers;
-
-namespace ExporterEPUB.XHTMLBuilder.Content
+﻿namespace ExporterEPUB.XHTMLBuilder.Content
 {
     public class IntroXHTML : IContentXHTML
     {

@@ -1,7 +1,7 @@
 ﻿using backend.Application.DLLScanner.Contract;
 using backend.Domain.Contract;
-using System.Text.RegularExpressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace backend.Application.Utils;
 
@@ -50,8 +50,8 @@ public class Algorithm
 
     public static string ConvertToUnsign(string str)
     {
-        Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
-        string temp = str.Normalize(NormalizationForm.FormD);
+        var regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+        var temp = str.Normalize(NormalizationForm.FormD);
         return regex.Replace(temp, string.Empty)
                     .Replace('\u0111', 'd').Replace('\u0110', 'D');
     }

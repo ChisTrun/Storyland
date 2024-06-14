@@ -41,7 +41,7 @@ internal class ExporterScanner : ScannerBase<IExporter>
             _pluginPaths = scanAgain.ToArray();
             var newCommands = newPlugins.SelectMany(pluginPath =>
             {
-                string pluginPathString = pluginPath.FullName;
+                var pluginPathString = pluginPath.FullName;
                 var pluginAssembly = PluginLoader.LoadPlugin(pluginPathString);
                 return PluginLoader.CreateCommands<IExporter>(pluginAssembly);
             }).ToList();

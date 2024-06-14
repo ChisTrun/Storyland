@@ -9,10 +9,7 @@ namespace backend.Controllers
     {
         private readonly ICrawlingService _crawlingService;
 
-        public CategoryController(ICrawlingService crawlingService)
-        {
-            _crawlingService = crawlingService;
-        }
+        public CategoryController(ICrawlingService crawlingService) => _crawlingService = crawlingService;
 
         /// <summary>
         /// Get all categories.
