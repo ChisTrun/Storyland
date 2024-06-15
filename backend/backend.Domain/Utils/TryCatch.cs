@@ -1,4 +1,4 @@
-﻿namespace backend.Domain.Utils
+﻿namespace Backend.Domain.Utils
 {
     public delegate void VoidDelegate();
 

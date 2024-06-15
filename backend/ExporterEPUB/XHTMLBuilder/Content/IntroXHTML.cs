@@ -71,14 +71,6 @@
                     margin-bottom: 1.5em;
                 }
                 """));
-
-            XHTMLElement PTagDetailGen(string title, string value)
-            {
-                return new XHTMLElement("p", null, new()
-                {
-                    new XHTMLElement("b", null, null, title)
-                }, value);
-            }
             var bodyContent = new XHTMLElement("div", new() { { "class", "container" } }, new()
             {
                 new XHTMLElement("div", new (){{"class","container-col"} }, new(){
@@ -98,6 +90,14 @@
             });
             layout.Body.AddChild(bodyContent);
             return layout;
+        }
+
+        private static XHTMLElement PTagDetailGen(string title, string value)
+        {
+            return new XHTMLElement("p", null, new()
+                {
+                    new XHTMLElement("b", null, null, title)
+                }, value);
         }
     }
 }

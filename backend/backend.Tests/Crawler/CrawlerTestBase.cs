@@ -1,9 +1,9 @@
-using backend.Domain.Contract;
-using backend.Domain.Entities;
-using backend.Domain.Objects;
-using backend.Domain.Primitives;
+using Backend.Domain.Contract;
+using Backend.Domain.Entities;
+using Backend.Domain.Objects;
+using Backend.Domain.Primitives;
 
-namespace plugin.tests.Crawler;
+namespace Backend.Tests.Crawler;
 
 // ==========================================================================================
 // Group15 document reference:
@@ -24,24 +24,30 @@ namespace plugin.tests.Crawler;
 public abstract class CrawlerTestBase
 {
     private static bool ValidIdentity(EntityBase rep) => string.IsNullOrEmpty(rep.Identity) == false;
-    private static bool ValidChapterContent(ChapterContent chapterContent) => string.IsNullOrEmpty(chapterContent.Content) == false
+    private static bool ValidChapterContent(ChapterContent chapterContent)
+    {
+        return string.IsNullOrEmpty(chapterContent.Content) == false
             && string.IsNullOrEmpty(chapterContent.Name) == false
             && ValidIdentity(chapterContent) == true;
-    private static bool ValidStoryDetail(StoryDetail storyDetail) => storyDetail.Author != null
+    }
+    private static bool ValidStoryDetail(StoryDetail storyDetail)
+    {
+        return storyDetail.Author != null
             && storyDetail.Categories != null
             && string.IsNullOrEmpty(storyDetail.Status) == false
             && string.IsNullOrEmpty(storyDetail.Description) == false
             && ValidIdentity(storyDetail) == true;
+    }
 
     private void AssertPaging<T>(Func<int, int, PagedList<T>> getPage) where T : class
     {
         // Arrange
-        const int FIRST_PAGE = 1;
-        const int LIMIT = 10;
+        var firstPage = 1;
+        var limit = 10;
 
         // Act
-        var firstPageData = getPage(FIRST_PAGE, LIMIT);
-        var lastPageCount = getPage(firstPageData.TotalPages, LIMIT).Data.Count();
+        var firstPageData = getPage(firstPage, limit);
+        var lastPageCount = getPage(firstPageData.TotalPages, limit).Data.Count();
         var emptyFirstPage = !firstPageData.Data.Any();
 
         // Assert
@@ -53,7 +59,11 @@ public abstract class CrawlerTestBase
     {
         using HttpClient client = new();
         var checkingResponse = await client.GetAsync(url);
-        return checkingResponse.IsSuccessStatusCode;
+        if (!checkingResponse.IsSuccessStatusCode)
+        {
+            return false;
+        }
+        return true;
     }
 
     protected abstract ICrawler GetInstance();
@@ -106,6 +116,18 @@ public abstract class CrawlerTestBase
         AssertPaging((page, limit) => crawler.GetStoriesOfCategory(categoryId, page, limit));
     }
 
+    public virtual void GetStoriesOfCategory_InvalidCategoryId_ThrowsException(string categoryId)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetStoriesOfCategory(categoryId, 1, 10);
+
+        // Assert
+        Assert.Throws<Exception>(testCode);
+    }
+
     // ===============================
     // GetStoriesBySearchName
     // + valid story name
@@ -136,6 +158,18 @@ public abstract class CrawlerTestBase
         AssertPaging((page, limit) => crawler.GetStoriesBySearchName(storyName, page, limit));
     }
 
+    public virtual void GetStoriesBySearchName_InvalidStoryName_ThrowsException(string storyName)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetStoriesBySearchName(storyName, 1, 10);
+
+        // Assert
+        Assert.Throws<Exception>(testCode);
+    }
+
     // ===============================
     // GetStoriesOfAuthor
     // + valid author ID
@@ -164,6 +198,18 @@ public abstract class CrawlerTestBase
         // Act
         // Assert
         AssertPaging((page, limit) => crawler.GetStoriesOfAuthor(id, page, limit));
+    }
+
+    public virtual void GetStoriesOfAuthor_InvalidAuthorId_ThrowsException(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetStoriesBySearchName(id, 1, 10);
+
+        // Assert
+        Assert.Throws<Exception>(testCode);
     }
 
     // ===============================
@@ -240,6 +286,18 @@ public abstract class CrawlerTestBase
         Assert.Throws<Exception>(testCode);
     }
 
+    public virtual void GetChapterContent_InvalidStoryId_ThrowsException(string id)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetChapterContent(id, 0);
+
+        // Assert
+        Assert.Throws<Exception>(testCode);
+    }
+
     // ===============================
     // GetStoryDetail
     // + valid story ID
@@ -290,6 +348,18 @@ public abstract class CrawlerTestBase
         Assert.True(isAllValidItem);
     }
 
+    public virtual void GetAuthorsBySearchName_EmptyName_ThrowsException(string name)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetAuthorsBySearchName(name, 1, 10);
+
+        // Assert
+        Assert.Throws<Exception>(testCode);
+    }
+
     // ===============================
     // GetChaptersCount
     // + valid story id
@@ -307,5 +377,17 @@ public abstract class CrawlerTestBase
 
         // Assert
         Assert.True(isAllValidItem);
+    }
+
+    public virtual void GetChapterCount_InValidStoryId_ThrowsException(string storyId)
+    {
+        // Arrange
+        var crawler = GetInstance();
+
+        // Act
+        void testCode() => crawler.GetChaptersCount(storyId);
+
+        // Assert
+        Assert.Throws<Exception>(testCode);
     }
 }

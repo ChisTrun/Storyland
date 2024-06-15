@@ -1,7 +1,7 @@
-﻿using backend.Application.DTO;
-using backend.Domain.Entities;
+﻿using Backend.Application.DTO;
+using Backend.Domain.Entities;
 
-namespace backend.Application.Mapper;
+namespace Backend.Application.Mapper;
 
 public static class CategoryMapper
 {

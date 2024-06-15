@@ -1,6 +1,6 @@
-﻿using backend.Domain.Entities;
+﻿using Backend.Domain.Entities;
 
-namespace backend.Domain.Contract;
+namespace Backend.Domain.Contract;
 
 public interface IExporter : IPlugin
 {

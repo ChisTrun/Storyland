@@ -1,6 +1,6 @@
-﻿using backend.Domain.Primitives;
+﻿using Backend.Domain.Primitives;
 
-namespace backend.Domain.Entities;
+namespace Backend.Domain.Entities;
 
 public class Chapter(string name, string storyId, int index) : ChapterEntityBase(storyId, index)
 {

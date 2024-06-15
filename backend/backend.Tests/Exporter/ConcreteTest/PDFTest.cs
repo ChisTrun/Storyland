@@ -1,10 +1,13 @@
-﻿using backend.Domain.Contract;
+﻿using Backend.Domain.Contract;
 using PDFExporter;
 
-namespace backend.Tests.Exporter.ConcreteTest
+namespace Backend.Tests.Exporter.ConcreteTest
 {
     public class PDFTest : ExporterTestBase
     {
-        protected override IExporter GetExporter() => new PDFExport();
+        protected override IExporter GetExporter()
+        {
+            return new PDFExport();
+        }
     }
 }

@@ -1,8 +1,8 @@
-﻿using backend.Application.Queries;
-using backend.Domain.Contract;
+﻿using Backend.Application.Queries;
+using Backend.Domain.Contract;
 using TruyenFullPlugin;
 
-namespace backend.Tests.Exporter;
+namespace Backend.Tests.Exporter;
 
 // ==========================================================================================
 // Group15 document reference:

@@ -1,4 +1,4 @@
-﻿namespace backend.Domain.Primitives;
+﻿namespace Backend.Domain.Primitives;
 
 public class ChapterEntityBase(string storyId, int index) : EntityBase
 {

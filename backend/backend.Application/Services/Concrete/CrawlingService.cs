@@ -1,10 +1,10 @@
-﻿using backend.Application.DTO;
-using backend.Application.Mapper;
-using backend.Application.Queries;
-using backend.Application.Services.Abstract;
-using backend.Domain.Objects;
+﻿using Backend.Application.DTO;
+using Backend.Application.Mapper;
+using Backend.Application.Queries;
+using Backend.Application.Services.Abstract;
+using Backend.Domain.Objects;
 
-namespace backend.Application.Services.Concrete;
+namespace Backend.Application.Services.Concrete;
 
 public class CrawlingService : ICrawlingService
 {

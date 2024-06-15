@@ -1,10 +1,10 @@
-﻿using backend.Application.DLLScanner.Contract;
-using backend.Application.DTO;
-using backend.Application.Mapper;
-using backend.Application.Utils;
-using backend.Domain.Contract;
+﻿using Backend.Application.DLLScanner.Contract;
+using Backend.Application.DTO;
+using Backend.Application.Mapper;
+using Backend.Application.Utils;
+using Backend.Domain.Contract;
 
-namespace backend.Application.Queries;
+namespace Backend.Application.Queries;
 
 public class StorySearchQuery
 {

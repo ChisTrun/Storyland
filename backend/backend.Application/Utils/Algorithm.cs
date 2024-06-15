@@ -1,9 +1,9 @@
-﻿using backend.Application.DLLScanner.Contract;
-using backend.Domain.Contract;
+﻿using Backend.Application.DLLScanner.Contract;
+using Backend.Domain.Contract;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace backend.Application.Utils;
+namespace Backend.Application.Utils;
 
 public class Algorithm
 {

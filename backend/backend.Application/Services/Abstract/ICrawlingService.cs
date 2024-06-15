@@ -1,7 +1,7 @@
-﻿using backend.Application.DTO;
-using backend.Domain.Objects;
+﻿using Backend.Application.DTO;
+using Backend.Domain.Objects;
 
-namespace backend.Application.Services.Abstract;
+namespace Backend.Application.Services.Abstract;
 
 public interface ICrawlingService
 {

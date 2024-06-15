@@ -1,7 +1,7 @@
-﻿using backend.Domain.Contract;
-using backend.Domain.Entities;
-using backend.Domain.Objects;
-using backend.Domain.Utils;
+﻿using Backend.Domain.Contract;
+using Backend.Domain.Entities;
+using Backend.Domain.Objects;
+using Backend.Domain.Utils;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using System.Net;

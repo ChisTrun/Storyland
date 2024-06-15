@@ -1,10 +1,10 @@
-﻿using backend.Application.DTO;
-using backend.Application.Services.Abstract;
-using backend.Services;
+﻿using Backend.Application.DTO;
+using Backend.Application.Services.Abstract;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace backend.Controllers;
+namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/server")]

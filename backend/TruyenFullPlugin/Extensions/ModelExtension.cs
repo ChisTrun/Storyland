@@ -1,4 +1,4 @@
-﻿using backend.Domain.Entities;
+﻿using Backend.Domain.Entities;
 using System.Text.RegularExpressions;
 
 namespace TruyenFullPlugin.Extensions;

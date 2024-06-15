@@ -10,10 +10,9 @@ public class OPFGenerator
     private const string LANGUAGE = "vi";
     private const string TOC_ID = "ncx";
 
-    // may changed latter
-    private readonly string CSS_PATH = Path.Combine("Styles", "style.css").InverseSlash();
-    private readonly string TOC_PATH = "toc.ncx";
-    private readonly string LOGO_PNG_PATH = Path.Combine("Resources", "logo.png").InverseSlash();
+    private readonly string _cSS_PATH = Path.Combine("Styles", "style.css").InverseSlash();
+    private readonly string _tOC_PATH = "toc.ncx";
+    private readonly string _lOGO_PNG_PATH = Path.Combine("Resources", "logo.png").InverseSlash();
 
     public string BookIdentifier { get; }
 
@@ -98,21 +97,12 @@ public class OPFGenerator
             metadata.AddChild(metaCover);
             metadata.AddChild(metaSigil);
         }
-        XHTMLElementInline ItemGen(string href, string id, string media_type)
-        {
-            return new XHTMLElementInline("item", new()
-            {
-                {"href", href},
-                {"id", id},
-                {"media-type", media_type}
-            });
-        }
         var manifest = new XHTMLElement("manifest", null, new()
         {
             // predefined files
-            ItemGen(TOC_PATH, TOC_ID, "application/x-dtbncx+xml"),
-            ItemGen(CSS_PATH, "css", "text/css"),
-            ItemGen(LOGO_PNG_PATH, "logo.png", "image/png"),
+            ItemGen(_tOC_PATH, TOC_ID, "application/x-dtbncx+xml"),
+            ItemGen(_cSS_PATH, "css", "text/css"),
+            ItemGen(_lOGO_PNG_PATH, "logo.png", "image/png"),
             ItemGen(_imagePath, "cover", "image/jpeg"),
             ItemGen(_coverDir, Path.GetFileName(_coverDir), "application/xhtml+xml"),
             ItemGen(_originDir, Path.GetFileName(_originDir), "application/xhtml+xml"),
@@ -156,5 +146,15 @@ public class OPFGenerator
             xml, package
         });
         return doc;
+    }
+
+    private static XHTMLElementInline ItemGen(string href, string id, string media_type)
+    {
+        return new XHTMLElementInline("item", new()
+            {
+                {"href", href},
+                {"id", id},
+                {"media-type", media_type}
+            });
     }
 }

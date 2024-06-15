@@ -1,8 +1,8 @@
-using backend.Application.Services.Abstract;
-using backend.Application.Services.Concrete;
+using Backend.Application.Services.Abstract;
+using Backend.Application.Services.Concrete;
 using System.Reflection;
 
-namespace backend
+namespace Backend
 {
     public class Program
     {

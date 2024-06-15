@@ -1,4 +1,4 @@
-﻿namespace backend.Application.DTO;
+﻿namespace Backend.Application.DTO;
 
 public class ChapterDTO(string storyID, int index, string name)
 {

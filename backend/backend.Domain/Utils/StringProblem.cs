@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 
-namespace backend.Domain.Utils
+namespace Backend.Domain.Utils
 {
     public static class StringProblem
     {

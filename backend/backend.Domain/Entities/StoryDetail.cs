@@ -1,6 +1,6 @@
-﻿using backend.Domain.Primitives;
+﻿using Backend.Domain.Primitives;
 
-namespace backend.Domain.Entities;
+namespace Backend.Domain.Entities;
 
 public class StoryDetail(string id, string name, string imageURL, Author author, string status, IEnumerable<Category> categories, string description) : IDEntityBase(id)
 {

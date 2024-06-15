@@ -1,8 +1,8 @@
-﻿using backend.Application.DLLScanner.Utilis;
-using backend.Application.Exceptions;
-using backend.Domain.Contract;
+﻿using Backend.Application.DLLScanner.Utilis;
+using Backend.Application.Exceptions;
+using Backend.Domain.Contract;
 
-namespace backend.Application.DLLScanner.Contract;
+namespace Backend.Application.DLLScanner.Contract;
 
 public abstract class ScannerBase<T> : IScanner<T> where T : IPlugin
 {
@@ -13,7 +13,11 @@ public abstract class ScannerBase<T> : IScanner<T> where T : IPlugin
     public T UsePlugin(string uuid)
     {
         var pluginInfo = Plugins[uuid];
-        return pluginInfo == null || pluginInfo.Status == PluginStatus.Removed ? throw new PluginNotFoundException() : pluginInfo.Plugin;
+        if (pluginInfo == null || pluginInfo.Status == PluginStatus.Removed)
+        {
+            throw new PluginNotFoundException();
+        }
+        return pluginInfo.Plugin;
     }
 
     public Dictionary<string, PluginInfo<T>> GetUsedPlugins() => Plugins.Where(x => x.Value.Status == PluginStatus.Used).ToDictionary();

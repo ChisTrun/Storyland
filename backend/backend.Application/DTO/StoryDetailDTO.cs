@@ -1,4 +1,4 @@
-﻿namespace backend.Application.DTO;
+﻿namespace Backend.Application.DTO;
 
 public class StoryDetailDTO(string id, string name, string imageUrl, DisplayDTO author, string status, IEnumerable<DisplayDTO> categories, string description)
 {

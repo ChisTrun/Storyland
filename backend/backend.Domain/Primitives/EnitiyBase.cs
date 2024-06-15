@@ -1,4 +1,4 @@
-﻿namespace backend.Domain.Primitives;
+﻿namespace Backend.Domain.Primitives;
 
 public abstract class EntityBase : IEquatable<EntityBase>
 {
@@ -17,12 +17,20 @@ public abstract class EntityBase : IEquatable<EntityBase>
     public override bool Equals(object? obj)
     {
 
-        return obj == null || obj.GetType() != GetType() || obj is not EntityBase entityBase ? false : entityBase.Identity == Identity;
+        if (obj == null || obj.GetType() != GetType() || obj is not EntityBase entityBase)
+        {
+            return false;
+        }
+        return entityBase.Identity == Identity;
     }
 
     public bool Equals(EntityBase? other)
     {
-        return other == null || other.GetType() != GetType() ? false : other.Identity == Identity;
+        if (other == null || other.GetType() != GetType())
+        {
+            return false;
+        }
+        return other.Identity == Identity;
     }
 
     public override int GetHashCode()

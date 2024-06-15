@@ -27,11 +27,6 @@ namespace ExporterEPUB.FilePrepare
             var xml = new XHTMLPlain("""
                 <?xml version="1.0" encoding="utf-8"?>
                 """);
-            XHTMLElementInline MetaGen(string name, string content) => new XHTMLElementInline("meta", new()
-            {
-                {"name", name },
-                {"content", content}
-            });
             var ncx = new XHTMLElement("ncx", new()
             {
                 {"xmlns", "http://www.daisy.org/z3986/2005/ncx/" },
@@ -52,18 +47,6 @@ namespace ExporterEPUB.FilePrepare
             });
             var navMap = new XHTMLElement("navMap");
             {
-                XHTMLElement NavPointGen(string id, int playOrder, string name, string path) => new("navPoint", new()
-                {
-                    {"id", id },
-                    {"playOrder", playOrder.ToString() }
-                }, new()
-                {
-                    new XHTMLElement("navLabel", null, new()
-                    {
-                        new XHTMLElement("text", null, null, name)
-                    }),
-                    new XHTMLElementInline("content", new(){{"src", GetChapterRelPath(path)}})
-                });
                 navMap.AddChild(NavPointGen(FolderStructure.ORIGIN, 1, "Origin", FolderStructure.ORIGIN));
                 navMap.AddChild(NavPointGen(FolderStructure.INTRO, 2, "Introduction", FolderStructure.INTRO));
                 var id = 3;
@@ -80,5 +63,24 @@ namespace ExporterEPUB.FilePrepare
             });
             return doc;
         }
+
+        private XHTMLElement NavPointGen(string id, int playOrder, string name, string path) => new("navPoint", new()
+                {
+                    {"id", id },
+                    {"playOrder", playOrder.ToString() }
+                }, new()
+                {
+                    new XHTMLElement("navLabel", null, new()
+                    {
+                        new XHTMLElement("text", null, null, name)
+                    }),
+                    new XHTMLElementInline("content", new(){{"src", GetChapterRelPath(path)}})
+                });
+
+        private static XHTMLElementInline MetaGen(string name, string content) => new XHTMLElementInline("meta", new()
+            {
+                {"name", name },
+                {"content", content}
+            });
     }
 }

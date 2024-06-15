@@ -1,4 +1,4 @@
-﻿namespace backend.Domain.Contract;
+﻿namespace Backend.Domain.Contract;
 
 public interface IPlugin
 {

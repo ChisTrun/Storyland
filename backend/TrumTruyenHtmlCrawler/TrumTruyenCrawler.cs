@@ -1,6 +1,6 @@
-using backend.Domain.Contract;
-using backend.Domain.Entities;
-using backend.Domain.Objects;
+using Backend.Domain.Contract;
+using Backend.Domain.Entities;
+using Backend.Domain.Objects;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Newtonsoft.Json.Linq;

@@ -1,4 +1,4 @@
-﻿namespace backend.Domain.Primitives;
+﻿namespace Backend.Domain.Primitives;
 
 public abstract class IDEntityBase(string id) : EntityBase
 {
