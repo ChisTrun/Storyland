@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
 {
-    [Route("api/author")]
+	[Route("api/author")]
     public class AuthorController : Controller
     {
         private readonly ICrawlingService _crawlingService;
