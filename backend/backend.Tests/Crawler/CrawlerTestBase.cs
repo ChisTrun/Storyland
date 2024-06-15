@@ -206,7 +206,7 @@ public abstract class CrawlerTestBase
         var crawler = GetInstance();
 
         // Act
-        void testCode() => crawler.GetStoriesBySearchName(id, 1, 10);
+        void testCode() => crawler.GetStoriesOfAuthor(id, 1, 10);
 
         // Assert
         Assert.Throws<Exception>(testCode);
