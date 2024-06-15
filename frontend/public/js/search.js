@@ -34,7 +34,7 @@ $(document).ready(function () {
             orientation: "horizontal",
             min: 0,
             max: 10000,
-            values: [0, 10000],
+            values: [minChapter != undefined ? minChapter : 0, maxChapter != undefined ? maxChapter : 10000],
             step: 100,
 
             slide: function (event, ui) {
@@ -52,3 +52,5 @@ $(document).ready(function () {
 
     });
 });
+
+$("#search-input").val(keyword != undefined ? keyword : "");
