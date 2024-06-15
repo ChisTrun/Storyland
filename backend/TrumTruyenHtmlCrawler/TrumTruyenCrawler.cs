@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TrumTruyenHtmlCrawler;
 
@@ -175,7 +176,12 @@ public class TrumTruyenCrawler : ICrawler
             }
         }
 
-        var result = stringBuilder.ToString().ToLower().Replace(" ", "-");
+        var result = stringBuilder.ToString()
+           .Replace("đ", "d")
+           .Replace("Đ", "D")
+           .ToLower()
+           .Replace(" ", "-");
+
         return result;
     }
 
@@ -193,7 +199,6 @@ public class TrumTruyenCrawler : ICrawler
             {
                 continue;
             }
-
             categories.Add(new Category(node.InnerText, RemoveVietnameseCharsAndReplaceSpaces(node.InnerText)));
         }
         return categories;
@@ -210,7 +215,9 @@ public class TrumTruyenCrawler : ICrawler
         try
         {
             var name = doc.QuerySelector(".chapter-title").InnerText;
-            var content = doc.QuerySelector("#chapter-c").InnerHtml.Replace("<br>", "\n");
+            var content = doc.QuerySelector("#chapter-c").InnerHtml;
+            content = content.Replace("<br>", "\n");
+            content = Regex.Replace(content, @"<.*?>", string.Empty);
             var nextChapterUrl = doc.QuerySelector(".btn-group").QuerySelectorAll("a")[1].GetAttributeValue("href", "");
             var prevChapterUrl = doc.QuerySelector(".btn-group").QuerySelectorAll("a")[0].GetAttributeValue("href", "");
             return new ChapterContent(content, name, chapterIndex, storyId);
@@ -704,6 +711,8 @@ public class TrumTruyenCrawler : ICrawler
             }
             var status = infoNodes[infoNodes.Count - 1].QuerySelector("span").InnerText;
             var description = doc.QuerySelector("div[itemprop=\"description\"]").InnerHtml.Replace("<br>", "\n");
+            description = description.Replace("<br>", "\n");
+            description = Regex.Replace(description, @"<.*?>", string.Empty);
             return new StoryDetail(story, author, status, categories.ToArray(), description);
         }
         catch
