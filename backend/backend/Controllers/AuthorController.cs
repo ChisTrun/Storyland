@@ -28,7 +28,7 @@ namespace Backend.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, $"Fail to get stories by searching with keyword {authorName}: {e.Message}.");
+                return StatusCode(500, $"Fail to get authors by searching with keyword {authorName}: {e.Message}.");
             }
         }
 
@@ -50,7 +50,7 @@ namespace Backend.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, $"Fail to get stories at page {page} by searching with keyword {authorName}: {e.Message}.");
+                return StatusCode(500, $"Fail to get authors at page {page} by searching with keyword {authorName}: {e.Message}.");
             }
         }
     }

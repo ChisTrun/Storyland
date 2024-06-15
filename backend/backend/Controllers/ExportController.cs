@@ -73,7 +73,7 @@ public class ExportController : Controller
         }
         catch (Exception e)
         {
-            return StatusCode(500, $"Fail to get servers: {e.Message}.");
+            return StatusCode(500, $"Fail to change status: {e.Message}.");
         }
     }
 
@@ -92,7 +92,27 @@ public class ExportController : Controller
         }
         catch (Exception e)
         {
-            return StatusCode(500, $"Fail to get servers: {e.Message}.");
+            return StatusCode(500, $"Fail to upload: {e.Message}.");
+        }
+    }
+
+
+    /// <summary>
+    /// Get list of all IDs.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("ids")]
+    [ProducesResponseType(typeof(string[]), 200)]
+    public IActionResult All()
+    {
+        try
+        {
+            return Ok(_pluginsScannerService.GetExporterPluginInfos().Select(x => x.ID));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, $"Fail to get IDs: {e.Message}.");
         }
     }
 }

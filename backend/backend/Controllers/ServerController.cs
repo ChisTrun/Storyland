@@ -30,7 +30,7 @@ public class ServerController : Controller
         }
         catch (Exception e)
         {
-            return StatusCode(500, $"Fail to get servers: {e.Message}.");
+            return StatusCode(500, $"Failed to get servers: {e.Message}.");
         }
     }
 
@@ -49,7 +49,7 @@ public class ServerController : Controller
         }
         catch (Exception e)
         {
-            return StatusCode(500, $"Fail to get servers: {e.Message}.");
+            return StatusCode(500, $"Failed to change status: {e.Message}.");
         }
     }
 
@@ -68,14 +68,18 @@ public class ServerController : Controller
         }
         catch (Exception e)
         {
-            return StatusCode(500, $"Fail to get servers: {e.Message}.");
+            return StatusCode(500, $"Failed to upload files: {e.Message}.");
         }
     }
 
-
+    /// <summary>
+    /// Get list of all IDs.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
-    [Route("a/test")]
-    public IActionResult Test()
+    [Route("ids")]
+    [ProducesResponseType(typeof(string[]), 200)]
+    public IActionResult All()
     {
         try
         {
@@ -83,7 +87,7 @@ public class ServerController : Controller
         }
         catch (Exception e)
         {
-            return StatusCode(500, $"Fail: {e.Message}.");
+            return StatusCode(500, $"Failed to get IDs: {e.Message}.");
         }
     }
 }
