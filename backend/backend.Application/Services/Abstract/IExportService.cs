@@ -1,6 +1,6 @@
-﻿using backend.Application.DTO;
+﻿using Backend.Application.DTO;
 
-namespace backend.Application.Services.Abstract;
+namespace Backend.Application.Services.Abstract;
 
 public interface IExportService
 {

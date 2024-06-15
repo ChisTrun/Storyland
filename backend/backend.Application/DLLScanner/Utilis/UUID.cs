@@ -1,11 +1,11 @@
-﻿namespace backend.Application.DLLScanner.Utilis;
+﻿namespace Backend.Application.DLLScanner.Utilis;
 
 public class UUID
 {
     public static string GenerateUUID()
     {
-        var uuid = Guid.NewGuid();
-        var uuidStr = uuid.ToString();
+        Guid uuid = Guid.NewGuid();
+        string uuidStr = uuid.ToString();
         return uuidStr;
     }
 }

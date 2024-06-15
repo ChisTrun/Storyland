@@ -1,7 +1,7 @@
-﻿using backend.Application.DLLScanner.Utilis;
-using backend.Domain.Contract;
+﻿using Backend.Application.DLLScanner.Utilis;
+using Backend.Domain.Contract;
 
-namespace backend.Application.DLLScanner.Contract;
+namespace Backend.Application.DLLScanner.Contract;
 
 public interface IScanner<T> where T : IPlugin
 {

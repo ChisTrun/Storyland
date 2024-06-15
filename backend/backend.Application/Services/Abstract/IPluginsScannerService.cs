@@ -1,8 +1,8 @@
-﻿using backend.Application.DLLScanner.Contract;
-using backend.Application.DTO;
-using backend.Domain.Contract;
+﻿using Backend.Application.DLLScanner.Contract;
+using Backend.Application.DTO;
+using Backend.Domain.Contract;
 
-namespace backend.Application.Services.Abstract;
+namespace Backend.Application.Services.Abstract;
 
 public interface IPluginsScannerService
 {

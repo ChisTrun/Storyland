@@ -1,7 +1,7 @@
-﻿using backend.Application.DTO;
-using backend.Domain.Entities;
+﻿using Backend.Application.DTO;
+using Backend.Domain.Entities;
 
-namespace backend.Application.Commands.Abstract;
+namespace Backend.Application.Commands.Abstract;
 
 public interface IExportCommand
 {

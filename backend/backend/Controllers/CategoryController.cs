@@ -1,8 +1,8 @@
-﻿using backend.Application.DTO;
-using backend.Application.Services.Abstract;
+﻿using Backend.Application.DTO;
+using Backend.Application.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Controllers
+namespace Backend.Controllers
 {
     [Route("api/category")]
     public class CategoryController : Controller

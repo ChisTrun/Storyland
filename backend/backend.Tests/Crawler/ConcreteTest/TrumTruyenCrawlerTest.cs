@@ -1,5 +1,5 @@
-using backend.Domain.Contract;
-using plugin.tests.Crawler;
+using Backend.Domain.Contract;
+using Backend.Tests.Crawler;
 using TrumTruyenHtmlCrawler;
 
 namespace PluginBase.Tests.Crawler.ConcreteTest;

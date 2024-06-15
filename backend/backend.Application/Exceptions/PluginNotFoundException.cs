@@ -1,4 +1,4 @@
-﻿namespace backend.Application.Exceptions;
+﻿namespace Backend.Application.Exceptions;
 
 public class PluginNotFoundException : Exception
 {

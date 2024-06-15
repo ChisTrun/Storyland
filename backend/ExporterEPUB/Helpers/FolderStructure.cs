@@ -32,18 +32,18 @@ public class FolderStructure
     public static string EPUBRESOURCE => Path.Combine(BIN, "EPUBResource");
 
 
-    public static readonly string META_INF = "META-INF";
-    public static readonly string MIMETYPE = "mimetype";
-    public static readonly string OEBPS = "OEBPS";
+    public static string META_INF => "META-INF";
+    public static string MIMETYPE => "mimetype";
+    public static string OEBPS => "OEBPS";
 
-    public static readonly string OEBPS_IMAGES = "Images";
-    public static readonly string OEBPS_STYLES = "Styles";
-    public static readonly string OEBPS_CHAPTERS = "Chapters";
-    public static readonly string OEBPS_RESOURCES = "Resources";
-    public static readonly string F_OEBPS_CONTENT_OPF = "content.opf";
-    public static readonly string F_OEBPS_TOC_NCX = "toc.ncx";
+    public static string OEBPS_IMAGES => "Images";
+    public static string OEBPS_STYLES => "Styles";
+    public static string OEBPS_CHAPTERS => "Chapters";
+    public static string OEBPS_RESOURCES => "Resources";
+    public static string F_OEBPS_CONTENT_OPF => "content.opf";
+    public static string F_OEBPS_TOC_NCX => "toc.ncx";
 
-    public static readonly string COVER = "cover.xhtml";
-    public static readonly string INTRO = "intro.xhtml";
-    public static readonly string ORIGIN = "origin.xhtml";
+    public static string COVER => "cover.xhtml";
+    public static string INTRO => "intro.xhtml";
+    public static string ORIGIN => "origin.xhtml";
 }

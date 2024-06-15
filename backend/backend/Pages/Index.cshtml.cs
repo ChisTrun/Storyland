@@ -1,9 +1,9 @@
-using backend.Application.DLLScanner.Utilis;
-using backend.Application.Services.Abstract;
-using backend.Domain.Contract;
+using Backend.Application.DLLScanner.Utilis;
+using Backend.Application.Services.Abstract;
+using Backend.Domain.Contract;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace backend.Pages;
+namespace Backend.Pages;
 
 public class IndexModel : PageModel
 {

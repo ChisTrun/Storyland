@@ -1,4 +1,4 @@
-﻿namespace backend.Application.DTO;
+﻿namespace Backend.Application.DTO;
 
 /// <summary>
 /// Display a general object with Name and Id. Includes: Category, Author, ...

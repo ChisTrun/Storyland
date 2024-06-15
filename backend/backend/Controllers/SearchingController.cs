@@ -1,10 +1,10 @@
-﻿using backend.Application.DTO;
-using backend.Application.Services.Abstract;
-using backend.Domain.Objects;
+﻿using Backend.Application.DTO;
+using Backend.Application.Services.Abstract;
+using Backend.Domain.Objects;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace backend.Controllers
+namespace Backend.Controllers
 {
     [Route("api/search")]
     public class SearchingController : Controller

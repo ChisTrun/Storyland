@@ -1,4 +1,4 @@
-﻿using backend.Domain.Entities;
+﻿using Backend.Domain.Entities;
 using ExporterEPUB.Helpers;
 using ExporterEPUB.Model;
 using ExporterEPUB.XHTMLBuilder;
@@ -38,7 +38,7 @@ public class AllGenerator
         WriteToFile(contentStructure.Origin, _structure.ABS_F_ORIGIN);
         WriteToFile(contentStructure.Intro, _structure.ABS_F_INTRO);
         var chapterLocal = new List<ChapterLocal>();
-        var index = 0;
+        int index = 0;
         foreach (var chapter in contentStructure.Chapters)
         {
             index += 1;

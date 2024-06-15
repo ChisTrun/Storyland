@@ -1,9 +1,9 @@
-﻿using backend.Application.DLLScanner.Contract;
-using backend.Application.DLLScanner.Utilis;
-using backend.Domain.Contract;
+﻿using Backend.Application.DLLScanner.Contract;
+using Backend.Application.DLLScanner.Utilis;
+using Backend.Domain.Contract;
 using System.Reflection;
 
-namespace backend.Application.DLLScanner.Concrete;
+namespace Backend.Application.DLLScanner.Concrete;
 
 internal class ExporterScanner : ScannerBase<IExporter>
 {

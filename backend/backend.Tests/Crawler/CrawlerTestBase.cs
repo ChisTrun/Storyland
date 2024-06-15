@@ -1,9 +1,9 @@
-using backend.Domain.Contract;
-using backend.Domain.Entities;
-using backend.Domain.Objects;
-using backend.Domain.Primitives;
+using Backend.Domain.Contract;
+using Backend.Domain.Entities;
+using Backend.Domain.Objects;
+using Backend.Domain.Primitives;
 
-namespace plugin.tests.Crawler;
+namespace Backend.Tests.Crawler;
 
 // ==========================================================================================
 // Group15 document reference:
@@ -36,12 +36,12 @@ public abstract class CrawlerTestBase
     private void AssertPaging<T>(Func<int, int, PagedList<T>> getPage) where T : class
     {
         // Arrange
-        const int FIRST_PAGE = 1;
-        const int LIMIT = 10;
+        var firstPage = 1;
+        var limit = 10;
 
         // Act
-        var firstPageData = getPage(FIRST_PAGE, LIMIT);
-        var lastPageCount = getPage(firstPageData.TotalPages, LIMIT).Data.Count();
+        var firstPageData = getPage(firstPage, limit);
+        var lastPageCount = getPage(firstPageData.TotalPages, limit).Data.Count();
         var emptyFirstPage = !firstPageData.Data.Any();
 
         // Assert

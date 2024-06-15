@@ -1,10 +1,10 @@
-﻿using backend.Application.DLLScanner.Contract;
-using backend.Application.DTO;
-using backend.Application.Mapper;
-using backend.Application.Utils;
-using backend.Domain.Contract;
+﻿using Backend.Application.DLLScanner.Contract;
+using Backend.Application.DTO;
+using Backend.Application.Mapper;
+using Backend.Application.Utils;
+using Backend.Domain.Contract;
 
-namespace backend.Application.Queries;
+namespace Backend.Application.Queries;
 
 public class StorySearchQuery
 {
@@ -21,12 +21,7 @@ public class StorySearchQuery
         {
             try
             {
-                var stories = crawler.GetStoriesBySearchName(storyId).Where(x =>
-                {
-                    return
-                    (minChapNum == -1 || x.NumberOfChapter >= minChapNum) &&
-                    (maxChapNum == -1 || x.NumberOfChapter <= maxChapNum);
-                }).ToDTOList(x => x.ToDTO())
+                var stories = crawler.GetStoriesBySearchName(storyId).ToDTOList(x => x.ToDTO())
                 .OrderBy(x => x.Id)
                 .ToList();
                 return stories;
@@ -36,8 +31,36 @@ public class StorySearchQuery
                 return new List<StoryDTO>();
             }
         });
-        var storiesDtoPriority = Algorithm.PriorityMergeLists(storiesList, s => s.Id);
-        return storiesDtoPriority;
+        var storiesDtoPriority = Algorithm.PriorityMergeLists(storiesList, s => s.Id, (listList, min, resList) =>
+        {
+            var minByIdList = listList.Select(l => l.FirstOrDefault(x => x.Id.Equals(min.Id)));
+            var maxNumberOfChapter = minByIdList.Max(x => x?.NumberOfChapter ?? 0);
+            var foundMax = false;
+            foreach (var list in listList)
+            {
+                var first = list.FirstOrDefault(x => x.Id == min.Id);
+                if (first != null)
+                {
+                    if (first.NumberOfChapter < maxNumberOfChapter || foundMax == true)
+                    {
+                        list.Remove(first);
+                    }
+                    else
+                    {
+                        foundMax = true;
+                        resList.Add(first);
+                        list.Remove(first);
+                    }
+                }
+            }
+        });
+        var filteredStoriesDtoPriority = storiesDtoPriority.Where(x =>
+        {
+            return
+            (minChapNum == -1 || x.NumberOfChapter >= minChapNum) &&
+            (maxChapNum == -1 || x.NumberOfChapter <= maxChapNum);
+        }).ToList();
+        return filteredStoriesDtoPriority;
     }
 
     public List<StoryDTO> OfCategoryWithPriority(string categoryId, IEnumerable<string> ids)

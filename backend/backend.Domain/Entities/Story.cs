@@ -1,6 +1,6 @@
-﻿using backend.Domain.Primitives;
+﻿using Backend.Domain.Primitives;
 
-namespace backend.Domain.Entities;
+namespace Backend.Domain.Entities;
 
 public sealed class Story(string name, string iD, string? imageURL = null, string? authorName = null, int numberOfChapter = 0) : IDEntityBase(iD)
 {

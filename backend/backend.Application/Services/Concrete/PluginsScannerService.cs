@@ -1,10 +1,10 @@
-﻿using backend.Application.DLLScanner.Concrete;
-using backend.Application.DLLScanner.Contract;
-using backend.Application.DTO;
-using backend.Application.Services.Abstract;
-using backend.Domain.Contract;
+﻿using Backend.Application.DLLScanner.Concrete;
+using Backend.Application.DLLScanner.Contract;
+using Backend.Application.DTO;
+using Backend.Application.Services.Abstract;
+using Backend.Domain.Contract;
 
-namespace backend.Application.Services.Concrete;
+namespace Backend.Application.Services.Concrete;
 
 public class PluginsScannerService : IPluginsScannerService
 {

@@ -1,6 +1,6 @@
-﻿using backend.Domain.Contract;
+﻿using Backend.Domain.Contract;
 
-namespace backend.Application.DLLScanner.Utilis;
+namespace Backend.Application.DLLScanner.Utilis;
 
 public class PluginInfo<T>(T plugin, PluginStatus status) where T : IPlugin
 {

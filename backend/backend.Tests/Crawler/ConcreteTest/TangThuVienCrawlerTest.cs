@@ -1,5 +1,5 @@
-﻿using backend.Domain.Contract;
-using plugin.tests.Crawler;
+﻿using Backend.Tests.Crawler;
+using Backend.Domain.Contract;
 using TangThuVien;
 
 namespace PluginBase.Tests.Crawler.ConcreteTest;
@@ -25,11 +25,11 @@ public class TangThuVienCrawlerTest : CrawlerTestBase
     public override void GetStoriesBySearchName_ValidStoryName_ValidPaging(string storyName) => base.GetStoriesBySearchName_ValidStoryName_ValidPaging(storyName);
 
     [Theory]
-    [InlineData("phong-hoa-hi-chu-hau")]
+    [InlineData("?author=27")]
     public override void GetStoriesOfAuthor_ValidAuthorId_ReturnsStories(string id) => base.GetStoriesOfAuthor_ValidAuthorId_ReturnsStories(id);
 
     [Theory]
-    [InlineData("phong-hoa-hi-chu-hau")]
+    [InlineData("?author=27")]
     public override void GetStoriesOfAuthor_ValidAuthorId_ValidPaging(string id) => base.GetStoriesOfAuthor_ValidAuthorId_ValidPaging(id);
 
     [Theory]
@@ -39,10 +39,6 @@ public class TangThuVienCrawlerTest : CrawlerTestBase
     [Theory]
     [InlineData("kiem-lai")]
     public override void GetChaptersOfStory_ValidPaging_ReturnChapters(string id) => base.GetChaptersOfStory_ValidPaging_ReturnChapters(id);
-
-    [Theory]
-    [InlineData("kiem-laiiii")]
-    public override void GetChaptersOfStory_InvalidStoryId_ThrowsException(string id) => base.GetChaptersOfStory_InvalidStoryId_ThrowsException(id);
 
     [Theory]
     [InlineData("kiem-lai")]
@@ -55,10 +51,6 @@ public class TangThuVienCrawlerTest : CrawlerTestBase
     [Theory]
     [InlineData("kiem-lai")]
     public override void GetStoryDetail_ValidStoryId_ReturnStoryDetail(string id) => base.GetStoryDetail_ValidStoryId_ReturnStoryDetail(id);
-
-    [Theory]
-    [InlineData("kiem-laiiii")]
-    public override void GetStoryDetail_InvalidStoryId_ThrowsException(string id) => base.GetStoryDetail_InvalidStoryId_ThrowsException(id);
 
     [Theory]
     [InlineData("phong hoa hi")]

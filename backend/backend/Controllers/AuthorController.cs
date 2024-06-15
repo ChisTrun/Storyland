@@ -1,9 +1,9 @@
-﻿using backend.Application.DTO;
-using backend.Application.Services.Abstract;
-using backend.Domain.Objects;
+﻿using Backend.Application.DTO;
+using Backend.Application.Services.Abstract;
+using Backend.Domain.Objects;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Controllers
+namespace Backend.Controllers
 {
     [Route("api/author")]
     public class AuthorController : Controller
@@ -28,7 +28,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, $"Fail to get stories by searching with keyword {authorName}: {e.Message}.");
+                return StatusCode(500, $"Fail to get authors by searching with keyword {authorName}: {e.Message}.");
             }
         }
 
@@ -50,7 +50,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, $"Fail to get stories at page {page} by searching with keyword {authorName}: {e.Message}.");
+                return StatusCode(500, $"Fail to get authors at page {page} by searching with keyword {authorName}: {e.Message}.");
             }
         }
     }

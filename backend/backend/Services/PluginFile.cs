@@ -1,8 +1,8 @@
-﻿using backend.Application.DLLScanner.Contract;
-using backend.Domain.Contract;
+﻿using Backend.Application.DLLScanner.Contract;
+using Backend.Domain.Contract;
 using System.Reflection;
 
-namespace backend.Services;
+namespace Backend.Services;
 
 public class PluginFile
 {

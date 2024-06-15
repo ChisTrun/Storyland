@@ -1,4 +1,4 @@
-﻿namespace backend.Application.DLLScanner.Utilis;
+﻿namespace Backend.Application.DLLScanner.Utilis;
 
 public enum PluginStatus
 {

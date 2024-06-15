@@ -1,7 +1,7 @@
-﻿using backend.Domain.Contract;
-using backend.Domain.Entities;
+﻿using Backend.Domain.Contract;
+using Backend.Domain.Entities;
 
-namespace backend.Application.Queries;
+namespace Backend.Application.Queries;
 
 public class ChapterQuery
 {

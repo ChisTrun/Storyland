@@ -1,4 +1,4 @@
-﻿using backend.Domain.Entities;
+﻿using Backend.Domain.Entities;
 using ExporterEPUB.Helpers;
 using ExporterEPUB.XHTMLBuilder;
 using ExporterEPUB.XHTMLBuilder.Content;
@@ -42,7 +42,7 @@ public class XHTMLContentGenerator
     private readonly List<ChapterContent> _chapters;
     private readonly string _imagePath;
 
-    public static readonly string CSS_PATH = $"../Styles/style.css";
+    public static readonly string cSS_PATH = $"../Styles/style.css";
 
     public XHTMLContentGenerator(string storyName, string authorName, string storyDescription, string storyCategories, string storyStatus, List<ChapterContent> chapters, string imagePath)
     {
@@ -55,7 +55,7 @@ public class XHTMLContentGenerator
         _imagePath = Path.Join("..", "Images", Path.GetFileName(imagePath)).InverseSlash();
     }
 
-    private LayoutXHTML GenerateLayout() => new LayoutXHTML(_storyName, CSS_PATH);
+    private LayoutXHTML GenerateLayout() => new LayoutXHTML(_storyName, cSS_PATH);
 
     private XHTMLDocument GenerateCover()
     {

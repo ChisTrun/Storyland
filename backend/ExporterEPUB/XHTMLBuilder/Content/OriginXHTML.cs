@@ -4,7 +4,7 @@ namespace ExporterEPUB.XHTMLBuilder.Content
 {
     public class OriginXHTML : IContentXHTML
     {
-        public static readonly string LOGO_PATH = Path.Join("..", "Resources", "logo.png").InverseSlash();
+        public static string LOGO_PATH => Path.Join("..", "Resources", "logo.png").InverseSlash();
 
         public OriginXHTML()
         {

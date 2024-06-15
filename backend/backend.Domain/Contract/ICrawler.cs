@@ -1,7 +1,7 @@
-﻿using backend.Domain.Entities;
-using backend.Domain.Objects;
+﻿using Backend.Domain.Entities;
+using Backend.Domain.Objects;
 
-namespace backend.Domain.Contract;
+namespace Backend.Domain.Contract;
 
 public interface ICrawler : IPlugin
 {

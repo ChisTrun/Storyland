@@ -1,4 +1,4 @@
-﻿namespace backend.Application.DTO;
+﻿namespace Backend.Application.DTO;
 
 public class StoryDTO(string id, string name, string imageUrl, string authorName, int numberOfChapter)
 {

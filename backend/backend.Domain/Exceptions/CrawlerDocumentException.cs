@@ -1,4 +1,4 @@
-﻿namespace backend.Domain.Exceptions;
+﻿namespace Backend.Domain.Exceptions;
 
 public class CrawlerDocumentException : Exception
 {
