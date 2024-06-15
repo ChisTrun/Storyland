@@ -5,6 +5,9 @@ namespace Backend.Tests.Exporter.ConcreteTest
 {
     public class PRCTest : ExporterTestBase
     {
-        protected override IExporter GetExporter() => new PRCExport();
+        protected override IExporter GetExporter()
+        {
+            return new PRCExport();
+        }
     }
 }
