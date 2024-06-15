@@ -12,7 +12,10 @@ public class ServerController : Controller
 {
     private readonly IPluginsScannerService _pluginsScannerService;
 
-    public ServerController(IPluginsScannerService pluginsScannerService) => _pluginsScannerService = pluginsScannerService;
+    public ServerController(IPluginsScannerService pluginsScannerService)
+    {
+        _pluginsScannerService = pluginsScannerService;
+    }
 
     /// <summary>
     /// Get servers.
@@ -61,11 +64,11 @@ public class ServerController : Controller
         try
         {
             var message = PluginFile.UploadFiles(_pluginsScannerService.GetCrawlerScanner(), files);
-            return Ok(new { message });
+            return Ok(message);
         }
         catch (Exception e)
         {
-            return StatusCode(500, new { message = $"{e.Message}" });
+            return StatusCode(500, $"Fail to get servers: {e.Message}.");
         }
     }
 
