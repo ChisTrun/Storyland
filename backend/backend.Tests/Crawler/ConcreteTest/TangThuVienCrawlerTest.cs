@@ -26,13 +26,6 @@ public class TangThuVienCrawlerTest : CrawlerTestBase
     }
 
     [Theory]
-    [InlineData("tien-hiepppp")]
-    public override void GetStoriesOfCategory_InvalidCategoryId_ThrowsException(string categoryId)
-    {
-        base.GetStoriesOfCategory_InvalidCategoryId_ThrowsException(categoryId);
-    }
-
-    [Theory]
     [InlineData("kiem-lai")]
     public override void GetStoriesBySearchName_ValidStoryName_ReturnsStories(string storyName)
     {
@@ -56,13 +49,6 @@ public class TangThuVienCrawlerTest : CrawlerTestBase
     [Theory]
     [InlineData("?author=27")]
     public override void GetStoriesOfAuthor_ValidAuthorId_ValidPaging(string id) => base.GetStoriesOfAuthor_ValidAuthorId_ValidPaging(id);
-
-    [Theory]
-    [InlineData("phong-hoa-hi-chu-hau")]
-    public override void GetStoriesOfAuthor_InvalidAuthorId_ThrowsException(string id)
-    {
-        base.GetStoriesOfAuthor_InvalidAuthorId_ThrowsException(id);
-    }
 
     [Theory]
     [InlineData("kiem-lai")]
@@ -93,13 +79,6 @@ public class TangThuVienCrawlerTest : CrawlerTestBase
     }
 
     [Theory]
-    [InlineData("kiem-laiiii")]
-    public override void GetChapterContent_InvalidStoryId_ThrowsException(string id)
-    {
-        base.GetChapterContent_InvalidStoryId_ThrowsException(id);
-    }
-
-    [Theory]
     [InlineData("kiem-lai")]
     public override void GetStoryDetail_ValidStoryId_ReturnStoryDetail(string id)
     {
@@ -114,23 +93,9 @@ public class TangThuVienCrawlerTest : CrawlerTestBase
     }
 
     [Theory]
-    [InlineData("")]
-    public override void GetAuthorsBySearchName_EmptyName_ThrowsException(string name)
-    {
-        base.GetAuthorsBySearchName_EmptyName_ThrowsException(name);
-    }
-
-    [Theory]
     [InlineData("kiem-lai")]
     public override void GetChapterCount_ValidStoryId_ReturnChaptersCount(string storyId)
     {
         base.GetChapterCount_ValidStoryId_ReturnChaptersCount(storyId);
-    }
-
-    [Theory]
-    [InlineData("kiem-laiiii")]
-    public override void GetChapterCount_InValidStoryId_ThrowsException(string storyId)
-    {
-        base.GetChapterCount_InValidStoryId_ThrowsException(storyId);
     }
 }

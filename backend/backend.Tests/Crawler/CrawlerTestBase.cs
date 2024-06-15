@@ -33,7 +33,7 @@ public abstract class CrawlerTestBase
             && string.IsNullOrEmpty(storyDetail.Description) == false
             && ValidIdentity(storyDetail) == true;
 
-    private void AssertPaging<T>(Func<int, int, PagedList<T>> getPage) where T : class
+    private static void AssertPaging<T>(Func<int, int, PagedList<T>> getPage) where T : class
     {
         // Arrange
         var firstPage = 1;
