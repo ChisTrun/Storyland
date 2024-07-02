@@ -8,7 +8,7 @@ namespace Backend
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+			var builder = WebApplication.CreateBuilder(args);
 
             var pluginProvider = new PluginsScannerService();
 
@@ -37,7 +37,6 @@ namespace Backend
 
             var app = builder.Build();
 
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -53,7 +52,7 @@ namespace Backend
 
             app.MapRazorPages();
 
-            app.Run();
+            app.Run("http://localhost:5248");
         }
     }
 }

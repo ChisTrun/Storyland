@@ -221,4 +221,5 @@ frontend/node_modules
 /backend/backend.draft/backend.draft.csproj
 /backend/backend.draft/ConsoleDraft.csproj
 /backend/plugins/
+/backend/pluginsAdd/
 /backend/Resources/

@@ -3,6 +3,7 @@ backend/.vs
 **/bin/
 **/obj/
 backend/plugins/
+backend/pluginsAdd/
 backend/Resources/
 
 # Frontend

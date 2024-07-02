@@ -22,10 +22,8 @@
 		</ProjectReference>
 	</ItemGroup>
 
-
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy /y /d /i  &quot;$(OutDir)*.dll&quot; &quot;$(SolutionDir)backend\plugins\storySource\&quot;" />
+		<Exec Command="xcopy /y /d /i  &quot;$(OutDir)*.dll&quot; &quot;$(SolutionDir)backend\pluginsAdd\TrumTruyen_StorySource\&quot;" />
 	</Target>
-
 
 </Project>
