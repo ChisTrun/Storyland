@@ -17,7 +17,6 @@
 			<Private>false</Private>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</ProjectReference>
-		<ProjectReference Include="..\PDFExporter\PDFExporter.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
