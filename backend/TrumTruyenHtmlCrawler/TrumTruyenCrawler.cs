@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TrumTruyenHtmlCrawler;
 
